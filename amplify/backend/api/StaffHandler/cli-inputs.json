@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/staff": {
+      "name": "/v1/resources/staff",
+      "lambdaFunction": "StaffFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
