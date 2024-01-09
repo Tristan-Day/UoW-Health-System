@@ -1,0 +1,11 @@
+{
+  "httpMethod": "GET",
+  "path": "/v1/resources/staff/TESTT",
+  "queryStringParameters": {
+    "limit": "10"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": ""
+}

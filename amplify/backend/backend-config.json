@@ -1,1 +1,43 @@
-{}
+{
+  "api": {
+    "StaffHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "StaffFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "function": {
+    "StaffFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_StaffFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "StaffFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_StaffFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "StaffFunction"
+        }
+      ]
+    }
+  }
+}
