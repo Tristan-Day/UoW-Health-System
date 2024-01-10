@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/appointment": {
+      "name": "/v1/resources/appointment",
+      "lambdaFunction": "AppointmentFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/v1/resources/appointment/scheduleitem": {
+      "name": "/v1/resources/appointment/scheduleitem",
+      "lambdaFunction": "ScheduleItemFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    },
+    "/v1/resources/appointments/scheduleitem": {
+      "name": "/v1/resources/appointments/scheduleitem",
+      "lambdaFunction": "ScheduleItemFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

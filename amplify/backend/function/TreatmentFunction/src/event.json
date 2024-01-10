@@ -1,0 +1,10 @@
+{
+  "httpMethod": "post",
+  "path": "/v1/resources/treatments",
+  "queryStringParameters": {
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"NAME\":\"Lobotomy\",\"CATEGORY_ID\":1,\"WARD_ID\":\"PSYC\", \"ACTION_TYPE\": \"INSERT\"}"
+}
