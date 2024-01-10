@@ -11,13 +11,13 @@ License.
 
 const express = require('express')
 
-// declare a new express app
+// Declare a new express app
 const app = express()
 app.use(require('body-parser').json())
 app.use(require('aws-serverless-express/middleware').eventContext())
 
 // Enable CORS for all methods
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', '*')
   next()
@@ -39,23 +39,23 @@ async function setup() {
   });
 
   const response =
-      await secretsClient.send(new SecretsManager.GetSecretValueCommand({
-        SecretId: '/v1/database',
-        VersionStage: 'AWSCURRENT',
-      }));
+    await secretsClient.send(new SecretsManager.GetSecretValueCommand({
+      SecretId: '/v1/database',
+      VersionStage: 'AWSCURRENT',
+    }));
 
   secrets = JSON.parse(response.SecretString);
   console.log('Sucessfully collected secrets')
 
   // Connect to Postgres
-  const {Pool} = require('pg');
+  const { Pool } = require('pg');
 
   client = new Pool({
     user: secrets.username,
     password: secrets.password,
 
     database: secrets.dbname,
-    ssl: {rejectUnauthorized: false},
+    ssl: { rejectUnauthorized: false },
 
     host: secrets.host,
     port: secrets.port,
@@ -72,66 +72,161 @@ async function setup() {
  * Retreive a Single Staff Member from the Database *
  ****************************************************/
 
-app.get('/v1/resources/staff/:identifier', async function(req, res) {
+app.get('/v1/resources/staff/:identifier', async function (req, res) {
   await setup()
 
-  const result = await client.query('SELECT * FROM system.staff WHERE staff_id = $1', [req.params.identifier])
-  
-  if (result.rows.length > 0)
-  {
+  const result = await client.query(
+    'SELECT * FROM system.staff WHERE staff_id = $1', [req.params.identifier])
+
+  if (result.rows.length > 0) {
     res.status(200).json(result.rows)
   }
-  res.status(404).send()
+  else {
+    res.status(404).json({ result: 'Staff member not found' })
+  }
 });
 
-// app.get('/v1/resources/staff/*', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'get call succeed!', url: req.url});
-// });
+/************************************************************
+ * Retreive Matching Staff Members by a given set of Fields *
+ ************************************************************/
 
-// /****************************
-// * Example post method *
-// ****************************/
+app.post('/v1/resources/staff/search', async function (req, res) {
+  await setup()
 
-// app.post('/v1/resources/staff', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'post call succeed!', url: req.url, body: req.body})
-// });
+  // Basic error handling
+  if (req.body.fields === undefined) {
+    res.status(404).send(`Missing body parameter 'fields'`)
+  }
 
-// app.post('/v1/resources/staff/*', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'post call succeed!', url: req.url, body: req.body})
-// });
+  if (req.query.string === undefined) {
+    res.status(404).send(`Missing query parameter 'string'`)
+  }
 
-// /****************************
-// * Example put method *
-// ****************************/
+  // Prevent SQL injection attacks
+  const whitelist = ['first_name', 'last_name', 'email_address', 'phone_number']
 
-// app.put('/v1/resources/staff', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'put call succeed!', url: req.url, body: req.body})
-// });
+  excluded = req.body.fields.filter((value) => !(whitelist.includes(value)))
+  columns = req.body.fields.filter((value) => whitelist.includes(value))
 
-// app.put('/v1/resources/staff/*', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'put call succeed!', url: req.url, body: req.body})
-// });
+  if (excluded.length > 0) {
+    res.status(404).json({ response: `Illegal field(s) '${excluded}'` })
+  }
 
-// /****************************
-// * Example delete method *
-// ****************************/
+  // Generate an SQL statement
+  var conditions = [];
+  const condition = req.query.regex ? '~' : '='
 
-// app.delete('/v1/resources/staff', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'delete call succeed!', url: req.url});
-// });
+  columns.forEach((field) => {
+    conditions.push(`${field} ${condition} $1`);
+  });
+  var query = `SELECT * FROM system.staff WHERE ${conditions.join(' OR ')}`
 
-// app.delete('/v1/resources/staff/*', function(req, res) {
-//   // Add your code here
-//   res.json({success: 'delete call succeed!', url: req.url});
-// });
+  var result
+  try {
+    result = await client.query(query, [req.query.string])
+  } catch (error) {
+    console.log(error)
 
-app.listen(3000, function() {
+    res.status(500).send({ result: 'Unhandled error' })
+    return
+  }
+
+  if (result.rowCount < 1) {
+    res.status(404).json({ result: 'No matching staff' })
+    return
+  }
+
+  // Split results if pagnetation parameters are supplied
+  const pagnetationSize = req.query.size;
+  const pagnetationIndex = req.query.index
+
+  if (pagnetationSize !== undefined && pagnetationIndex !== undefined) {
+    var pages = []
+
+    while (result.rows.length > 0) {
+      pages.push(a.splice(0, pagnetationSize))
+    }
+
+    try {
+      res.status(200).json({ page: pages[pagnetationIndex], size: result.rowCount })
+    } catch (error) {
+      res.status(400).json({ result: 'Page index out of range' })
+    }
+  }
+  else {
+    res.status(200).json(result.rows)
+  }
+});
+
+/********************************************************
+ * Create or Update Single Staff Member in the Database *
+ ********************************************************/
+
+app.put('/v1/resources/staff/:identifier', async function (req, res) {
+  await setup()
+
+  const query = `
+    INSERT INTO system.staff (staff_id, first_name, last_name, email_address, phone_number)
+    VALUES ($1, $2, $3, $4, $5)
+    ON CONFLICT (staff_id) DO UPDATE
+    SET first_name = $2, last_name = $3, email_address = $4, phone_number = $5
+  `
+
+  fields =
+    [
+      req.params.identifier, req.body.first_name, req.body.last_name,
+      req.body.email_address, req.body.phone_number
+    ]
+
+  try {
+    await client.query(query, fields)
+    res.status(200).json({ result: 'Update Sucessful' })
+  } catch (error) {
+    console.log(error)
+
+    if (error.constraint !== undefined) {
+      var field;
+      switch (error.constraint) {
+        case 'email_unique':
+          field = 'Email Address'
+          break;
+
+        case 'phone_unique':
+          field = 'Phone Number'
+          break;
+
+        default:
+          field = 'Identifier'
+          break;
+      }
+
+      res.status(400).json({ result: `${field} must be unique` })
+    }
+    else {
+      res.status(400).json({ result: `Missing required field ${error.column}` })
+    }
+  }
+});
+
+/**************************************************
+ * Delete a Single Staff Member from the Database *
+ **************************************************/
+
+app.delete('/v1/resources/staff/:identifier', async function (req, res) {
+  await setup()
+
+  const result = await client.query(
+    'DELETE FROM system.staff WHERE staff_id = $1', [req.params.identifier])
+
+  if (result.rowCount > 0) {
+    res.status(200).json({ result: 'Staff member sucessfully deleted' })
+  }
+  else {
+    res.status(404).json({ result: 'Staff member not found' })
+  }
+});
+
+app.listen(3000, function () {
   console.log('App started')
 });
 
