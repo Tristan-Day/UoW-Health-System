@@ -16,7 +16,8 @@
         "StaffFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
           "s3Key": "amplify-builds/StaffFunction-302f48697761384e5a65-build.zip"
-        }
+        },
+        "PermissionFunction": {}
       },
       "api": {
         "StaffHandler": {}

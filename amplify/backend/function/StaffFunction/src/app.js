@@ -21,7 +21,7 @@ app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', '*')
   next()
-});
+})
 
 const SecretsManager = require('@aws-sdk/client-secrets-manager')
 
@@ -36,19 +36,19 @@ async function setup() {
   // Load credentials from secrets to avoid leakage
   const secretsClient = new SecretsManager.SecretsManagerClient({
     region: 'eu-west-1',
-  });
+  })
 
   const response =
     await secretsClient.send(new SecretsManager.GetSecretValueCommand({
       SecretId: '/v1/database',
       VersionStage: 'AWSCURRENT',
-    }));
+    }))
 
-  secrets = JSON.parse(response.SecretString);
+  secrets = JSON.parse(response.SecretString)
   console.log('Sucessfully collected secrets')
 
   // Connect to Postgres
-  const { Pool } = require('pg');
+  const { Pool } = require('pg')
 
   client = new Pool({
     user: secrets.username,
@@ -59,7 +59,7 @@ async function setup() {
 
     host: secrets.host,
     port: secrets.port,
-  });
+  })
 
   // Test the connection
   await client.connect()
@@ -84,7 +84,7 @@ app.get('/v1/resources/staff/:identifier', async function (req, res) {
   else {
     res.status(404).json({ result: 'Staff member not found' })
   }
-});
+})
 
 /************************************************************
  * Retreive Matching Staff Members by a given set of Fields *
@@ -113,50 +113,52 @@ app.post('/v1/resources/staff/search', async function (req, res) {
   }
 
   // Generate an SQL statement
-  var conditions = [];
+  var conditions = []
   const condition = req.query.regex ? '~' : '='
 
   columns.forEach((field) => {
-    conditions.push(`${field} ${condition} $1`);
-  });
+    conditions.push(`${field} ${condition} $1`)
+  })
   var query = `SELECT * FROM system.staff WHERE ${conditions.join(' OR ')}`
 
   var result
   try {
     result = await client.query(query, [req.query.string])
-  } catch (error) {
+  } 
+  catch (error) {
     console.log(error)
 
     res.status(500).send({ result: 'Unhandled error' })
     return
   }
 
-  if (result.rowCount < 1) {
+  if (result.rows.length < 1) {
     res.status(404).json({ result: 'No matching staff' })
     return
   }
 
   // Split results if pagnetation parameters are supplied
-  const pagnetationSize = req.query.size;
+  const pagnetationSize = req.query.size
   const pagnetationIndex = req.query.index
 
   if (pagnetationSize !== undefined && pagnetationIndex !== undefined) {
     var pages = []
 
     while (result.rows.length > 0) {
-      pages.push(a.splice(0, pagnetationSize))
+      pages.push(result.rows.splice(0, pagnetationSize))
     }
 
     try {
-      res.status(200).json({ page: pages[pagnetationIndex], size: result.rowCount })
-    } catch (error) {
+      res.status(200).json({ result: pages[pagnetationIndex], size: result.rowCount })
+    }
+    catch (error) {
       res.status(400).json({ result: 'Page index out of range' })
     }
   }
   else {
     res.status(200).json(result.rows)
   }
-});
+})
 
 /********************************************************
  * Create or Update Single Staff Member in the Database *
@@ -172,32 +174,32 @@ app.put('/v1/resources/staff/:identifier', async function (req, res) {
     SET first_name = $2, last_name = $3, email_address = $4, phone_number = $5
   `
 
-  fields =
-    [
-      req.params.identifier, req.body.first_name, req.body.last_name,
-      req.body.email_address, req.body.phone_number
-    ]
+  fields = [
+    req.params.identifier, req.body.first_name, req.body.last_name,
+    req.body.email_address, req.body.phone_number
+  ]
 
   try {
     await client.query(query, fields)
     res.status(200).json({ result: 'Update Sucessful' })
-  } catch (error) {
+  }
+  catch (error) {
     console.log(error)
 
     if (error.constraint !== undefined) {
-      var field;
+      var field
       switch (error.constraint) {
         case 'email_unique':
           field = 'Email Address'
-          break;
+          break
 
         case 'phone_unique':
           field = 'Phone Number'
-          break;
+          break
 
         default:
           field = 'Identifier'
-          break;
+          break
       }
 
       res.status(400).json({ result: `${field} must be unique` })
@@ -206,7 +208,7 @@ app.put('/v1/resources/staff/:identifier', async function (req, res) {
       res.status(400).json({ result: `Missing required field ${error.column}` })
     }
   }
-});
+})
 
 /**************************************************
  * Delete a Single Staff Member from the Database *
@@ -224,10 +226,10 @@ app.delete('/v1/resources/staff/:identifier', async function (req, res) {
   else {
     res.status(404).json({ result: 'Staff member not found' })
   }
-});
+})
 
 app.listen(3000, function () {
   console.log('App started')
-});
+})
 
 module.exports = app

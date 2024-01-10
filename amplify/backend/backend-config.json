@@ -1,5 +1,19 @@
 {
   "api": {
+    "PermissionHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "PermissionFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "StaffHandler": {
       "dependsOn": [
         {
@@ -16,6 +30,11 @@
     }
   },
   "function": {
+    "PermissionFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "StaffFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
