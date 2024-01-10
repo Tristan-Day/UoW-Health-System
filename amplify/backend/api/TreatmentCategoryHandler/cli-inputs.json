@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/treatments/category": {
+      "name": "/v1/resources/treatments/category",
+      "lambdaFunction": "TreatmentCategoryFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
