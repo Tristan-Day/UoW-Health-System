@@ -6,7 +6,7 @@ The application is hosted on Amazon Web Services using Amplify, Lambda and, Post
 
 ## Features
 
-NO CURRENTLY COMPLETE
+NOT CURRENTLY COMPLETE
 
 ## Colaborators
 
@@ -16,6 +16,12 @@ This project was completed thanks to the hard work of the following individuals.
 * Ben Wright
 * Brian Anthony
 * Ibtisam Kahim
+
+## Documentation
+
+Backend documentation was generated using [Swagger](https://swagger-autogen.github.io/docs/") and [Swagger-Markdown](https://github.com/syroegkin/swagger-markdown).
+
+* To generate docs run ```npm run swagger``` then  ```npm run swagger-markdown```
 
 ## Deploying the Application on the Cloud
 
