@@ -78,14 +78,18 @@ function pagnetate(items, size, index) {
   }
 }
 
-/***************************************************************
- * Get all or check the presense of a set of given permissions *
- ***************************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Get all or check the presense of a set of given permissions'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff identifier provided by cognito',                   
+        required: true                     
+} */
 
   // Import the SQL statement from permission queries
   const query = require("./queries").permissions.all
@@ -109,14 +113,24 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   res.status(200).json(mapping)
 })
 
-/*********************************************************
- * Get all or check the presense of a set of given roles *
- *********************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Get all or check the presense of a set of given roles'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff identifier provided by cognito',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['roles'] = {
+      in: 'body',                            
+      description: 'An array of role names to test the specified user against',                   
+      required: true,           
+  } */
 
   // Import the SQL statement from role queries
   const query = require("./queries").roles.all
@@ -140,14 +154,18 @@ app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
   res.status(200).json(mapping)
 })
 
-/***********************************************
- * Get a specific permission from a given name *
- ***********************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.get('/v1/permissions/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Get a specific permission from a given name'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The permission to retreive',                   
+        required: true                     
+  } */
 
   const result = await client.query(
     'SELECT name, description FROM system.permissions WHERE name = $1', [req.params.identifier])
@@ -160,14 +178,18 @@ app.get('/v1/permissions/:identifier', async function (req, res) {
   }
 })
 
-/*************************************************************
- * Get a specific role and its permissions from a given name *
- *************************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.get('/v1/permissions/role/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Get a specific role and its permissions from a given name'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The role to retreive',                   
+        required: true                     
+  } */
 
   var roleResult = await client.query(
     'SELECT name, description FROM system.roles WHERE name = $1', [req.params.identifier])
@@ -184,14 +206,30 @@ app.get('/v1/permissions/role/:identifier', async function (req, res) {
   }
 })
 
-/***************************************************
- * Get staff associated with a specific permission *
- ***************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.get('/v1/permissions/:identifier/members', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Get staff associated with a specific permission. [Supports Pagnetation]'
+
+  /* #swagger.parameters['identifier'] = {
+      in: 'path',                            
+      description: 'The permission to retreive members from',                   
+      required: true                     
+  } */
+
+  /* #swagger.parameters['size'] = {
+      in: 'query',                            
+      description: 'Size of returned page',                   
+      required: false                     
+  } */
+
+  /* #swagger.parameters['index'] = {
+      in: 'query',                            
+      description: 'Index of returned page',                   
+      required: false                     
+  } */
 
   // Import the SQL statement from role queries
   const query = require("./queries").permissions.members
@@ -215,14 +253,30 @@ app.get('/v1/permissions/:identifier/members', async function (req, res) {
   }
 })
 
-/*********************************************
- * Get staff associated with a specific role *
- *********************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.get('/v1/permissions/role/:identifier/members', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Get staff associated with a specific role [Supports Pagnetation]'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The role to retreive members from',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['size'] = {
+      in: 'query',                            
+      description: 'Size of returned page',                   
+      required: false                     
+  } */
+
+  /* #swagger.parameters['index'] = {
+      in: 'query',                            
+      description: 'Index of returned page',                   
+      required: false                     
+  } */
 
   // Import the SQL statement from role queries
   const query = require("./queries").roles.members
@@ -246,14 +300,24 @@ app.get('/v1/permissions/role/:identifier/members', async function (req, res) {
   }
 })
 
-/******************************************************
-* Grant a specific set of permissions to a given user *
-*******************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Grant a specific set of permissions to a given user'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff member grant permissions to',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['permissions'] = {
+        in: 'body',                            
+        description: 'An array of permission strings',                   
+        required: true                     
+  } */
 
   if (req.body.permissions === undefined) {
     res.status(400).json({ result: "A set of permissions must be specified within the request body" })
@@ -278,7 +342,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
       permissions[permission] = result.rows[0].permission_id
     }
     else {
-      res.status(404).json({ result: `Permission '${permission}' not found`})
+      res.status(404).json({ result: `Permission '${permission}' not found` })
       return
     }
   }
@@ -286,8 +350,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   // Attempt to revoke each permission
   for (var [name, identifier] of Object.entries(permissions)) {
 
-    try
-    {
+    try {
       await client.query(
         'INSERT INTO system.staff_permissions (staff_id, permission_id) VALUES ($1, $2)', [req.params.identifier, identifier]
       )
@@ -296,7 +359,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
       errors.push(name)
     }
   }
- 
+
   if (errors.length > 0) {
     res.status(409).json({ result: "Some permissions where already granted", failed: errors })
   }
@@ -305,14 +368,24 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   }
 })
 
-/*******************************************************
-* Revoke a specific set of permissions from given user *
-********************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Revoke a specific set of permissions from given user'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff member revoke permissions from',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['permissions'] = {
+        in: 'body',                            
+        description: 'An array of permission strings',                   
+        required: true                     
+  } */
 
   if (req.body.permissions === undefined) {
     res.status(400).json({ result: "A set of permissions must be specified within the request body" })
@@ -337,7 +410,7 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
       permissions[permission] = result.rows[0].permission_id
     }
     else {
-      res.status(404).json({ result: `Permission '${permission}' not found`})
+      res.status(404).json({ result: `Permission '${permission}' not found` })
       return
     }
   }
@@ -361,14 +434,24 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   }
 })
 
-/************************************************
-* Grant a specific set of roles to a given user *
-*************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Grant a specific set of roles to a given user'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff member grant roles to',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['roles'] = {
+        in: 'body',                            
+        description: 'An array of role strings',                   
+        required: true                     
+  } */
 
   if (req.body.roles === undefined) {
     res.status(400).json({ result: "A set of roles must be specified within the request body" })
@@ -392,7 +475,7 @@ app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, re
       roles[role] = result.rows[0].role_id
     }
     else {
-      res.status(404).json({ result: `Role '${role}' not found`})
+      res.status(404).json({ result: `Role '${role}' not found` })
       return
     }
   }
@@ -416,14 +499,24 @@ app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, re
   }
 })
 
-/*************************************************
-* Revoke a specific set of roles from given user *
-**************************************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Revoke a specific set of roles from given user'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff member revoke roles from',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'body',                            
+        description: 'An array of role strings',                   
+        required: true                     
+  } */
 
   if (req.body.roles === undefined) {
     res.status(400).json({ result: "A set of roles must be specified within the request body" })
@@ -448,7 +541,7 @@ app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, r
       roles[role] = result.rows[0].role_id
     }
     else {
-      res.status(404).json({ result: `Role '${role}' not found`})
+      res.status(404).json({ result: `Role '${role}' not found` })
       return
     }
   }
@@ -472,14 +565,24 @@ app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, r
   }
 })
 
-/********************************
-* Create or Update a given role *
-*********************************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.put('/v1/permissions/roles/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Create or Update a given role'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The role to update',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['description'] = {
+        in: 'body',                            
+        description: 'The updated description string',                   
+        required: false                     
+  } */
 
   if (req.body.description !== undefined) {
     const query = `
@@ -503,14 +606,18 @@ app.put('/v1/permissions/roles/:identifier', async function (req, res) {
   }
 })
 
-/***********************
- * Delete a given role *
- ***********************/
-
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
 
 app.delete('/v1/permissions/roles/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Delete a given role'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The role to delete',                   
+        required: true                     
+  } */
 
   const result = await client.query('DELETE FROM system.roles WHERE system.roles.name = $1', [req.params.identifier])
 
