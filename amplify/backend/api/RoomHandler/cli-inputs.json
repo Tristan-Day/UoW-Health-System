@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/room": {
+      "name": "/v1/resources/room",
+      "lambdaFunction": "RoomFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
