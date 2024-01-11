@@ -101,7 +101,7 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   }
 
   if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ result: "Permissions must be given as an array of identifiers" })
+    res.status(400).json({ error: "Permissions must be given as an array of identifiers" })
     return
   }
 
@@ -110,7 +110,7 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
     [item]: result.rows.filter((row) => row.name === item) > 0
   }))
 
-  res.status(200).json(mapping)
+  res.status(200).json({ result: mapping })
 })
 
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
@@ -142,7 +142,7 @@ app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
   }
 
   if (!(Array.isArray(req.body.roles))) {
-    res.status(400).json({ result: "Roles must be given as an array of identifiers" })
+    res.status(400).json({ error: "Roles must be given as an array of identifiers" })
     return
   }
 
@@ -151,7 +151,7 @@ app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
     [item]: result.rows.filter((row) => row.name === item).length > 0
   }))
 
-  res.status(200).json(mapping)
+  res.status(200).json({ result: mapping })
 })
 
 // ✔️ Validated by mock test 10/01/2024 (Tristan Day)
@@ -171,10 +171,10 @@ app.get('/v1/permissions/:identifier', async function (req, res) {
     'SELECT name, description FROM system.permissions WHERE name = $1', [req.params.identifier])
 
   if (result.rows.length > 0) {
-    res.status(200).json(result.rows[0])
+    res.status(200).json({ result: result.rows[0] })
   }
   else {
-    res.status(404).json({ result: 'Permission not found' })
+    res.status(404).json({ error: 'Permission not found' })
   }
 })
 
@@ -199,10 +199,10 @@ app.get('/v1/permissions/role/:identifier', async function (req, res) {
     const query = require("./queries").roles.permissions
     const permissionResult = await client.query(query, [req.params.identifier])
 
-    res.status(200).json({ ...roleResult.rows[0], permissions: permissionResult.rows })
+    res.status(200).json({ result: { ...roleResult.rows[0], permissions: permissionResult.rows } })
   }
   else {
-    res.status(404).json({ result: 'Role not found' })
+    res.status(404).json({ error: 'Role not found' })
   }
 })
 
@@ -245,11 +245,11 @@ app.get('/v1/permissions/:identifier/members', async function (req, res) {
       res.status(200).json({ result: page })
     }
     catch (error) {
-      res.status(416).json({ result: 'Error pagentating results' })
+      res.status(416).json({ error: 'Error pagentating results' })
     }
   }
   else {
-    res.status(200).json(result.rows)
+    res.status(200).json({ result: result.rows })
   }
 })
 
@@ -292,11 +292,11 @@ app.get('/v1/permissions/role/:identifier/members', async function (req, res) {
       res.status(200).json({ result: page })
     }
     catch (error) {
-      res.status(416).json({ result: 'Error pagentating results' })
+      res.status(416).json({ error: 'Error pagentating results' })
     }
   }
   else {
-    res.status(200).json(result.rows)
+    res.status(200).json({ result: result.rows })
   }
 })
 
@@ -320,12 +320,12 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   } */
 
   if (req.body.permissions === undefined) {
-    res.status(400).json({ result: "A set of permissions must be specified within the request body" })
+    res.status(400).json({ error: "A set of permissions must be specified within the request body" })
     return
   }
 
   if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ result: "Permissions must be given as an array" })
+    res.status(400).json({ error: "Permissions must be given as an array" })
     return
   }
 
@@ -342,7 +342,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
       permissions[permission] = result.rows[0].permission_id
     }
     else {
-      res.status(404).json({ result: `Permission '${permission}' not found` })
+      res.status(404).json({ error: `Permission '${permission}' not found` })
       return
     }
   }
@@ -361,7 +361,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   }
 
   if (errors.length > 0) {
-    res.status(409).json({ result: "Some permissions where already granted", failed: errors })
+    res.status(409).json({ error: "Some permissions where already granted", failed: errors })
   }
   else {
     res.status(200).json({ result: "All permissions sucessfully granted" })
@@ -388,12 +388,12 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   } */
 
   if (req.body.permissions === undefined) {
-    res.status(400).json({ result: "A set of permissions must be specified within the request body" })
+    res.status(400).json({ error: "A set of permissions must be specified within the request body" })
     return
   }
 
   if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ result: "Permissions must be given as an array" })
+    res.status(400).json({ error: "Permissions must be given as an array" })
     return
   }
 
@@ -410,7 +410,7 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
       permissions[permission] = result.rows[0].permission_id
     }
     else {
-      res.status(404).json({ result: `Permission '${permission}' not found` })
+      res.status(404).json({ error: `Permission '${permission}' not found` })
       return
     }
   }
@@ -427,7 +427,7 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   }
 
   if (errors.length > 0) {
-    res.status(409).json({ result: "Some permissions where not revoked due to an error", failed: errors })
+    res.status(409).json({ error: "Some permissions where not revoked due to an error", failed: errors })
   }
   else {
     res.status(200).json({ result: "All permissions sucessfully revoked" })
@@ -454,12 +454,12 @@ app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, re
   } */
 
   if (req.body.roles === undefined) {
-    res.status(400).json({ result: "A set of roles must be specified within the request body" })
+    res.status(400).json({ error: "A set of roles must be specified within the request body" })
     return
   }
 
   if (!(Array.isArray(req.body.roles))) {
-    res.status(400).json({ result: "Roles must be given as an array" })
+    res.status(400).json({ error: "Roles must be given as an array" })
     return
   }
 
@@ -475,7 +475,7 @@ app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, re
       roles[role] = result.rows[0].role_id
     }
     else {
-      res.status(404).json({ result: `Role '${role}' not found` })
+      res.status(404).json({ error: `Role '${role}' not found` })
       return
     }
   }
@@ -492,7 +492,7 @@ app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, re
   }
 
   if (errors.length > 0) {
-    res.status(409).json({ result: "Some roles where not granted due to an error", failed: failedAssignments })
+    res.status(409).json({ error: "Some roles where not granted due to an error", failed: failedAssignments })
   }
   else {
     res.status(200).json({ result: "All roles sucessfully granted" })
@@ -519,12 +519,12 @@ app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, r
   } */
 
   if (req.body.roles === undefined) {
-    res.status(400).json({ result: "A set of roles must be specified within the request body" })
+    res.status(400).json({ error: "A set of roles must be specified within the request body" })
     return
   }
 
   if (!(Array.isArray(req.body.roles))) {
-    res.status(400).json({ result: "Roles must be given as an array" })
+    res.status(400).json({ error: "Roles must be given as an array" })
     return
   }
 
@@ -541,7 +541,7 @@ app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, r
       roles[role] = result.rows[0].role_id
     }
     else {
-      res.status(404).json({ result: `Role '${role}' not found` })
+      res.status(404).json({ error: `Role '${role}' not found` })
       return
     }
   }
@@ -558,7 +558,7 @@ app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, r
   }
 
   if (errors.length > 0) {
-    res.status(409).json({ result: "Some roles where not revoked due to an error", failed: errors })
+    res.status(409).json({ error: "Some roles where not revoked due to an error", failed: errors })
   }
   else {
     res.status(200).json({ result: "All roles sucessfully revoked" })
@@ -574,13 +574,13 @@ app.put('/v1/permissions/roles/:identifier', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The role to update',                   
+        description: 'The role to update or create',                   
         required: true                     
   } */
 
   /* #swagger.parameters['description'] = {
         in: 'body',                            
-        description: 'The updated description string',                   
+        description: 'The description string',                   
         required: false                     
   } */
 
@@ -599,10 +599,10 @@ app.put('/v1/permissions/roles/:identifier', async function (req, res) {
 
   try {
     await client.query('INSERT INTO system.roles (name) VALUES ($1)', [req.params.identifier])
-    res.status(200).json("Role sucessfully updated")
+    res.status(200).json({ result: "Role sucessfully updated" })
   }
   catch (error) {
-    res.status(409).json("Role already exists")
+    res.status(409).json({ error: "Role already exists" })
   }
 })
 
@@ -622,10 +622,10 @@ app.delete('/v1/permissions/roles/:identifier', async function (req, res) {
   const result = await client.query('DELETE FROM system.roles WHERE system.roles.name = $1', [req.params.identifier])
 
   if (result.rowCount > 0) {
-    res.status(200).json("Role sucessfully deleted")
+    res.status(200).json({ result: "Role sucessfully deleted" })
   }
   else {
-    res.status(404).json("Role not found")
+    res.status(404).json({ error: "Role not found" })
   }
 })
 
