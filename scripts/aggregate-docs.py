@@ -8,6 +8,10 @@ def process(path: str, output: str):
     if "swagger.js" not in os.listdir(path):
         print(f"Directory {path} has no swagger.js file, skipping")
         return
+    
+    if subprocess.call("npm install", cwd=path, shell=True):
+        print(f"Failed to install npm pages in '{path}'")
+        return
 
     try:
         subprocess.call("npm run swagger", cwd=path, shell=True)
