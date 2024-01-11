@@ -1,0 +1,10 @@
+{
+  "httpMethod": "post",
+  "path": "/v1/resources/appointments",
+  "queryStringParameters": {
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"APPOINTMENT_ID\":1,\"START_TIMESTAMP\":\"10/01/2024\",\"ESTIMATED_DURATION_MINUTES\":32,\"PATIENT_ID\":1,\"SCHEDULE_ITEM_ID\":1,\"STAFF_ID\":1,\"ACTION_TYPE\":\"INSERT\", \"TREATMENT_ID\":1}"
+}

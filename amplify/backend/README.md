@@ -10,6 +10,7 @@ For backend development, the following rules should be upheld to ensure consiste
 
 * An API shoud **always** return a response code.
 * Errors should be returned as json in the format ```{error: "Explaination"}```.
+* Data should be returned as json in the format ```{result: "Data"}```.
 
 ### HTTP Methods
 

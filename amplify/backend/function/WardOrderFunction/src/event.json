@@ -1,0 +1,11 @@
+{
+  "httpMethod": "get",
+  "path": "/ward/order",
+  "queryStringParameters": {
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": ""
+}
+
