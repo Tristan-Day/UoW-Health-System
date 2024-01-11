@@ -1,0 +1,11 @@
+{
+  "httpMethod": "DELETE",
+  "path": "/v1/resources/room/TEST",
+  "queryStringParameters": {
+    "limit": "10"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"floor\":\"Ground Floor\", \"description\": \"This is a test description\"}"
+}

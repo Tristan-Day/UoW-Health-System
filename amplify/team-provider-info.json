@@ -24,7 +24,10 @@
         "TreatmentCategoryFunction": {},
         "TreatmentFunction": {},
         "WardHandler": {},
-        "WardOrderFunction": {}
+        "WardOrderFunction": {},
+        "PermissionFunction": {},
+        "CleaningOrderFunction": {},
+        "RoomFunction": {}
       },
       "api": {
         "StaffHandler": {}
