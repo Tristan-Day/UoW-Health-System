@@ -15,22 +15,34 @@
       "function": {
         "StaffFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
-          "s3Key": "amplify-builds/StaffFunction-2f55643775415a747a73-build.zip"
+          "s3Key": "amplify-builds/StaffFunction-64504f43697858706e39-build.zip"
         },
         "AppointmentFunction": {},
-        "PatientHandler": {},
+        "PatientFunction": {},
         "ScheduleItemFunction": {},
         "ShiftsFunction": {},
         "TreatmentCategoryFunction": {},
         "TreatmentFunction": {},
         "WardHandler": {},
         "WardOrderFunction": {},
-        "PermissionFunction": {},
-        "CleaningOrderFunction": {},
-        "RoomFunction": {}
+        "PermissionFunction": {
+          "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
+          "s3Key": "amplify-builds/PermissionFunction-69413559534a4270326c-build.zip"
+        },
+        "CleaningOrderFunction": {
+          "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
+          "s3Key": "amplify-builds/CleaningOrderFunction-533932796b4d616a4e63-build.zip"
+        },
+        "RoomFunction": {
+          "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
+          "s3Key": "amplify-builds/RoomFunction-4356636b326b7774504b-build.zip"
+        }
       },
       "api": {
-        "StaffHandler": {}
+        "StaffHandler": {},
+        "PermissionHandler": {},
+        "CleaningOrderHandler": {},
+        "RoomHandler": {}
       }
     }
   }
