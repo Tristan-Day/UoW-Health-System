@@ -1,0 +1,1 @@
+var assert = require('./lambda-tests/TreatmentCategoryFunction');
