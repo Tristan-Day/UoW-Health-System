@@ -1,5 +1,19 @@
 {
   "api": {
+    "CleaningOrderHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "CleaningOrderFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "AppointmentsHandler": {
       "dependsOn": [
         {
@@ -45,6 +59,20 @@
           ],
           "category": "function",
           "resourceName": "ShiftsFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "RoomHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "RoomFunction"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -116,6 +144,11 @@
     }
   },
   "function": {
+    "CleaningOrderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "AppointmentFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -132,6 +165,11 @@
       "service": "Lambda"
     },
     "ShiftsFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "RoomFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
