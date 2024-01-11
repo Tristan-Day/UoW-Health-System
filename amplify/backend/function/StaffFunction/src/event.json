@@ -1,11 +1,11 @@
 {
-  "httpMethod": "GET",
-  "path": "/v1/resources/staff/TESTT",
+  "httpMethod": "POST",
+  "path": "/v1/resources/staff/search",
   "queryStringParameters": {
-    "limit": "10"
+    "string" : "Boris"
   },
   "headers": {
     "Content-Type": "application/json"
   },
-  "body": ""
+  "body": "{\"fields\": [\"first_name\", \"last_name\"]}"
 }
