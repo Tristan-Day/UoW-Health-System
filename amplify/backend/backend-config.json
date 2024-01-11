@@ -1,19 +1,5 @@
 {
   "api": {
-    "CleaningOrderHandler": {
-      "dependsOn": [
-        {
-          "attributes": [
-            "Name",
-            "Arn"
-          ],
-          "category": "function",
-          "resourceName": "CleaningOrderFunction"
-        }
-      ],
-      "providerPlugin": "awscloudformation",
-      "service": "API Gateway"
-    },
     "AppointmentsHandler": {
       "dependsOn": [
         {
@@ -36,7 +22,7 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
-    "PatientHandler": {
+    "CleaningOrderHandler": {
       "dependsOn": [
         {
           "attributes": [
@@ -44,13 +30,13 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "PatientHandler"
+          "resourceName": "CleaningOrderFunction"
         }
       ],
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
-    "ShiftsHandler": {
+    "PatientFunction": {
       "dependsOn": [
         {
           "attributes": [
@@ -58,7 +44,7 @@
             "Arn"
           ],
           "category": "function",
-          "resourceName": "ShiftsFunction"
+          "resourceName": "PatientFunction"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -73,6 +59,20 @@
           ],
           "category": "function",
           "resourceName": "RoomFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "ShiftsHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ShiftsFunction"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -144,17 +144,22 @@
     }
   },
   "function": {
-    "CleaningOrderFunction": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
     "AppointmentFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
-    "PatientHandler": {
+    "CleaningOrderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "PatientFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "RoomFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -165,11 +170,6 @@
       "service": "Lambda"
     },
     "ShiftsFunction": {
-      "build": true,
-      "providerPlugin": "awscloudformation",
-      "service": "Lambda"
-    },
-    "RoomFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -201,6 +201,54 @@
     }
   },
   "parameters": {
+    "AMPLIFY_function_CleaningOrderFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CleaningOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_CleaningOrderFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CleaningOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PermissionFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PermissionFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PermissionFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PermissionFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_RoomFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "RoomFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_RoomFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "RoomFunction"
+        }
+      ]
+    },
     "AMPLIFY_function_StaffFunction_deploymentBucketName": {
       "usedBy": [
         {
