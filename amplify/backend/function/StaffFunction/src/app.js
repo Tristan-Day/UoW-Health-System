@@ -1,12 +1,8 @@
 /*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-Licensed under the Apache License, Version 2.0 (the "License"). You may not use
-this file except in compliance with the License. A copy of the License is
-located at http://aws.amazon.com/apache2.0/ or in the "license" file
-accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT
-WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License
-for the specific language governing permissions and limitations under the
-License.
+Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at http://aws.amazon.com/apache2.0/
+or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and limitations under the License.
 */
 
 const express = require('express')
@@ -68,48 +64,84 @@ async function setup() {
   console.log('Established database connection')
 }
 
-/****************************************************
- * Retreive a Single Staff Member from the Database *
- ****************************************************/
+function getConstraintName(constraint) {
+  switch (constraint) {
+    case 'email_unique':
+      field = 'Email address'
+      break
+
+    case 'phone_unique':
+      field = 'Phone number'
+      break
+
+    default:
+      field = 'Identifier'
+      break
+  }
+}
 
 app.get('/v1/resources/staff/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Retreive a staff member from the database'
+
+  /* #swagger.parameters['identifier'] = {
+        in: 'path',                            
+        description: 'The staff member to retreive',                   
+        required: true                     
+  } */
 
   const result = await client.query(
     'SELECT * FROM system.staff WHERE staff_id = $1', [req.params.identifier])
 
   if (result.rows.length > 0) {
-    res.status(200).json(result.rows)
+    res.status(200).json({ result: result.rows[0] })
   }
   else {
-    res.status(404).json({ result: 'Staff member not found' })
+    res.status(404).json({ error: 'Staff member not found' })
   }
 })
-
-/************************************************************
- * Retreive Matching Staff Members by a given set of Fields *
- ************************************************************/
 
 app.post('/v1/resources/staff/search', async function (req, res) {
   await setup()
 
+  // #swagger.description = 'Search for a staff member by a given field'
+
+  /* #swagger.parameters['field'] = {
+        in: 'body',                            
+        description: 'The field to search within',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['string'] = {
+        in: 'body',                            
+        description: 'Search string or regex',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['regx'] = {
+        in: 'body',                            
+        description: 'Specifies if the string argument is a regx query',                   
+        required: false                     
+  } */
+
   // Basic error handling
   if (req.body.fields === undefined) {
-    res.status(404).send(`Missing body parameter 'fields'`)
+    res.status(400).json({ error: `Missing body parameter 'fields'` })
   }
 
   if (req.query.string === undefined) {
-    res.status(404).send(`Missing query parameter 'string'`)
+    res.status(400).json({ error: `Missing body parameter 'string'` })
   }
 
   // Prevent SQL injection attacks
-  const whitelist = ['first_name', 'last_name', 'email_address', 'phone_number']
+  const allowlist = ['first_name', 'last_name', 'email_address', 'phone_number']
 
-  excluded = req.body.fields.filter((value) => !(whitelist.includes(value)))
-  columns = req.body.fields.filter((value) => whitelist.includes(value))
+  excluded = req.body.fields.filter((value) => !(allowlist.includes(value)))
+  columns = req.body.fields.filter((value) => allowlist.includes(value))
 
   if (excluded.length > 0) {
-    res.status(404).json({ response: `Illegal field(s) '${excluded}'` })
+    res.status(404).json({ error: `Illegal field(s) '${excluded}'` })
   }
 
   // Generate an SQL statement
@@ -124,10 +156,8 @@ app.post('/v1/resources/staff/search', async function (req, res) {
   var result
   try {
     result = await client.query(query, [req.query.string])
-  } 
+  }
   catch (error) {
-    console.log(error)
-
     res.status(500).send({ result: 'Unhandled error' })
     return
   }
@@ -149,29 +179,53 @@ app.post('/v1/resources/staff/search', async function (req, res) {
     }
 
     try {
-      res.status(200).json({ result: pages[pagnetationIndex], size: result.rowCount })
+      res.status(200).json({ result: pages[pagnetationIndex] })
     }
     catch (error) {
-      res.status(400).json({ result: 'Page index out of range' })
+      res.status(416).json({ error: 'Page index out of range' })
     }
   }
   else {
-    res.status(200).json(result.rows)
+    res.status(200).json({ result: result.rows })
   }
 })
 
-/********************************************************
- * Create or Update Single Staff Member in the Database *
- ********************************************************/
-
-app.put('/v1/resources/staff/:identifier', async function (req, res) {
+app.put('/v1/resources/staff/:identifier/create', async function (req, res) {
   await setup()
+
+  /* #swagger.parameters['identifier'] = {
+      in: 'path',                            
+      description: 'User identifier provided by cognito',                   
+      required: true                     
+} */
+
+  /* #swagger.parameters['first_name'] = {
+        in: 'body',                            
+        description: 'Users first name',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['last_name'] = {
+        in: 'body',                            
+        description: 'Users last name name',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['email_address'] = {
+        in: 'body',                            
+        description: 'Users email address',                   
+        required: true                     
+  } */
+
+  /* #swagger.parameters['phone_number'] = {
+        in: 'body',                            
+        description: 'Users phone number',                   
+        required: true                     
+  } */
 
   const query = `
     INSERT INTO system.staff (staff_id, first_name, last_name, email_address, phone_number)
     VALUES ($1, $2, $3, $4, $5)
-    ON CONFLICT (staff_id) DO UPDATE
-    SET first_name = $2, last_name = $3, email_address = $4, phone_number = $5
   `
 
   fields = [
@@ -181,38 +235,76 @@ app.put('/v1/resources/staff/:identifier', async function (req, res) {
 
   try {
     await client.query(query, fields)
-    res.status(200).json({ result: 'Update Sucessful' })
+    res.status(200).json({ result: 'User sucessfully created' })
   }
   catch (error) {
     console.log(error)
 
     if (error.constraint !== undefined) {
-      var field
-      switch (error.constraint) {
-        case 'email_unique':
-          field = 'Email Address'
-          break
-
-        case 'phone_unique':
-          field = 'Phone Number'
-          break
-
-        default:
-          field = 'Identifier'
-          break
-      }
-
-      res.status(400).json({ result: `${field} must be unique` })
+      const field = getConstraintName(error.constraint)
+      res.status(400).json({ error: `${field} must be unique`, field: field })
     }
     else {
-      res.status(400).json({ result: `Missing required field ${error.column}` })
+      res.status(400).json({ error: `Missing required field ${error.column}`, field: error.column })
     }
   }
 })
 
-/**************************************************
- * Delete a Single Staff Member from the Database *
- **************************************************/
+app.put('/v1/resources/staff/:identifier/update', async function (req, res) {
+  await setup()
+
+  /* #swagger.parameters['identifier'] = {
+      in: 'path',                            
+      description: 'User identifier provided by cognito',                   
+      required: true                     
+} */
+
+  /* #swagger.parameters['first_name'] = {
+        in: 'body',                            
+        description: 'Updated first name',                   
+        required: false                     
+  } */
+
+  /* #swagger.parameters['last_name'] = {
+        in: 'body',                            
+        description: 'Updated last name name',                   
+        required: false                     
+  } */
+
+  /* #swagger.parameters['email_address'] = {
+        in: 'body',                            
+        description: 'Updated email address',                   
+        required: false                     
+  } */
+
+  /* #swagger.parameters['phone_number'] = {
+        in: 'body',                            
+        description: 'Updated phone number',                   
+        required: false                     
+  } */
+
+  // Filter columns to generate a query based on provided body parameters
+  const columns = ['first_name', 'last_name', 'email_address', 'phone_number'];
+
+  const fields = columns.filter(field => req.body[field] !== undefined);
+  const placeholders = fields.map((_, index) => `$${index + 2}`)
+
+  const query = `
+    INSERT INTO system.staff (staff_id, ${fields.join(", ")})
+    VALUES ({${placeholders.join(', ')}})
+  `
+
+  try {
+    await client.query(query, fields)
+    res.status(200).json({ result: 'Update Sucessful' })
+  }
+  catch (error) {
+    if (error.constraint !== undefined) {
+      const field = getConstraintName(error.constraint)
+      res.status(400).json({ error: `${field} must be unique`, field: field })
+    }
+  }
+})
 
 app.delete('/v1/resources/staff/:identifier', async function (req, res) {
   await setup()
@@ -224,7 +316,7 @@ app.delete('/v1/resources/staff/:identifier', async function (req, res) {
     res.status(200).json({ result: 'Staff member sucessfully deleted' })
   }
   else {
-    res.status(404).json({ result: 'Staff member not found' })
+    res.status(404).json({ error: 'Staff member not found' })
   }
 })
 

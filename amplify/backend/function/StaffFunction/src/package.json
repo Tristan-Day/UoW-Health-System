@@ -9,9 +9,14 @@
     "aws-serverless-express": "^3.3.5",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "swagger-autogen": "^2.23.7",
+    "swagger-markdown": "^2.3.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.92"
+  },
+  "scripts": {
+    "swagger": "node ./swagger.js"
   }
 }
