@@ -17,14 +17,6 @@
           "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
           "s3Key": "amplify-builds/StaffFunction-64504f43697858706e39-build.zip"
         },
-        "AppointmentFunction": {},
-        "PatientFunction": {},
-        "ScheduleItemFunction": {},
-        "ShiftsFunction": {},
-        "TreatmentCategoryFunction": {},
-        "TreatmentFunction": {},
-        "WardHandler": {},
-        "WardOrderFunction": {},
         "PermissionFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
           "s3Key": "amplify-builds/PermissionFunction-69413559534a4270326c-build.zip"
