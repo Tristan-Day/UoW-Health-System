@@ -89,7 +89,7 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
         in: 'path',                            
         description: 'The staff identifier provided by cognito',                   
         required: true                     
-} */
+  } */
 
   // Import the SQL statement from permission queries
   const query = require("./queries").permissions.all
