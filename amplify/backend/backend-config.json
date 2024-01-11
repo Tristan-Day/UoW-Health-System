@@ -77,7 +77,7 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
-    } 
+    }
   },
   "parameters": {
     "AMPLIFY_function_CleaningOrderFunction_deploymentBucketName": {
