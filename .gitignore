@@ -43,3 +43,7 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+# swagger documumentation
+amplify/backend/function/PatientFunction/src/swagger-output.md
+amplify/backend/function/PatientFunction/src/swagger-output.json
