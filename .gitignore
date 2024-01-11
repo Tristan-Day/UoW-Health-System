@@ -45,5 +45,5 @@ amplifytools.xcconfig
 #amplify-do-not-edit-end
 
 # swagger documumentation
-amplify/backend/function/PatientFunction/src/swagger-output.md
-amplify/backend/function/PatientFunction/src/swagger-output.json
+*swagger-output.md
+*swagger-output.json
