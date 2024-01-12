@@ -36,10 +36,6 @@
         "PatientFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
           "s3Key": "amplify-builds/PatientFunction-54557764594c704b5434-build.zip"
-        },
-        "PatientHandler": {
-          "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
-          "s3Key": "amplify-builds/PatientHandler-775549552b2b3263372f-build.zip"
         }
       },
       "api": {
