@@ -1,0 +1,16 @@
+{
+  "httpMethod": "DELETE",
+  "path": "/ward",
+  "queryStringParameters": {
+    "ACTION_TYPE": "UPDATE",
+    "WARD_ID": "PSYC",
+    "WARD_NAME": "Psychology",
+    "SPECIALISATION": "Schizophrenia",
+    "DESCRIPTION": "Psychology is done here",
+    "ICON_DATA": "1"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"WARD_ID\":\"PSYC\"}"
+}
