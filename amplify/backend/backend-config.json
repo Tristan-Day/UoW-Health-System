@@ -70,6 +70,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "ScheduleItemHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ScheduleItemFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "StaffHandler": {
       "dependsOn": [
         {
@@ -107,6 +121,11 @@
       "service": "Lambda"
     },
     "RoomFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "ScheduleItemFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
