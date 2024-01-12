@@ -3,7 +3,7 @@ const swaggerAutogen = require('swagger-autogen')();
 const doc = {
   info: {
     title: 'Identity and Permission Management API',
-    description: 'Handles staff registration'
+    description: 'Handles staff registration, deletion, revision and search'
   },
   host: 'localhost:3000'
 };
