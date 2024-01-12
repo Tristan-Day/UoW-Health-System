@@ -40,7 +40,8 @@
         "ScheduleItemFunction": {},
         "ShiftsFunction": {},
         "TreatmentCategoryFunction": {},
-        "TreatmentFunction": {}
+        "TreatmentFunction": {},
+        "WardFunction": {}
       },
       "api": {
         "StaffHandler": {},
