@@ -111,6 +111,20 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
+    },
+    "TreatmentCategoryHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "TreatmentCategoryFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
     }
   },
   "function": {
@@ -150,6 +164,11 @@
       "service": "Lambda"
     },
     "StaffFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "TreatmentCategoryFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"

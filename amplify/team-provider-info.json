@@ -38,7 +38,8 @@
           "s3Key": "amplify-builds/PatientFunction-54557764594c704b5434-build.zip"
         },
         "ScheduleItemFunction": {},
-        "ShiftsFunction": {}
+        "ShiftsFunction": {},
+        "TreatmentCategoryFunction": {}
       },
       "api": {
         "StaffHandler": {},
