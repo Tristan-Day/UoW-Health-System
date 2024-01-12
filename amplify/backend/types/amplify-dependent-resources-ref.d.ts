@@ -1,6 +1,16 @@
 export type AmplifyDependentResourcesAttributes = {
   "api": {
+    "AppointmentsHandler": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
+    },
     "CleaningOrderHandler": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
+    },
+    "PatientHandler": {
       "ApiId": "string",
       "ApiName": "string",
       "RootUrl": "string"
@@ -22,7 +32,28 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "function": {
+    "AppointmentFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
     "CleaningOrderFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "PatientFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "PatientHandler": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
