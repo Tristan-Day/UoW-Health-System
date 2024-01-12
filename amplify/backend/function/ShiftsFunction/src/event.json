@@ -1,0 +1,11 @@
+{
+  "httpMethod": "get",
+  "path": "/v1/resources/treatment",
+  "queryStringParameters": {
+
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"msg\":\"Hello from the event.json body\"}"
+}

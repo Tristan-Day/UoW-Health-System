@@ -84,6 +84,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "ShiftsHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ShiftsFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "StaffHandler": {
       "dependsOn": [
         {
@@ -126,6 +140,11 @@
       "service": "Lambda"
     },
     "ScheduleItemFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "ShiftsFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
