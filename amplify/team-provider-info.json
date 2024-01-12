@@ -39,7 +39,8 @@
         },
         "ScheduleItemFunction": {},
         "ShiftsFunction": {},
-        "TreatmentCategoryFunction": {}
+        "TreatmentCategoryFunction": {},
+        "TreatmentFunction": {}
       },
       "api": {
         "StaffHandler": {},
