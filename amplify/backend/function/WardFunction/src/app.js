@@ -60,7 +60,7 @@ async function setup() {
   return connection;
 }
 
-app.get('v1/resources/ward', (req, res) => {
+app.get('/v1/resources/ward', (req, res) => {
 
   // #swagger.description = 'View a treatment item'
 
@@ -99,7 +99,7 @@ app.get('v1/resources/ward', (req, res) => {
 });
 
 
-app.post('v1/resources/ward', (req, res) => {
+app.post('/v1/resources/ward', (req, res) => {
 
   // #swagger.description = 'Import or update a ward'
 
@@ -143,7 +143,7 @@ app.post('v1/resources/ward', (req, res) => {
 
 });
 
-app.put('v1/resources/ward', (req, res) => {
+app.put('/v1/resources/ward', (req, res) => {
 
   // #swagger.description = 'Import or update a ward'
 
@@ -187,7 +187,7 @@ app.put('v1/resources/ward', (req, res) => {
 
 });
 
-app.delete('v1/resources/ward', (req, res) => {
+app.delete('/v1/resources/ward', (req, res) => {
 
   // #swagger.description = 'Import or update a ward'
 
