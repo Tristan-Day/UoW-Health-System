@@ -107,33 +107,58 @@ app.post('/v1/resources/staff/search', async function (req, res) {
 
   // #swagger.description = 'Search for a staff member by a given field'
 
-  /* #swagger.parameters['field'] = {
+  /* #swagger.parameters['fields'] = {
         in: 'body',                            
-        description: 'The field to search within',                   
-        required: true                     
+        description: 'The fields to search within',
+        schema: 'object',
+        required: true                   
   } */
 
   /* #swagger.parameters['string'] = {
-        in: 'body',                            
+        in: 'query',                            
         description: 'Search string or regex',                   
         required: true                     
   } */
 
-  /* #swagger.parameters['regx'] = {
-        in: 'body',                            
-        description: 'Specifies if the string argument is a regx query',                   
+  /* #swagger.parameters['regex'] = {
+        in: 'query',                            
+        description: 'Specifies if the string is a regex query',                   
+        required: false                     
+  } */
+
+  /* #swagger.parameters['size'] = {
+        in: 'query',                            
+        description: 'Number of records in the page [Pagnetation]',                   
+        required: false                     
+  } */
+
+  /* #swagger.parameters['index'] = {
+        in: 'query',                            
+        description: 'The page index to retreive [Pagnetation]',                   
         required: false                     
   } */
 
   // Basic error handling
   if (req.body.fields === undefined) {
     res.status(400).json({ error: `Missing body parameter 'fields'` })
+    return
+  }
+
+  if (!(Array.isArray(req.body.fields))) {
+    res.status(400).json({ error: `Parameter 'fields' must be of type 'array'` })
+    return
   }
 
   if (req.query.string === undefined) {
     res.status(400).json({ error: `Missing body parameter 'string'` })
+    return
   }
 
+  if (typeof req.query.string !== 'string') {
+    res.status(400).json({ error: `Parameter 'string' must be of type 'string'` });
+    return;
+  }
+ 
   // Prevent SQL injection attacks
   const allowlist = ['first_name', 'last_name', 'email_address', 'phone_number']
 
@@ -141,7 +166,8 @@ app.post('/v1/resources/staff/search', async function (req, res) {
   columns = req.body.fields.filter((value) => allowlist.includes(value))
 
   if (excluded.length > 0) {
-    res.status(404).json({ error: `Illegal field(s) '${excluded}'` })
+    res.status(400).json({ error: `Illegal field(s) '${excluded}'` })
+    return
   }
 
   // Generate an SQL statement
@@ -193,33 +219,39 @@ app.post('/v1/resources/staff/search', async function (req, res) {
 app.put('/v1/resources/staff/:identifier/create', async function (req, res) {
   await setup()
 
+  // #swagger.description = 'Add a new staff member to the database'
+
   /* #swagger.parameters['identifier'] = {
       in: 'path',                            
       description: 'User identifier provided by cognito',                   
       required: true                     
-} */
+  } */
 
   /* #swagger.parameters['first_name'] = {
         in: 'body',                            
-        description: 'Users first name',                   
+        description: 'Users first name',
+        schema: 'string',              
         required: true                     
   } */
 
   /* #swagger.parameters['last_name'] = {
         in: 'body',                            
-        description: 'Users last name name',                   
+        description: 'Users last name name',
+        schema: 'string',               
         required: true                     
   } */
 
   /* #swagger.parameters['email_address'] = {
         in: 'body',                            
-        description: 'Users email address',                   
+        description: 'Users email address',
+        schema: 'string',                  
         required: true                     
   } */
 
   /* #swagger.parameters['phone_number'] = {
         in: 'body',                            
-        description: 'Users phone number',                   
+        description: 'Users phone number',
+        schema: 'string',                 
         required: true                     
   } */
 
@@ -253,33 +285,39 @@ app.put('/v1/resources/staff/:identifier/create', async function (req, res) {
 app.put('/v1/resources/staff/:identifier/update', async function (req, res) {
   await setup()
 
+  // #swagger.description = 'Update a staff member in the database'
+
   /* #swagger.parameters['identifier'] = {
       in: 'path',                            
-      description: 'User identifier provided by cognito',                   
+      description: 'User identifier provided by cognito',             
       required: true                     
-} */
+  } */
 
   /* #swagger.parameters['first_name'] = {
         in: 'body',                            
-        description: 'Updated first name',                   
+        description: 'Updated first name',
+        schema: 'string',                 
         required: false                     
   } */
 
   /* #swagger.parameters['last_name'] = {
         in: 'body',                            
-        description: 'Updated last name name',                   
+        description: 'Updated last name name',
+        schema: 'string',                   
         required: false                     
   } */
 
   /* #swagger.parameters['email_address'] = {
         in: 'body',                            
-        description: 'Updated email address',                   
+        description: 'Updated email address',
+        schema: 'string',                    
         required: false                     
   } */
 
   /* #swagger.parameters['phone_number'] = {
         in: 'body',                            
-        description: 'Updated phone number',                   
+        description: 'Updated phone number',
+        schema: 'string',                   
         required: false                     
   } */
 
@@ -308,6 +346,14 @@ app.put('/v1/resources/staff/:identifier/update', async function (req, res) {
 
 app.delete('/v1/resources/staff/:identifier', async function (req, res) {
   await setup()
+
+  // #swagger.description = 'Remove a staff member from the database'
+
+  /* #swagger.parameters['identifier'] = {
+      in: 'path',                            
+      description: 'User identifier provided by cognito',                   
+      required: true                     
+  } */
 
   const result = await client.query(
     'DELETE FROM system.staff WHERE staff_id = $1', [req.params.identifier])
