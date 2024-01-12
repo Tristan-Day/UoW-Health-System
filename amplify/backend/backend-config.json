@@ -312,6 +312,38 @@
         }
       ]
     },
+    "AMPLIFY_function_ScheduleItemFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ScheduleItemFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ScheduleItemFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ScheduleItemFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ShiftsFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ShiftsFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ShiftsFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ShiftsFunction"
+        }
+      ]
+    },
     "AMPLIFY_function_StaffFunction_deploymentBucketName": {
       "usedBy": [
         {
@@ -325,6 +357,70 @@
         {
           "category": "function",
           "resourceName": "StaffFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentCategoryFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentCategoryFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentCategoryFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentCategoryFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardOrderFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardOrderFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardOrderFunction"
         }
       ]
     }
