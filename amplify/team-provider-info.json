@@ -41,7 +41,8 @@
         "ShiftsFunction": {},
         "TreatmentCategoryFunction": {},
         "TreatmentFunction": {},
-        "WardFunction": {}
+        "WardFunction": {},
+        "WardOrderFunction": {}
       },
       "api": {
         "StaffHandler": {},
