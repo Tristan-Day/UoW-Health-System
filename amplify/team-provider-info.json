@@ -37,7 +37,8 @@
           "deploymentBucketName": "amplify-healthsystem-dev-150156-deployment",
           "s3Key": "amplify-builds/PatientFunction-54557764594c704b5434-build.zip"
         },
-        "ScheduleItemFunction": {}
+        "ScheduleItemFunction": {},
+        "ShiftsFunction": {}
       },
       "api": {
         "StaffHandler": {},
