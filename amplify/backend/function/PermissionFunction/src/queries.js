@@ -1,6 +1,6 @@
 const ALL_PERMISSIONS = `
   SELECT 
-    pe."name",
+    pe.name,
     pe.description
   FROM 
     system.staff staff
@@ -12,7 +12,7 @@ const ALL_PERMISSIONS = `
     staff.staff_id = $1
   UNION
   SELECT 
-    pe."name",
+    pe.name,
     pe.description
   FROM 
     system.staff staff
@@ -40,7 +40,7 @@ const PERMISSION_MEMBERS = `
   LEFT JOIN 
     system.permissions pe ON sp.permission_id = pe.permission_id
   WHERE 
-    pe."name" = $1
+    pe.name = $1
   UNION
   SELECT 
     staff.staff_id,
@@ -57,12 +57,12 @@ const PERMISSION_MEMBERS = `
   LEFT JOIN 
     system.permissions pe ON rp.permission_id = pe.permission_id
   WHERE 
-    pe."name" = $1
+    pe.name = $1
 `
 
 const ALL_ROLES = `
   SELECT
-    ro."name",
+    ro.name,
     ro.description
   FROM
     system.staff staff
@@ -86,7 +86,7 @@ const ROLE_MEMBERS = `
   LEFT JOIN 
     system.roles ro ON sr.role_id = ro.role_id
   WHERE
-    ro."name"  = $1
+    ro.name  = $1
 `
 
 const ROLE_PERMISSIONS = `
@@ -100,7 +100,7 @@ const ROLE_PERMISSIONS = `
   LEFT JOIN
     system.roles ro ON ro.role_id = rp.role_id 
   WHERE
-    ro."name" = $1
+    ro.name = $1
 `
 
 const permissions = {
