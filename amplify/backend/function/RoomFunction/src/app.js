@@ -71,12 +71,13 @@ app.get('/v1/resources/room/:name', async function (req, res) {
 
   /* #swagger.parameters['name'] = {
         in: 'path',                            
-        description: 'The room name to lookup',                   
+        description: 'The name to lookup',
+        schema: 'string',               
         required: true                     
   } */
 
   const query = require("./queries").rooms.select
-  const result = await client.query(query, [req.params.identifier])
+  const result = await client.query(query, [req.params.name])
 
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows })
@@ -84,9 +85,7 @@ app.get('/v1/resources/room/:name', async function (req, res) {
   else {
     res.status(404).json({ error: 'Room not found' })
   }
-});
-
-// ✔️ Validated by mock test 11/01/2024 (Tristan Day)
+})
 
 app.put('/v1/resources/room/:name/create', async function (req, res) {
   await setup()
@@ -95,69 +94,78 @@ app.put('/v1/resources/room/:name/create', async function (req, res) {
 
   /* #swagger.parameters['name'] = {
         in: 'path',                            
-        description: 'The name of the room to create',                   
+        description: 'The name of the room to create',
+        schema: 'string',                  
         required: true                     
   } */
 
   /* #swagger.parameters['building'] = {
         in: 'body',                            
-        description: 'The building the room is located in',                   
+        description: 'The building the room is located in',
+        schema: 'string',               
         required: true                     
   } */
 
   /* #swagger.parameters['floor'] = {
         in: 'body',                            
-        description: 'The floor number the room is located on',                   
+        description: 'The floor number the room is located on',
+        schema: 'integer',                  
         required: true                     
   } */
 
   /* #swagger.parameters['description'] = {
         in: 'body',                            
-        description: 'An optional description string',                   
+        description: 'An optional description string',
+        schema: 'string',                
         required: false                     
   } */
 
   if (req.body.building === undefined) {
     res.status(400).json({ error: "A buidling name is required" })
+    return
   }
 
   if (req.body.floor === undefined) {
     res.status(400).json({ error: "A floor number is required" })
+    return
+  }
+
+  if (!(Number.isInteger(req.body.floor))) {
+    res.status(400).json({ error: "Floor must be given as an integer" })
+    return
   }
 
   // Attempt to retreive the building ID
   var buildingQuery = 'SELECT building_id FROM system.buildings WHERE name = $1'
-  var buildingResult = await client.query(buildingQuery, [req.body.building]);
+  var buildingResult = await client.query(buildingQuery, [req.body.building])
 
-  if (buildingResult.rows.length !== 1) {
+  if (buildingResult.rows.length === 0) {
     // The building doesnt exist, create it
     buildingQuery = require("./queries").buildings.insert
-    buildingResult = await client.query(query, [req.body.name]);
+    buildingResult = await client.query(buildingQuery, [req.body.building])
   }
 
-  var query
-  var fields
+  var query = ''
+  var fields = []
 
   // Logic to handle the optional room description
   if (req.body.description !== undefined) {
-    query = 'INSERT INTO system.rooms (building_id, floor, name, description) VALUES ($1, $2, $3, $4)'
-    fields = [buildingResult.rows[0].buidling_id, req.body.floor, req.params.name, req.body.description]
+    query = 'INSERT INTO system.rooms (building_id, floor, name, description) VALUES ($1, $2, $3, $4) RETURNING room_id'
+    fields = [buildingResult.rows[0].building_id, req.body.floor, req.params.name, req.body.description]
   }
   else {
-    query = 'INSERT INTO system.rooms (building_id, floor, name) VALUES ($1, $2, $3)'
-    fields = [buildingResult.rows[0].buidling_id, req.body.floor, req.params.name]
+    query = 'INSERT INTO system.rooms (building_id, floor, name) VALUES ($1, $2, $3) RETURNING room_id'
+    fields = [buildingResult.rows[0].building_id, req.body.floor, req.params.name]
   }
 
   try {
-    await client.query(query, fields)
-    res.status(200).json({ result: "Room sucessfully created" })
+    const roomResult = await client.query(query, fields)
+    res.status(200).json({ result: "Room sucessfully created", identifier: roomResult.rows[0].room_id })
   }
   catch (error) {
     res.status(409).json({ error: "Room already exists" })
   }
-});
-
-// ✔️ Validated by mock test 11/01/2024 (Tristan Day)
+})
 
 app.put('/v1/resources/room/:identifier/update', async function (req, res) {
   await setup()
@@ -166,18 +174,34 @@ app.put('/v1/resources/room/:identifier/update', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room to update',                   
+        description: 'The room to update',
+        schema: 'integer',                  
         required: true                     
   } */
 
   /* #swagger.parameters['description'] = {
         in: 'body',                            
-        description: 'The new description string',                   
+        description: 'The new description string',
+        schema: 'string',                
         required: true                     
   } */
 
+  var identifier
+  try {
+    identifier = parseInt(req.params.identifier)
+  }
+  catch (error) {
+    res.status(400).json({ error: "Identifier must be provided as an integer" })
+    return
+  }
+
+  if (req.body.description === undefined) {
+    res.status(400).json({ error: "No description provided" })
+    return
+  }
+
   const query = 'UPDATE system.rooms SET description = $2 WHERE room_id = $1'
-  const result = await client.query(query, [req.params.identifier, req.body.description])
+  const result = await client.query(query, [identifier, req.body.description])
 
   if (result.rowCount > 0) {
     res.status(200).json({ result: "Room description sucessfully updated" })
@@ -185,9 +209,7 @@ app.put('/v1/resources/room/:identifier/update', async function (req, res) {
   else {
     res.status(404).json({ error: "Room not found" })
   }
-});
-
-// ✔️ Validated by mock test 11/01/2024 (Tristan Day)
+})
 
 app.delete('/v1/resources/room/:identifier', async function (req, res) {
   await setup()
@@ -196,12 +218,22 @@ app.delete('/v1/resources/room/:identifier', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room to delete',                   
+        description: 'The room to delete',
+        schema: 'integer',               
         required: true                     
   } */
 
-  const query = 'DELETE FROM system.rooms WHERE name = $1'
-  const result = await client.query(query, [req.params.identifier])
+  var identifier
+  try {
+    identifier = parseInt(req.params.identifier)
+  }
+  catch (error) {
+    res.status(400).json({ error: "Identifier must be provided as an integer" })
+    return
+  }
+
+  const query = 'DELETE FROM system.rooms WHERE room_id = $1'
+  const result = await client.query(query, [identifier])
 
   if (result.rowCount > 0) {
     res.status(200).json({ result: "Room sucessfully deleted" })
@@ -209,10 +241,10 @@ app.delete('/v1/resources/room/:identifier', async function (req, res) {
   else {
     res.status(404).json({ error: "Room not found" })
   }
-});
+})
 
 app.listen(3000, function () {
   console.log("App started")
-});
+})
 
 module.exports = app

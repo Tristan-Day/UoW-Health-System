@@ -96,7 +96,7 @@ app.get('/v1/orders/cleaning/room/:identifier', async function (req, res) {
   }
 })
 
-app.post('/v1/orders/cleaning/room/:identifier/issue', async function (req, res) {
+app.put('/v1/orders/cleaning/room/:identifier/issue', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Issue a new cleaning order for a given room'
@@ -132,7 +132,7 @@ app.post('/v1/orders/cleaning/room/:identifier/issue', async function (req, res)
   }
 })
 
-app.post('/v1/orders/cleaning/room/:identifier/fulfil', async function (req, res) {
+app.put('/v1/orders/cleaning/room/:identifier/fulfil', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Fulfil a cleaning order for a given room'
