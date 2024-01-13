@@ -1,7 +1,7 @@
-const lambdaLocal = require("lambda-local");
+const lambdaLocal = require("lambda-local")
 const PROFILE = "Winchester Health Systems"
 
-
+// Function to parse a name and turn it into a usable identifier
 async function lookup(name) {
   const payload = {
     "httpMethod": "GET",
@@ -52,8 +52,8 @@ test('Create a new room', async () => {
   })
 
   // Assert the response code
-  expect(res.statusCode).toBe(200);
-});
+  expect(res.statusCode).toBe(200)
+})
 
 test('Create a new room without specifying a floor', async () => {
   const payload = {
@@ -77,8 +77,8 @@ test('Create a new room without specifying a floor', async () => {
   })
 
   // Assert the response code
-  expect(res.statusCode).toBe(400);
-});
+  expect(res.statusCode).toBe(400)
+})
 
 test('Create a new room without specifying a building', async () => {
   const payload = {
@@ -102,8 +102,8 @@ test('Create a new room without specifying a building', async () => {
   })
 
   // Assert the response code
-  expect(res.statusCode).toBe(400);
-});
+  expect(res.statusCode).toBe(400)
+})
 
 test('Update a room description', async () => {
   const identifier = (await lookup("TEST")).room_id
@@ -129,10 +129,10 @@ test('Update a room description', async () => {
   })
 
   // Assert the response code
-  expect(res.statusCode).toBe(200);
-});
+  expect(res.statusCode).toBe(200)
+})
 
-test('Retreive a room', async () => {
+test('Retreive details of a room', async () => {
   const payload = {
     "httpMethod": "GET",
     "path": `/v1/resources/room/TEST`,
@@ -152,15 +152,15 @@ test('Retreive a room', async () => {
   })
 
   // Assert the response code
-  expect(res.statusCode).toBe(200);
+  expect(res.statusCode).toBe(200)
 
   // Assert the number of returned items
   expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
 
   // Assert the room floor and description
-  expect(JSON.parse(res.body).result[0].floor).toBe(0);
-  expect(JSON.parse(res.body).result[0].description).toBe("This is a test room");
-});
+  expect(JSON.parse(res.body).result[0].floor).toBe(0)
+  expect(JSON.parse(res.body).result[0].description).toBe("This is a test room")
+})
 
 
 test('Delete a room', async () => {
@@ -187,7 +187,7 @@ test('Delete a room', async () => {
   })
 
   // Assert the response code
-  expect(res.statusCode).toBe(200);
-});
+  expect(res.statusCode).toBe(200)
+})
 
 
