@@ -2,7 +2,7 @@ const lambdaLocal = require("lambda-local");
 const PROFILE = "Winchester Health Systems"
 
 
-test('Test staff creation', async () => {
+test('Create a new staff member', async () => {
   const payload = {
     "httpMethod": "PUT",
     "path": "/v1/resources/staff/TEST/create",
@@ -26,10 +26,11 @@ test('Test staff creation', async () => {
     verboseLevel: 0
   })
 
+  // Assert the response code
   expect(res.statusCode).toBe(200);
 });
 
-test('Test staff creation without required fields', async () => {
+test('Create a new staff member without required fields', async () => {
   const payload = {
     "httpMethod": "PUT",
     "path": "/v1/resources/staff/TEST/create",
@@ -53,7 +54,7 @@ test('Test staff creation without required fields', async () => {
   expect(res.statusCode).toBe(400);
 });
 
-test('Test staff retreival', async () => {
+test('Retreive a staff member', async () => {
   const payload = {
     "httpMethod": "GET",
     "path": "/v1/resources/staff/TEST",
@@ -72,13 +73,15 @@ test('Test staff retreival', async () => {
     verboseLevel: 0
   })
 
+  // Assert the response code
   expect(res.statusCode).toBe(200);
 
+  // Assert the returned fields
   expect(JSON.parse(res.body).result.first_name).toBe("Boris")
   expect(JSON.parse(res.body).result.last_name).toBe("Cleverly")
 });
 
-test('Test staff retreival with an invalid identifier', async () => {
+test('Retreive a staff member with an invalid identifier', async () => {
   const payload = {
     "httpMethod": "GET",
     "path": "/v1/resources/staff/INVALID",
@@ -97,10 +100,11 @@ test('Test staff retreival with an invalid identifier', async () => {
     verboseLevel: 0
   })
 
+  // Assert the error response code
   expect(res.statusCode).toBe(404);
 });
 
-test('Test staff search', async () => {
+test('Search for a staff member', async () => {
   const payload = {
     "httpMethod": "POST",
     "path": "/v1/resources/staff/search",
@@ -120,11 +124,14 @@ test('Test staff search', async () => {
     verboseLevel: 0
   })
 
+  // Assert the response code
   expect(res.statusCode).toBe(200);
+
+  // Assert the number of returned items
   expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
 });
 
-test('Test staff search on an invalid field', async () => {
+test('Search for a staff member using an invalid field', async () => {
   const payload = {
     "httpMethod": "POST",
     "path": "/v1/resources/staff/search",
@@ -144,10 +151,11 @@ test('Test staff search on an invalid field', async () => {
     verboseLevel: 0
   })
 
+  // Assert the error response code
   expect(res.statusCode).toBe(400);
 });
 
-test('Test staff deletion', async () => {
+test('Delete a staff member', async () => {
   const payload = {
     "httpMethod": "DELETE",
     "path": "/v1/resources/staff/TEST",
@@ -166,10 +174,11 @@ test('Test staff deletion', async () => {
     verboseLevel: 0
   })
 
+  // Assert the response code
   expect(res.statusCode).toBe(200);
 });
 
-test('Test staff deletion with invalid identifier', async () => {
+test('Delete a staff member with an invalid identifier', async () => {
   const payload = {
     "httpMethod": "DELETE",
     "path": "/v1/resources/staff/INVALID",
@@ -188,5 +197,6 @@ test('Test staff deletion with invalid identifier', async () => {
     verboseLevel: 0
   })
 
+  // Assert the error response code
   expect(res.statusCode).toBe(404);
 });
