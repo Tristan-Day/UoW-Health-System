@@ -71,14 +71,14 @@ app.get('/v1/orders/cleaning/room/:identifier', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room to lookup',
+        description: 'The room name to lookup',
         schema: 'string',                   
         required: true                     
   } */
 
   /* #swagger.parameters['fulfilled'] = {
         in: 'query',                            
-        description: 'Boolean exclusion of fulfilled cleaning orders (default true)',
+        description: 'Boolean exclusion of fulfilled orders (default true)',
         schema: 'bool',                 
         required: false                     
   } */
@@ -106,7 +106,7 @@ app.put('/v1/orders/cleaning/room/:identifier/issue', async function (req, res) 
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room to issue the order for',
+        description: 'The room identifier',
         schema: 'integer',          
         required: true                     
   } */
@@ -163,7 +163,7 @@ app.put('/v1/orders/cleaning/room/:identifier/fulfil', async function (req, res)
 
   /* #swagger.parameters['cleaner'] = {
       in: 'body',                            
-      description: 'Identifier of the cleaner',
+      description: 'Staff identifier',
       schema: 'string',                   
       required: true                     
   } */
