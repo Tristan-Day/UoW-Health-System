@@ -71,18 +71,21 @@ app.get('/v1/orders/cleaning/room/:identifier', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room to lookup',                   
+        description: 'The room name to lookup',
+        schema: 'string',                   
         required: true                     
   } */
 
   /* #swagger.parameters['fulfilled'] = {
         in: 'query',                            
-        description: 'Boolean exclusion of unfulfilled cleaning orders',                   
+        description: 'Boolean exclusion of fulfilled orders (default true)',
+        schema: 'bool',                 
         required: false                     
   } */
 
-  // Handle optional query paramter, exluding records without a fulfillment timestamp
-  var filter = req.query.fulfilled ? "AND order.fulfilled IS NOT NULL" : ""
+  // Handle optional query parameter, exluding records without a fulfillment timestamp
+  const fulfilled = req.query.fulfilled && req.query.fulfilled === 'true'
+  const filter = fulfilled ? "" : "AND ord.fulfilled IS NULL"
 
   // Import the SQL statement from order queries
   const query = require("./queries").orders.all + filter
@@ -96,20 +99,34 @@ app.get('/v1/orders/cleaning/room/:identifier', async function (req, res) {
   }
 })
 
-app.post('/v1/orders/cleaning/room/:identifier/issue', async function (req, res) {
+app.put('/v1/orders/cleaning/room/:identifier/issue', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Issue a new cleaning order for a given room'
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room to issue the order for',                   
+        description: 'The room identifier',
+        schema: 'integer',          
         required: true                     
   } */
 
+  // Check that the provided identifier is an integer
+  var identifier
+  try {
+    identifier = parseInt(req.params.identifier)
+  }
+  catch (error) {
+    res.status(400).json({ error: "Identifier must be provided as an integer" })
+    return
+  }
+
+  // SQL to exclude fulfilled orders
+  const filter = "AND ord.fulfilled IS NULL"
+
   // Check if there are any outstanding orders for the given room
-  const query = require("./queries").orders.all + "AND order.fulfilled IS NOT NULL"
-  const result = await client.query(query, [req.params.identifier])
+  const query = require("./queries").orders.all + filter
+  const result = await client.query(query, [identifier])
 
   if (result.rows.length > 0) {
     res.status(409).json({ error: "Room has an outstanding cleaning order" })
@@ -117,58 +134,76 @@ app.post('/v1/orders/cleaning/room/:identifier/issue', async function (req, res)
   }
 
   // Generate a timestamp
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toISOString()
 
   try {
-    // Since there are not outstanding orders, create a new order
-    query = 'INSERT INTO system.cleaning_orders (room_id, date_added) VALUES ($1, $2)'
-    await client.query(query, [roomResult.rows[0].room_id, timestamp])
+    // Create a new order
+    const query = 'INSERT INTO system.cleaning_orders (room_id, issued) VALUES ($1, $2)'
+    await client.query(query, [identifier, timestamp])
 
     res.status(200).json({ response: "Cleaning order submitted" })
   }
   catch (error) {
-    // Handle the conditon that the foreign key is invalid
+    // Handle the conditon that the user-provided identifier is invalid
     res.status(409).json({ error: "Room not found" })
   }
 })
 
-app.post('/v1/orders/cleaning/room/:identifier/fulfil', async function (req, res) {
+app.put('/v1/orders/cleaning/room/:identifier/fulfil', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Fulfil a cleaning order for a given room'
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room identifier',                   
+        description: 'The room identifier',
+        schema: 'integer',               
         required: true                     
   } */
 
   /* #swagger.parameters['cleaner'] = {
       in: 'body',                            
-      description: 'Identifier of the cleaner',                   
+      description: 'Staff identifier',
+      schema: 'string',                   
       required: true                     
   } */
+
+  // Check that the provided identifier is an integer
+  var identifier
+  try {
+    identifier = parseInt(req.params.identifier)
+  }
+  catch (error) {
+    res.status(400).json({ error: "Identifier must be provided as an integer" })
+    return
+  }
 
   if (req.body.cleaner === undefined) {
     res.status(400).json({ error: "A cleaner must be specified" })
     return
   }
 
-  // Get the room_id and check if an outstanding order is already present
-  var query = require("./queries").orders.all + "AND order.fulfilled IS NULL"
-  const roomResult = await client.query(query, [req.params.identifier])
+  // SQL to exclude fulfilled orders
+  const filter = "AND ord.fulfilled IS NULL"
 
-  if (roomResult.rows.length > 0) {
-    res.status(409).json({ error: "Room does not exist or has no outstanding orders" })
+  // Check if there are any outstanding orders for the given room
+  const query = require("./queries").orders.all + filter
+  const result = await client.query(query, [identifier])
+
+  if (result.rows.length === 0) {
+    res.status(409).json({ error: "Room has no outstanding orders" })
     return
   }
 
+  // Generate a timestamp
+  const timestamp = new Date().toISOString()
+
   try {
     // Fulfil the order
-    query = require("./queries").orders.fulfill
-    const orderResult = await client.query(query, [roomResult.rows[0].room_id, req.body.cleaner])
+    const query = require("./queries").orders.fulfill
+    const result = await client.query(query, [identifier, timestamp, req.body.cleaner])
 
-    if (orderResult.rowCount > 0) {
+    if (result.rowCount > 0) {
       res.status(200).json({ response: "Cleaning order submitted" })
     }
     else {
@@ -176,40 +211,32 @@ app.post('/v1/orders/cleaning/room/:identifier/fulfil', async function (req, res
     }
   }
   catch (error) {
-    // Handle the case where the provided staff identifier is invalid
+    // Handle the conditon that the user-provided identifier is invalid
     res.status(404).json({ error: "Staff member not found" })
   }
 })
 
-app.delete('/v1/orders/cleaning/room/:identifier/cancel', async function (req, res) {
+app.delete('/v1/orders/cleaning/room/:identifier', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Cancel a cleaning order for a given room'
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The room identifier',                   
+        description: 'The room identifier',
+        schema: 'integer',            
         required: true                     
   } */
-
-  // Check if an outstanding order is present
-  var query = require("./queries").orders.all + "AND order.fulfilled IS NULL"
-  const roomResult = await client.query(query, [req.params.identifier])
-
-  if (roomResult.rows.length === 0) {
-    res.status(409).json({ error: "Room does not exist or has no outstanding orders" })
-    return
-  }
 
   // Cancel the order
   query = require("./queries").orders.cancel
   const orderResult = await client.query(query, [req.params.identifier])
 
   if (orderResult.rowCount > 0) {
-    res.status(200).json({ response: "Cleaning order submitted" })
+    res.status(200).json({ response: "Cleaning order canceled" })
   }
   else {
-    res.status(404).json({ error: "Room not found" })
+    res.status(404).json({ error: "Room does not exit or has not outstanding orders" })
   }
 })
 

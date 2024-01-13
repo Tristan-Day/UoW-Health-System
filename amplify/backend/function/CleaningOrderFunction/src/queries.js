@@ -1,19 +1,19 @@
 const ALL_ORDERS = `
   SELECT 
-    order.room_id, room.name, order.issued, order.fulfilled, order.staff_id
+    ord.room_id, room.name, ord.issued, ord.fulfilled, ord.staff_id
   FROM
-    system.cleaning_orders order
+    system.cleaning_orders ord
   LEFT JOIN
-    system.rooms room ON room.room_id = order.room_id
+    system.rooms room ON room.room_id = ord.room_id
   WHERE
-    room.room_id = $1
+    room.room_id = $1 
 `
 
 const ORDER_FULFIL = `
-  UPDATE INTO 
-    system.cleaning_orders (date_fulfilled, staff_id) 
-  VALUES 
-    ($1, $2)
+  UPDATE 
+    system.cleaning_orders
+  SET
+    fulfilled = $2, staff_id = $3
   WHERE
     room_id = $1 AND fulfilled ISNULL
 `
@@ -22,7 +22,7 @@ const ORDER_CANCEL = `
   DELETE FROM 
     system.cleaning_orders
   WHERE
-    room_id = $1 AND orders.fulfilled ISNULL
+    room_id = $1 AND fulfilled IS NULL
 `
 
 const orders = {
