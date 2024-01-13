@@ -333,7 +333,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The staff member grant permissions to',
+        description: 'User identifier provided by cognito',
         schema: 'string',         
         required: true                     
   } */
@@ -394,7 +394,7 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The staff member revoke permissions from',
+        description: 'User identifier provided by cognito',
         schema: 'string',                 
         required: true                     
   } */
@@ -453,7 +453,7 @@ app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, re
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The staff member grant roles to',
+        description: 'User identifier provided by cognito',
         schema: 'string',              
         required: true                     
   } */
@@ -513,7 +513,7 @@ app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, r
 
   /* #swagger.parameters['identifier'] = {
         in: 'path',                            
-        description: 'The staff member revoke roles from',
+        description: 'User identifier provided by cognito',
         schema: 'string',             
         required: true                     
   } */
@@ -627,7 +627,7 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
 
   /* #swagger.parameters['permissions'] = {
         in: 'body',                            
-        description: 'An array of permissions to assign to the role',
+        description: 'An array of permission strings',
         schema: 'array',                  
         required: false                     
   } */
