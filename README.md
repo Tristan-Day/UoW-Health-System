@@ -22,6 +22,14 @@ This project was completed thanks to the hard work of the following individuals.
 Backend documentation was generated using [Swagger](https://swagger-autogen.github.io/docs/") and [Swagger-Markdown](https://github.com/syroegkin/swagger-markdown).
 
 * To generate docs run ```npm run swagger``` then  ```npm run swagger-markdown```
+* Alternatively, you can run the ```aggregate-docs.py``` script, which will generate markdown files for each backend service.
+
+## Testing
+
+* Backend services were tested using [Lambda Local](https://github.com/ashiina/lambda-local) for mocking and [Jest](https://github.com/jestjs/jest) for test scheduling an execution.
+* These can be run individually by opening a terminal in the service `src` directory and then running `jest`.
+
+*Note: Due to slight incompatibilities between Lambda Local and Jest, you must manually exit the test using `CTRL + C` to avoid a port conflict when scheduling later tests.*
 
 ## Deploying the Application on the Cloud
 
