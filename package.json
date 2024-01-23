@@ -3,12 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "amplify-cli": "^1.0.0",
-    "aws-amplify": "^6.0.10",
+    "@atlaskit/button": "^17.2.0",
+    "@atlaskit/css-reset": "^6.6.2",
     "@atlaskit/page-layout": "^2.1.0",
-    "react-scripts": "5.0.1",
+    "@atlaskit/primitives": "^1.17.0",
+    "@atlaskit/tokens": "^1.33.0",
+    "@aws-amplify/ui-react": "^6.1.1",
+    "amplify-cli": "^1.0.0",
+    "react": "^16.8.0",
     "react-dom": "^16.8.0",
-    "react": "^16.8.0"
+    "react-router-dom": "^6.21.3",
+    "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
