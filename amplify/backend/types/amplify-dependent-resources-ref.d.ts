@@ -61,6 +61,17 @@ export type AmplifyDependentResourcesAttributes = {
       "RootUrl": "string"
     }
   },
+  "auth": {
+    "healthsystem334c9ea1": {
+      "AppClientID": "string",
+      "AppClientIDWeb": "string",
+      "IdentityPoolId": "string",
+      "IdentityPoolName": "string",
+      "UserPoolArn": "string",
+      "UserPoolId": "string",
+      "UserPoolName": "string"
+    }
+  },
   "function": {
     "AppointmentFunction": {
       "Arn": "string",
