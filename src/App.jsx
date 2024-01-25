@@ -1,5 +1,3 @@
-import '@aws-amplify/ui-react/styles.css'
-
 import { Amplify } from 'aws-amplify'
 import awsExports from './aws-exports'
 
@@ -7,32 +5,44 @@ import { Authenticator } from '@aws-amplify/ui-react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { Home, Premises } from './page'
+
+import { ThemeProvider, createTheme } from '@mui/material/styles'
+import CssBaseline from '@mui/material/CssBaseline'
+
+import { Home } from './page'
+
+import { PremisesRoutes } from './page/premises'
+import { ScheduleRoutes } from './page/schedule'
+import { PatientRoutes } from './page/patients'
+import { StaffRoutes } from './page/staff'
 
 Amplify.configure(awsExports)
 
+// Autodetect Theme Preference
+var theme = 'light'
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+  theme = 'dark'
+}
+
 function App() {
   return (
-    // Wrap all routes with Cognito authentication
+    // Wrap all routes with Cognito Authentication
     <Authenticator>
       <BrowserRouter>
-        <Routes>
-          <Route path='*' element={<h1>Welcome to the Hospital Management System</h1>} />
-          <Route path='staff' element={<h1>Placeholder</h1>} />
-          <Route path='premises' element={Premises()} />
-
-          <Route path='patients' element={<h1>Placeholder</h1>} />
-          <Route path='schedule' element={<h1>Placeholder</h1>} />
-
-        </Routes>
+        <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
+          <CssBaseline />
+          <Routes>
+            <Route path='*' element={<Home />}>
+              {PremisesRoutes}
+              {ScheduleRoutes}
+              {PatientRoutes}
+              {StaffRoutes}
+            </Route>
+          </Routes>
+        </ThemeProvider>
       </BrowserRouter>
     </Authenticator>
-  );
+  )
 }
 
 export default withAuthenticator(App)
-
-{/* <Route path='settings' element={<Settings />}>
-<Route path='*' element={<AccountOverview />} />
-<Route path='animals' element={<PetOverview />} />
-</Route> */}
