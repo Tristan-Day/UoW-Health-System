@@ -117,11 +117,6 @@ const CleaningOrderForm = () => {
     issueOrder(identifier)
       .then(() => {
         setMessage({ text: 'Order sucessfully placed', severity: 'success' })
-
-        setTimeout(() => {
-          setMessage(undefined)
-          navigate(-1)
-        }, 7000)
       })
       .catch(() => {
         setMessage({
