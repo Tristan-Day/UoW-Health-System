@@ -11,7 +11,8 @@ export const getPremises = async (query) => {
       }
     })
 
-    return ((await operation.response));
+    const response = ((await operation.response));
+    return (await response.body.json()).result
   }
   else {
     const operation = post({

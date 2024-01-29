@@ -71,37 +71,36 @@ const Premises = () => {
   }, [])
 
   useEffect(() => {
-    if (message && message.loading) {
-      setMessage(undefined)
-    } else {
+    if (message && !message.loading) {
       setTimeout(() => {
         setMessage(undefined)
       }, 7000)
     }
-  }, [contents])
+  }, [message])
 
   async function handleSearch(query) {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    try {
-      const result = await getPremises(query)
-
-      // Provide each record with an ID
-      setContents(
-        result.map(room => ({
-          ...room,
-          id: room.room_id,
-          identifier: room.room_id
-        }))
-      )
-    } catch (error) {
-      setContents([])
-      setMessage({
-        text: 'No records found',
-        severity: 'error',
-        loading: false
+    getPremises(query)
+      .then(result => {
+        // Provide each record with an ID
+        setContents(
+          result.map(room => ({
+            ...room,
+            id: room.room_id,
+            identifier: room.room_id
+          }))
+        )
+        setMessage(undefined)
       })
-    }
+      .catch(() => {
+        setContents([])
+        setMessage({
+          text: 'No records found',
+          severity: 'error',
+          loading: false
+        })
+      })
   }
 
   async function handleDelete() {
