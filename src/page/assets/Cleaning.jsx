@@ -63,14 +63,12 @@ const Cleaning = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (message && message.loading) {
-      setMessage(undefined)
-    } else {
+    if (message && !message.loading) {
       setTimeout(() => {
         setMessage(undefined)
       }, 7000)
     }
-  }, [contents])
+  }, [message])
 
   async function handleSearch(query) {
     if (!query) {
@@ -84,34 +82,35 @@ const Cleaning = () => {
 
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    try {
-      const result = await getOrders(query, filter)
+    getOrders(query, filter)
+      .then(result => {
+        setContents(
+          result.map((order, index) => ({
+            id: index,
+            identifier: order.room_id,
 
-      setContents(
-        result.map((order, index) => ({
-          id: index,
-          identifier: order.room_id,
+            location: `${order.building} - ${order.room}`,
+            issued: new Date(order.issued).toLocaleString('en-UK'),
 
-          location: `${order.building} - ${order.room}`,
-          issued: new Date(order.issued).toLocaleString('en-UK'),
+            fulfilled: order.fulfilled
+              ? new Date(order.fulfilled).toLocaleString('en-UK')
+              : undefined,
 
-          fulfilled: order.fulfilled
-            ? new Date(order.fulfilled).toLocaleString('en-UK')
-            : undefined,
-
-          cleaner: order.first_name
-            ? `${order.first_name} ${order.last_name}`
-            : undefined
-        }))
-      )
-    } catch (error) {
-      setContents([])
-      setMessage({
-        text: 'No records found',
-        severity: 'error',
-        loading: false
+            cleaner: order.first_name
+              ? `${order.first_name} ${order.last_name}`
+              : undefined
+          }))
+        )
+        setMessage(undefined)
       })
-    }
+      .catch(() => {
+        setContents([])
+        setMessage({
+          text: 'No records found',
+          severity: 'error',
+          loading: false
+        })
+      })
   }
 
   async function handleSelection(index) {
