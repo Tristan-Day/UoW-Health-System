@@ -64,10 +64,10 @@ async function setup() {
   console.log('Established database connection')
 }
 
-app.get('/v1/resources/room/:name', async function (req, res) {
+app.get('/v1/resources/rooms/:name', async function (req, res) {
   await setup()
 
-  // #swagger.description = 'Get rooms matching a given name'
+  // #swagger.description = 'Retreive rooms matching a given name from the database'
 
   /* #swagger.parameters['name'] = {
         in: 'path',                            
@@ -79,15 +79,47 @@ app.get('/v1/resources/room/:name', async function (req, res) {
   const query = require("./queries").rooms.select
   const result = await client.query(query, [req.params.name])
 
+  // Error on zero results
+  if (result.rows.length > 0) {
+    res.status(200).json({ result: result.rows[0] })
+  }
+  else {
+    res.status(200).json({ result: result.rows })
+  }
+})
+
+app.post('/v1/resources/rooms/search', async function (req, res) {
+  await setup()
+
+  // #swagger.description = 'Retreive rooms containing a given query'
+
+  /* #swagger.parameters['query'] = {
+        in: 'body',                            
+        description: 'The string to match to',
+        schema: 'string',               
+        required: false                     
+  } */
+
+  var result
+
+  if (req.body.query) {
+    const query = require("./queries").rooms.search
+    result = await client.query(query, [req.body.query])
+  }
+  else {
+    const query = require("./queries").rooms.all
+    result = await client.query(query)
+  }
+
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows })
   }
   else {
-    res.status(404).json({ error: 'Room not found' })
+    res.status(404).json({ error: "No Matching Rooms" })
   }
 })
 
-app.put('/v1/resources/room/:name/create', async function (req, res) {
+app.put('/v1/resources/rooms/:name/create', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Create a new room'
@@ -167,7 +199,7 @@ app.put('/v1/resources/room/:name/create', async function (req, res) {
   }
 })
 
-app.put('/v1/resources/room/:identifier/update', async function (req, res) {
+app.put('/v1/resources/rooms/:identifier/update', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Update the description for a give room'
@@ -211,7 +243,7 @@ app.put('/v1/resources/room/:identifier/update', async function (req, res) {
   }
 })
 
-app.delete('/v1/resources/room/:identifier', async function (req, res) {
+app.delete('/v1/resources/rooms/:identifier', async function (req, res) {
   await setup()
 
   // #swagger.description = 'Delete a given room'

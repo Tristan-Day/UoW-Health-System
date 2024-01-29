@@ -14,6 +14,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "BuildingHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BuildingFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "CleaningOrderHandler": {
       "dependsOn": [
         {
@@ -203,6 +217,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "BuildingFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "CleaningOrderFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -273,6 +292,22 @@
         {
           "category": "function",
           "resourceName": "AppointmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_BuildingFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BuildingFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_BuildingFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BuildingFunction"
         }
       ]
     },

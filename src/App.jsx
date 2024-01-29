@@ -1,6 +1,4 @@
 import { Amplify } from 'aws-amplify'
-import awsExports from './aws-exports'
-
 import { Authenticator } from '@aws-amplify/ui-react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 
@@ -11,16 +9,20 @@ import CssBaseline from '@mui/material/CssBaseline'
 
 import { Home } from './page'
 
-import { PremisesRoutes } from './page/premises'
 import { ScheduleRoutes } from './page/schedule'
 import { PatientRoutes } from './page/patients'
+import { AssetRoutes } from './page/assets'
 import { StaffRoutes } from './page/staff'
 
+import awsExports from './aws-exports'
 Amplify.configure(awsExports)
 
 // Autodetect Theme Preference
 var theme = 'light'
-if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+if (
+  window.matchMedia &&
+  window.matchMedia('(prefers-color-scheme: dark)').matches
+) {
   theme = 'dark'
 }
 
@@ -32,11 +34,8 @@ function App() {
         <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
           <CssBaseline />
           <Routes>
-            <Route path='*' element={<Home />}>
-              {PremisesRoutes}
-              {ScheduleRoutes}
-              {PatientRoutes}
-              {StaffRoutes}
+            <Route path="*" element={<Home />}>
+              {ScheduleRoutes} {PatientRoutes} {AssetRoutes} {StaffRoutes}
             </Route>
           </Routes>
         </ThemeProvider>
