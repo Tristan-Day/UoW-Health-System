@@ -31,6 +31,12 @@ Backend documentation was generated using [Swagger](https://swagger-autogen.gith
 
 *Note: Due to slight incompatibilities between Lambda Local and Jest, you must manually exit the test using `CTRL + C` to avoid a port conflict when scheduling later tests.*
 
+## Code Formatting
+
+This project was formatted using [Prettier - The Opinionated Code Formatter](https://github.com/prettier/prettier)
+
+*Please see the included `.prettierrc` file for more information*
+
 ## Deploying the Application on the Cloud
 
 To deploy this application, you will require the following:
