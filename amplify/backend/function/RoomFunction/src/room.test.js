@@ -5,7 +5,7 @@ const PROFILE = "Winchester Health Systems"
 async function lookup(name) {
   const payload = {
     "httpMethod": "GET",
-    "path": `/v1/resources/room/${name}`,
+    "path": `/v1/resources/rooms/${name}`,
     "queryStringParameters": {
     },
     "headers": {
@@ -32,14 +32,14 @@ async function lookup(name) {
 test('Create a new room', async () => {
   const payload = {
     "httpMethod": "PUT",
-    "path": "/v1/resources/room/TEST/create",
+    "path": "/v1/resources/rooms/TEST/create",
     "queryStringParameters": {
     },
     "headers": {
       "Content-Type": "application/json"
     },
     "body": JSON.stringify({
-      "building": "West Downs Centre",
+      "building": "TEST-BUILDING",
       "floor": 0,
     })
   }
@@ -58,7 +58,7 @@ test('Create a new room', async () => {
 test('Create a new room without specifying a floor', async () => {
   const payload = {
     "httpMethod": "PUT",
-    "path": "/v1/resources/room/TEST/create",
+    "path": "/v1/resources/rooms/TEST/create",
     "queryStringParameters": {
     },
     "headers": {
@@ -83,7 +83,7 @@ test('Create a new room without specifying a floor', async () => {
 test('Create a new room without specifying a building', async () => {
   const payload = {
     "httpMethod": "PUT",
-    "path": "/v1/resources/room/TEST/create",
+    "path": "/v1/resources/rooms/TEST/create",
     "queryStringParameters": {
     },
     "headers": {
@@ -110,7 +110,7 @@ test('Update a room description', async () => {
 
   const payload = {
     "httpMethod": "PUT",
-    "path": `/v1/resources/room/${identifier}/update`,
+    "path": `/v1/resources/rooms/${identifier}/update`,
     "queryStringParameters": {
     },
     "headers": {
@@ -135,7 +135,37 @@ test('Update a room description', async () => {
 test('Retreive details of a room', async () => {
   const payload = {
     "httpMethod": "GET",
-    "path": `/v1/resources/room/TEST`,
+    "path": `/v1/resources/rooms/TEST`,
+    "queryStringParameters": {
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": ""
+  }
+
+  const res = await lambdaLocal.execute({
+    event: payload,
+    lambdaPath: "./index.js",
+    profileName: PROFILE,
+    verboseLevel: 0
+  })
+
+  // Assert the response code
+  expect(res.statusCode).toBe(200)
+
+  // Assert the room name
+  expect(JSON.parse(res.body).result[0].room).toBe("TEST")
+
+  // Assert the room floor and description
+  expect(JSON.parse(res.body).result[0].floor).toBe(0)
+  expect(JSON.parse(res.body).result[0].description).toBe("This is a test room")
+})
+
+test('Retreive all rooms', async () => {
+  const payload = {
+    "httpMethod": "POST",
+    "path": `/v1/resources/rooms/search`,
     "queryStringParameters": {
     },
     "headers": {
@@ -155,20 +185,15 @@ test('Retreive details of a room', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert the number of returned items
-  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
-
-  // Assert the room floor and description
-  expect(JSON.parse(res.body).result[0].floor).toBe(0)
-  expect(JSON.parse(res.body).result[0].description).toBe("This is a test room")
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(2)
 })
-
 
 test('Delete a room', async () => {
   const identifier = (await lookup("TEST")).room_id
 
   const payload = {
     "httpMethod": "DELETE",
-    "path": `/v1/resources/room/${identifier}`,
+    "path": `/v1/resources/rooms/${identifier}`,
     "queryStringParameters": {
     },
     "headers": {

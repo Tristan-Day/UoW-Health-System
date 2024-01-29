@@ -9,24 +9,29 @@ const BUILDING_CREATE = `
   RETURNING building_id
 `
 
-const ROOM_GET = `
+const ALL_ROOMS = `
   SELECT 
-    room.room_id, building.name, room.floor, room.name, room.description 
+    room.room_id, building.name AS building, room.floor, room.name AS room, room.description 
   FROM 
     system.rooms room
   LEFT JOIN
     system.buildings building ON building.building_id = room.building_id
-  WHERE
-    room.name = $1
 `
 
+const SELECT_ROOM =
+  ALL_ROOMS + " WHERE room.name = $1"
+
+const SEARCH_ROOMS =
+  ALL_ROOMS + " WHERE room.name ILIKE '%' || $1 || '%'"
 
 const buildings = {
   insert: BUILDING_CREATE
 }
 
 const rooms = {
-  select: ROOM_GET
+  all: ALL_ROOMS,
+  select: SELECT_ROOM,
+  search: SEARCH_ROOMS
 }
 
 module.exports = { buildings, rooms }

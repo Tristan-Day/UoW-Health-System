@@ -158,7 +158,7 @@ app.post('/v1/resources/staff/search', async function (req, res) {
     res.status(400).json({ error: `Parameter 'string' must be of type 'string'` });
     return;
   }
- 
+
   // Prevent SQL injection attacks
   const allowlist = ['first_name', 'last_name', 'email_address', 'phone_number']
 
