@@ -260,7 +260,7 @@ class WardAPI {
             return;
         }
 
-        if (!Validator.deleteIsValid(req.body)) {
+        if (!Validator.deleteIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
@@ -272,9 +272,9 @@ class WardAPI {
         try {
 
             const queryString = `
-                    DELETE FROM "system".ward WHERE WARD_ID = $1;
+                UPDATE "system".ward SET WARD_NAME = $1 where WARD_ID = $2
                     `;
-            const values = [req.body["WARD_ID"]];
+            const values = [(req.query["WARD_ID"] + "(Deleted)"), req.query["WARD_ID"]];
 
             let query = await client.query(queryString, values);
             result = { success: query };
