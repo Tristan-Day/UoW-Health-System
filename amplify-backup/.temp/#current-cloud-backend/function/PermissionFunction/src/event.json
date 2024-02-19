@@ -1,0 +1,11 @@
+{
+  "httpMethod": "GET",
+  "path": "/v1/permissions/staff/TEST",
+  "queryStringParameters": {
+    "limit": "10"
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"roles\":[\"Test Permission\"]}"
+}
