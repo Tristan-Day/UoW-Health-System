@@ -3,11 +3,13 @@ import { Authenticator } from '@aws-amplify/ui-react'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useEffect, useState } from 'react'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
-import { Home } from './page'
+import { Home, Authentication } from './page'
+import { isAuthorised } from './logic/authentication'
 
 import { ScheduleRoutes } from './page/schedule'
 import { PatientRoutes } from './page/patients'
@@ -27,17 +29,34 @@ if (
 }
 
 function App() {
+  const [authorised, setAuthorisation] = useState(false)
+
+  useEffect(() => {
+    isAuthorised()
+      .then(result => {
+        console.log(result)
+        setAuthorisation(result)
+      })
+      .catch(error => {
+        setAuthorisation(false)
+      })
+  }, [])
+
   return (
     // Wrap all routes with Cognito Authentication
     <Authenticator>
       <BrowserRouter>
         <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
           <CssBaseline />
-          <Routes>
-            <Route path="*" element={<Home />}>
-              {ScheduleRoutes} {PatientRoutes} {AssetRoutes} {StaffRoutes}
-            </Route>
-          </Routes>
+          {authorised ? (
+            <Routes>
+              <Route path="*" element={<Home />}>
+                {ScheduleRoutes} {PatientRoutes} {AssetRoutes} {StaffRoutes}
+              </Route>
+            </Routes>
+          ) : (
+            <Authentication />
+          )}
         </ThemeProvider>
       </BrowserRouter>
     </Authenticator>
