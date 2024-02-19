@@ -1,0 +1,11 @@
+{
+  "httpMethod": "POST",
+  "path": "/v1/resources/ward/order",
+  "queryStringParameters": {
+  },
+  "headers": {
+    "Content-Type": "application/json"
+  },
+  "body": "{\"ACTION_TYPE\":\"INSERT\",\"WARD_ID\":\"ORTH\",\"PRIORITY\":\"MAX\",\"ORDER_DESCRIPTION\":\"Please remove all patient effects before the deep clean on thursday.\",\"DATE_POSTED\":\"11/01/2024\",\"HOURS_VALID_FOR\":120}"
+}
+
