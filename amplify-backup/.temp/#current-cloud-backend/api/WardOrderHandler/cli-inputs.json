@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/ward/order": {
+      "name": "/v1/resources/ward/order",
+      "lambdaFunction": "WardOrderFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
