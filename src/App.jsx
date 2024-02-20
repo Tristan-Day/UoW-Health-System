@@ -44,8 +44,8 @@ function App() {
 
   return (
     // Wrap all routes with Cognito Authentication
-    <Authenticator>
-      <BrowserRouter>
+    <BrowserRouter>
+      <Authenticator>
         <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
           <CssBaseline />
           {authorised ? (
@@ -58,8 +58,8 @@ function App() {
             <Authentication />
           )}
         </ThemeProvider>
-      </BrowserRouter>
-    </Authenticator>
+      </Authenticator>
+    </BrowserRouter>
   )
 }
 
