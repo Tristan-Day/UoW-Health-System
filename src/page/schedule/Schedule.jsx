@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { Outlet, Route } from 'react-router-dom'
 
-import IndexGenerator from '../../components/IndexGenerator'
+import IndexGenerator from '../../components/generator/IndexGenerator'
 
 const Pages = {
   'Personal Schedule': {

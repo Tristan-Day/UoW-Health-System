@@ -21,7 +21,7 @@ import Alert from '@mui/material/Alert'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import BreadcrumbGenerator from '../../components/BreadcumbGenerator'
+import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
 import { cancelOrder, getOrders } from './logic/Cleaning'
 
 const Columns = [
@@ -189,7 +189,7 @@ const Cleaning = () => {
             sx={{ alignItems: 'center' }}
           />
         </Box>
-        <Box sx={{ display: 'flex', gap: '0.5rem' }}>
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
           <Button
             variant={selection !== undefined ? 'outlined' : 'disabled'}
             onClick={() => handleCancel(selection)}

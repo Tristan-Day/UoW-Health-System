@@ -1,7 +1,9 @@
 import { Box } from '@mui/material'
 import { Outlet, Route } from 'react-router-dom'
 
-import IndexGenerator from '../../components/IndexGenerator'
+import IndexGenerator from '../../components/generator/IndexGenerator'
+
+import { Roles, RoleDetails, RoleCreationForm } from '.'
 
 const Pages = {
   'Role Management': {
@@ -22,7 +24,7 @@ const Links = () => {
   return <IndexGenerator title="Staff Management" contents={Pages} />
 }
 
-const Staff = () => {
+const Template = () => {
   return (
     <Box style={{ padding: '1rem' }}>
       <Outlet />
@@ -31,10 +33,15 @@ const Staff = () => {
 }
 
 const StaffRoutes = (
-  <Route path="staff" element={<Staff />}>
+  <Route path="staff" element={<Template />}>
     <Route index path="*" element={<Links />} />
 
-    <Route path="roles" element={<h1>Role Management</h1>} />
+    <Route path="roles">
+      <Route index element={<Roles />} />
+      <Route path="create" element={<RoleCreationForm />} />
+      <Route path=":identifier" element={<RoleDetails />} />
+    </Route>
+
     <Route path="list" element={<h1>Staff List</h1>} />
     <Route path="schedules" element={<h1>Staff Schedule Management</h1>} />
   </Route>
