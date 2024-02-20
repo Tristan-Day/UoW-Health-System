@@ -114,7 +114,7 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   } */
 
   // Import the SQL statement from permission queries
-  const query = require("./queries").permissions.all
+  const query = require("./queries").permissions.assigned
   const result = await client.query(query, [req.params.identifier])
 
   if (req.body.permissions === undefined) {
@@ -572,7 +572,7 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
 
   /* #swagger.parameters['name'] = {
         in: 'path',                            
-        description: 'The role to update or create',
+        description: 'The role to create',
         schema: 'string',                
         required: true                     
   } */
@@ -633,7 +633,7 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
   } */
 
   if (req.body.description !== undefined) {
-    const query = 'UPDATE system.roles SET description = $1 WHERE name = $2'
+    const query = 'UPDATE system.roles SET description = $2 WHERE name = $1'
     const result = await client.query(query, [req.params.name, req.body.description])
 
     if (result.rowsRowcount == 0) {
@@ -667,6 +667,11 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
   // Lookup the primary key for the role
   const role = await (await identify([req.params.name], "system.roles", "role_id")).result[req.params.name]
 
+  // Remove existing permissions
+  await client.query(
+    "DELETE FROM system.role_permissions WHERE role_id = $1", [role]
+  )
+
   // Attempt to grant each permission
   for (var [name, permission] of Object.entries(permissions)) {
     try {
@@ -679,12 +684,8 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
     }
   }
 
-  if (errors.length > 0) {
-    res.status(404).json({ error: 'Some permissions where not granted due to an error', permissions: errors })
-  }
-  else {
-    res.status(200).json({ result: "Role sucessfully created" })
-  }
+
+  res.status(200).json({ result: "Role sucessfully updated", errors: errors})
 })
 
 app.post('/v1/permissions/roles/search', async function (req, res) {
@@ -715,6 +716,37 @@ app.post('/v1/permissions/roles/search', async function (req, res) {
   }
   else {
     res.status(404).json({ error: "No Matching Roles" })
+  }
+})
+
+app.post('/v1/permissions/search', async function (req, res) {
+  await setup()
+
+  // #swagger.description = 'Retreive permissions matching a given query'
+
+  /* #swagger.parameters['query'] = {
+        in: 'body',                            
+        description: 'The string to match to',
+        schema: 'string',               
+        required: false                     
+  } */
+
+  var result
+
+  if (req.body.query) {
+    const query = require('./queries').permissions.search
+    result = await client.query(query, [req.body.query])
+  }
+  else {
+    const query = require("./queries").permissions.all
+    result = await client.query(query)
+  }
+
+  if (result.rows.length > 0) {
+    res.status(200).json({ result: result.rows })
+  }
+  else {
+    res.status(404).json({ error: "No Matching Permissions" })
   }
 })
 
