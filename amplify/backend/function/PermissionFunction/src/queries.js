@@ -1,4 +1,14 @@
 const ALL_PERMISSIONS = `
+  SELECT
+    permission.name,
+    permission.description
+  FROM
+    system.permissions permission
+`
+const SEARCH_PERMISSIONS =
+  ALL_PERMISSIONS + " WHERE permission.name ILIKE '%' || $1 || '%'"
+
+const USER_PERMISSIONS = `
   SELECT 
     pe.name,
     pe.description
@@ -60,7 +70,7 @@ const PERMISSION_MEMBERS = `
     pe.name = $1
 `
 
-const ALL_ROLES = `
+const USER_ROLES = `
   SELECT
     ro.name,
     ro.description
@@ -73,6 +83,17 @@ const ALL_ROLES = `
   WHERE
     staff.staff_id = $1
   `
+
+const ALL_ROLES = `
+  SELECT
+    role.name,
+    role.description
+  FROM
+    system.roles role
+`
+
+const SEARCH_ROLES = 
+  ALL_ROLES + " WHERE role.name ILIKE '%' || $1 || '%'"
 
 const ROLE_MEMBERS = `
   SELECT
@@ -104,13 +125,25 @@ const ROLE_PERMISSIONS = `
 `
 
 const permissions = {
+  // Retreival
   all: ALL_PERMISSIONS,
+  search: SEARCH_PERMISSIONS,
+
+  // Security
+  assigned: USER_PERMISSIONS,
   members: PERMISSION_MEMBERS
 }
 
 const roles = {
+  // Retreival
   all: ALL_ROLES,
+  search: SEARCH_ROLES,
+
+  // Security
   members: ROLE_MEMBERS,
+  assigned: USER_ROLES,
+
+  // View
   permissions: ROLE_PERMISSIONS
 }
 

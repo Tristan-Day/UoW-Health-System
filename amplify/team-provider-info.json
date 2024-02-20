@@ -27,7 +27,7 @@
         },
         "PermissionFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/PermissionFunction-4961714166327639534b-build.zip"
+          "s3Key": "amplify-builds/PermissionFunction-354f6230535277775879-build.zip"
         },
         "RoomFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
@@ -55,7 +55,7 @@
         },
         "WardFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/WardFunction-564d6963376463354c36-build.zip"
+          "s3Key": "amplify-builds/WardFunction-43657876416f386f7332-build.zip"
         },
         "WardOrderFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",

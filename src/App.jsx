@@ -34,12 +34,9 @@ function App() {
   useEffect(() => {
     isAuthorised()
       .then(result => {
-        console.log(result)
         setAuthorisation(result)
       })
-      .catch(error => {
-        setAuthorisation(false)
-      })
+      .catch(() => {})
   }, [])
 
   return (
