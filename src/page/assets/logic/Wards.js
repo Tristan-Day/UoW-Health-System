@@ -15,7 +15,7 @@ class WardsAPI {
     }
 
     static upsertWard = async function(actionType, wardName, specialisation, description, iconData, wardId) {
-      if(wardId != null) {
+      if(wardId != null && actionType == "INSERT") {
         const operation = post({
           apiName: 'WardHandler',
           path: `/v1/resources/ward`,
@@ -23,6 +23,7 @@ class WardsAPI {
             body: {
               ACTION_TYPE: actionType,
               WARD_NAME: wardName,
+              DESCRIPTION: description,
               SPECIALISATION: specialisation,
               ICON_DATA: iconData,
               WARD_ID: wardId
@@ -41,6 +42,7 @@ class WardsAPI {
           body: {
             ACTION_TYPE: actionType,
             WARD_NAME: wardName,
+            DESCRIPTION: description,
             SPECIALISATION: specialisation,
             ICON_DATA: iconData,
           }

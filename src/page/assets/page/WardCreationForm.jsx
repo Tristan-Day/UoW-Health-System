@@ -26,7 +26,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import { ArrowDropDown } from '@mui/icons-material'
 import WardsAPI from '../logic/Wards'
 
-const WardCreationForm = (props) => {
+const WardCreationForm = props => {
   const [message, setMessage] = useState({})
   const [errors, setErrors] = useState({})
 
@@ -37,11 +37,29 @@ const WardCreationForm = (props) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  
-  console.log("props");
-  console.log(location.state);
+  console.log('props')
+  console.log(location.state)
+
+  let action = 'CREATE'
+  if (
+    location.state &&
+    location.state.action &&
+    location.state.action === 'UPDATE'
+  ) {
+    action = 'UPDATE'
+  }
 
   useEffect(() => {
+    let props = location.state;
+    if (props && props.action && props.action === 'UPDATE') {
+      setForm({
+        ward: location.state.ward_name,
+        specialisation: location.state.specialisation,
+        description: location.state.description,
+        icon: location.state.icon_data,
+        id: location.state.ward_id
+      })
+    }
     handleValidation()
   }, [])
 
@@ -80,6 +98,38 @@ const WardCreationForm = (props) => {
       return
     }
 
+    if(action === 'UPDATE') {
+
+      setMessage({ text: 'Updating ward...', severity: 'info' })
+
+      WardsAPI.upsertWard(
+        'UPDATE',
+        form.ward,
+        form.specialisation,
+        form.description,
+        form.icon,
+        form.id
+      )
+        .then((res) => {
+          setMessage({ text: 'ward sucessfully created', severity: 'success' })
+
+          console.log(res);
+
+          setTimeout(() => setMessage(undefined), 7000)
+        })
+        .catch((res) => {
+          setMessage({
+            text: 'Failed to create ward - Please try again later',
+            severity: 'error'
+          })
+
+          console.log(res);
+
+          setTimeout(() => setMessage(undefined), 7000)
+        })
+
+    }
+
     setMessage({ text: 'Creating ward...', severity: 'info' })
 
     WardsAPI.upsertWard(
@@ -105,12 +155,16 @@ const WardCreationForm = (props) => {
       })
   }
 
+  console.log(form)
+
   return (
     <Box>
       <BreadcrumbGenerator />
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography variant="h4">Create a ward</Typography>
+        <Typography variant="h4">
+          {action === 'UPDATE' ? 'Update' : 'Create'} a ward
+        </Typography>
         <Button onClick={() => navigate(-1)}>Return</Button>
       </Box>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
@@ -132,6 +186,8 @@ const WardCreationForm = (props) => {
           onBlur={event => {
             setForm({ ...form, id: event.target.value })
           }}
+          value={form.id}
+          defaultValue={form.id}
           error={errors.ward}
         />
         <TextField
@@ -142,6 +198,8 @@ const WardCreationForm = (props) => {
           onBlur={event => {
             setForm({ ...form, ward: event.target.value })
           }}
+          value={form.ward}
+          defaultValue={form.ward}
           error={errors.ward}
         />
         <TextField
@@ -152,6 +210,8 @@ const WardCreationForm = (props) => {
           onBlur={event => {
             setForm({ ...form, specialisation: event.target.value })
           }}
+          value={form.specialisation}
+          defaultValue={form.specialisation}
           error={errors.ward}
         />
         <TextField
@@ -161,6 +221,7 @@ const WardCreationForm = (props) => {
           onChange={event =>
             setForm({ ...form, description: event.target.value.trim() })
           }
+          defaultValue={form.description}
         />
         <div>
           <Typography>Selected Icon: </Typography>

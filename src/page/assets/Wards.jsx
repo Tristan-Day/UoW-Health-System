@@ -7,7 +7,8 @@ import {
   Grow,
   Fab,
   InputAdornment,
-  IconButton
+  IconButton,
+  Icon
 } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
@@ -56,6 +57,17 @@ const Wards = () => {
       sortable: false
     },
     {
+      field: 'icon_data',
+      headerName: 'Icon',
+      width: 200,
+      disableColumnMenu: true,
+      sortable: false,
+      renderCell: params => {
+        console.log(params.row.icon_data)
+        return <Icon>{params.row.icon_data}</Icon>
+      }
+    },
+    {
       field: 'ward_name',
       headerName: 'Name',
       width: 200,
@@ -80,11 +92,20 @@ const Wards = () => {
       width: 400,
       disableColumnMenu: true,
       sortable: false,
-      renderCell: (params) => {
-        console.log(selection);
-        return <Button variant="text" onClick={() => {navigate('create', {state: { id: selection }})}} ><Edit/> Edit</Button>;
+      renderCell: params => {
+        console.log(params.row)
+        return (
+          <Button
+            variant="text"
+            onClick={() => {
+              navigate('create', { state: { ...params.row, action: 'UPDATE' } })
+            }}
+          >
+            <Edit /> Edit
+          </Button>
+        )
       }
-    },
+    }
   ]
 
   async function handleSearch(query) {
@@ -191,6 +212,7 @@ const Wards = () => {
         rows={contents}
         columns={Columns}
         onRowSelectionModelChange={model => {
+          console.log(model[0])
           setSelection(model[0])
         }}
         sx={{ height: '40vh' }}
