@@ -9,6 +9,7 @@ See the License for the specific language governing permissions and limitations 
 const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+const SecretsManager = require('@aws-sdk/client-secrets-manager')
 const AWS = require('aws-sdk')
 const { Pool } = require('pg')
 const WardAPI = require('./wardApi')

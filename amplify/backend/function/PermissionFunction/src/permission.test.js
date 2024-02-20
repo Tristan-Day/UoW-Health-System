@@ -324,6 +324,32 @@ test('Retreive all roles', async () => {
   expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
 })
 
+test('Retreive all permissions', async () => {
+  const payload = {
+    "httpMethod": "POST",
+    "path": `/v1/permissions/search`,
+    "queryStringParameters": {
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": ""
+  }
+
+  const res = await lambdaLocal.execute({
+    event: payload,
+    lambdaPath: "./index.js",
+    profileName: PROFILE,
+    verboseLevel: 0
+  })
+
+  // Assert the response code
+  expect(res.statusCode).toBe(200)
+
+  // Assert the number of returned items
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(2)
+})
+
 test('Delete a role', async () => {
   const payload = {
     "httpMethod": "DELETE",
