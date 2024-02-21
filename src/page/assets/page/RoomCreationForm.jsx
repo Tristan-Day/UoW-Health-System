@@ -6,12 +6,9 @@ import {
   Button,
   Stack,
   Autocomplete,
-  Fab,
   Grow,
   Alert
 } from '@mui/material'
-
-import SaveIcon from '@mui/icons-material/Save'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -122,7 +119,18 @@ const RoomCreationForm = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h4">Create a Room</Typography>
-        <Button onClick={() => navigate(-1)}>Return</Button>
+
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button
+            variant="contained"
+            disabled={Boolean(message)}
+            onClick={() => handleSubmit()}
+          >
+            Submit
+          </Button>
+          <Divider orientation="vertical" />
+          <Button onClick={() => navigate(-1)}>Return</Button>
+        </Box>
       </Box>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
@@ -171,17 +179,6 @@ const RoomCreationForm = () => {
           }
         />
       </Stack>
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          sx={{ position: 'absolute' }}
-          disabled={Boolean(message)}
-          onClick={() => handleSubmit()}
-        >
-          <SaveIcon />
-        </Fab>
-      </Box>
     </Box>
   )
 }

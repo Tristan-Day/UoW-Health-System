@@ -1,25 +1,14 @@
-import {
-  Typography,
-  Box,
-  Divider,
-  TextField,
-  Button,
-  Grow,
-  Fab,
-  InputAdornment,
-  IconButton
-} from '@mui/material'
+import { Typography, Box, Divider, Button, Grow } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
-
-import SearchIcon from '@mui/icons-material/Search'
-import AddIcon from '@mui/icons-material/Add'
 import Alert from '@mui/material/Alert'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
+import { Searchbox } from '../../components'
+
 import { deletePremises, getPremises } from './logic/Premises'
 
 const Columns = [
@@ -57,7 +46,6 @@ const Columns = [
 ]
 
 const Premises = () => {
-  const [query, setQuery] = useState('')
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
@@ -131,37 +119,21 @@ const Premises = () => {
 
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
-      <Box
-        sx={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}
-      >
+      <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
+        <Searchbox label="Search Premises" onSubmit={handleSearch} />
+
         <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <TextField
-            label="Search Premises"
-            onChange={event => setQuery(event.target.value)}
-            onKeyDown={event =>
-              event.key === 'Enter' ? handleSearch(query) : null
-            }
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    size="small"
-                    disabled={message && message.loading}
-                    onClick={() => handleSearch(query)}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
+          <Button variant="contained" onClick={() => navigate('create')}>
+            Add Premises
+          </Button>
+          <Divider orientation="vertical" />
+          <Button
+            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            onClick={() => handleDelete(selection)}
+          >
+            Delete Room
+          </Button>
         </Box>
-        <Button
-          variant={selection ? 'outlined' : 'disabled'}
-          onClick={() => handleDelete(selection)}
-        >
-          Delete Room
-        </Button>
       </Box>
 
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
@@ -181,17 +153,6 @@ const Premises = () => {
         sx={{ height: '40vh' }}
         autoPageSize
       />
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          aria-label="add"
-          sx={{ position: 'absolute' }}
-          onClick={() => navigate('create')}
-        >
-          <AddIcon />
-        </Fab>
-      </Box>
     </Box>
   )
 }
