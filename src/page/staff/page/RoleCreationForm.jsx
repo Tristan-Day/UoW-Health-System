@@ -4,14 +4,12 @@ import {
   Divider,
   Button,
   Grow,
-  Fab,
   Alert,
   TextField,
   Stack
 } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
-import SaveIcon from '@mui/icons-material/Save'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -125,10 +123,22 @@ const RoleCreationForm = () => {
     <Box>
       <BreadcrumbGenerator />
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
         <Typography variant="h4">Create a Role</Typography>
-        <Button onClick={() => navigate(-1)}>Return</Button>
+
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button
+            variant="contained"
+            disabled={Boolean(message)}
+            onClick={() => handleSubmit()}
+          >
+            Submit
+          </Button>
+          <Divider orientation="vertical" />
+          <Button onClick={() => navigate(-1)}>Return</Button>
+        </Box>
       </Box>
+
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       {message && (
@@ -172,6 +182,9 @@ const RoleCreationForm = () => {
         }}
       >
         <Typography variant="h6">Permissions</Typography>
+        <Typography variant="caption">
+          Select the permissions this role requires
+        </Typography>
         <DataGrid
           rows={permissionList}
           columns={Columns}
@@ -180,17 +193,6 @@ const RoleCreationForm = () => {
           checkboxSelection
           autoPageSize
         />
-      </Box>
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          sx={{ position: 'absolute' }}
-          disabled={Boolean(message)}
-          onClick={() => handleSubmit()}
-        >
-          <SaveIcon />
-        </Fab>
       </Box>
     </Box>
   )

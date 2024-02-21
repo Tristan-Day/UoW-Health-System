@@ -1,7 +1,6 @@
-import { Typography, Box, Divider, Button, Grow } from '@mui/material'
+import { Typography, Box, Divider, Button, Grow, Alert } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
-import Alert from '@mui/material/Alert'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -9,22 +8,43 @@ import { useNavigate } from 'react-router-dom'
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
 import { Searchbox } from '../../components'
 
-import { getRoles, deleteRole } from './logic/Permissions'
+import { getStaff } from './logic/Personel'
 
 const Columns = [
   {
-    field: 'name',
-    headerName: 'Name',
-    width: 250
+    field: 'identifier',
+    headerName: 'ID',
+    width: 200,
+    disableColumnMenu: true,
+    sortable: false
   },
   {
-    field: 'description',
-    headerName: 'Description',
-    width: 350
+    field: 'first_name',
+    headerName: 'First Name',
+    width: 130
+  },
+  {
+    field: 'last_name',
+    headerName: 'Last Name',
+    width: 130
+  },
+  {
+    field: 'email_address',
+    headerName: 'Email Address',
+    width: 250,
+    disableColumnMenu: true,
+    sortable: false
+  },
+  {
+    field: 'phone_number',
+    headerName: 'Phone Number',
+    width: 250,
+    disableColumnMenu: true,
+    sortable: false
   }
 ]
 
-const Roles = () => {
+const Staff = () => {
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
@@ -47,12 +67,13 @@ const Roles = () => {
   async function handleSearch(query) {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    getRoles(query)
+    getStaff(query)
       .then(result => {
         setContents(
-          result.map(role => ({
-            ...role,
-            id: role.name
+          result.map(user => ({
+            ...user,
+            id: user.staff_id,
+            identifier: user.staff_id
           }))
         )
         setMessage(undefined)
@@ -68,49 +89,31 @@ const Roles = () => {
   }
 
   async function handleSelection(index) {
-    contents.forEach(role => {
-      if (role.name === index) {
-        setSelection(role)
+    contents.forEach(user => {
+      if (user.identifier === index) {
+        setSelection(user)
         return
       }
     })
   }
 
   async function handleDelete() {
-    setMessage({ text: 'Deleting Role...', severity: 'info', loading: true })
-
-    deleteRole(selection.id)
-      .then(() => {
-        setMessage({
-          text: 'Role sucessfully deleted',
-          severity: 'success',
-          loading: false
-        })
-
-        setContents(contents.filter(role => role.id !== selection.id))
-      })
-      .catch(() => {
-        setMessage({
-          text: 'Failed to delete role - Please try again later',
-          severity: 'error',
-          loading: false
-        })
-      })
+    setMessage({ text: 'Deleting User...', severity: 'info', loading: true })
   }
 
   return (
     <Box>
       <BreadcrumbGenerator />
-      <Typography variant="h4">System Roles</Typography>
+      <Typography variant="h4">Staff List</Typography>
 
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
-        <Searchbox label="Search Roles" onSubmit={handleSearch} />
+        <Searchbox label="Search Staff" onSubmit={handleSearch} />
 
         <Box sx={{ display: 'flex', gap: '1rem' }}>
           <Button variant="contained" onClick={() => navigate('create')}>
-            Create New Role
+            Create New User
           </Button>
           <Divider orientation="vertical" />
           <Button
@@ -123,7 +126,7 @@ const Roles = () => {
             variant={selection !== undefined ? 'outlined' : 'disabled'}
             onClick={() => handleDelete()}
           >
-            Delete Role
+            Delete User
           </Button>
         </Box>
       </Box>
@@ -149,4 +152,4 @@ const Roles = () => {
   )
 }
 
-export default Roles
+export default Staff

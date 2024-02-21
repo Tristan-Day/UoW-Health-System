@@ -103,3 +103,29 @@ export const deleteRole = async name => {
   const response = await operation.response
   return (await response.body.json()).result
 }
+
+export const grantRoles = async (identifier, roles) => {
+  const operation = put({
+    apiName: 'PermissionHandler',
+    path: `/v1/permissions/roles/staff/${identifier}/grant`,
+    options: {
+      body: { roles: roles }
+    }
+  })
+
+  const response = await operation.response
+  return (await response.body.json()).result
+}
+
+export const grantPermissions = async (identifier, permissions) => {
+  const operation = put({
+    apiName: 'PermissionHandler',
+    path: `/v1/permissions/staff/${identifier}/grant`,
+    options: {
+      body: { permissions: permissions }
+    }
+  })
+
+  const response = await operation.response
+  return (await response.body.json()).result
+}

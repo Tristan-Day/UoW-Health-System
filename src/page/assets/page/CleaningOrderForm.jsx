@@ -6,12 +6,9 @@ import {
   Button,
   Stack,
   Autocomplete,
-  Fab,
   Grow,
   Alert
 } from '@mui/material'
-
-import SendIcon from '@mui/icons-material/Send'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -164,8 +161,20 @@ const CleaningOrderForm = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h4">Submit a Cleaning Order</Typography>
-        <Button onClick={() => navigate(-1)}>Return</Button>
+
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button
+            variant="contained"
+            disabled={Boolean(message)}
+            onClick={() => handleSubmit()}
+          >
+            Submit
+          </Button>
+          <Divider orientation="vertical" />
+          <Button onClick={() => navigate(-1)}>Return</Button>
+        </Box>
       </Box>
+
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       {message && (
@@ -216,17 +225,6 @@ const CleaningOrderForm = () => {
           }
         />
       </Stack>
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          sx={{ position: 'absolute' }}
-          disabled={Boolean(message)}
-          onClick={() => handleSubmit()}
-        >
-          <SendIcon />
-        </Fab>
-      </Box>
     </Box>
   )
 }
