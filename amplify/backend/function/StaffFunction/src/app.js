@@ -173,13 +173,13 @@ app.put('/v1/resources/staff/:identifier/create', async function (req, res) {
   } */
 
   const query = `
-    INSERT INTO system.staff (staff_id, first_name, last_name, email_address, phone_number)
-    VALUES ($1, $2, $3, $4, $5)
+    INSERT INTO system.staff (staff_id, first_name, last_name, email_address, phone_number, image)
+    VALUES ($1, $2, $3, $4, $5, $6)
   `
 
   fields = [
     req.params.identifier, req.body.first_name, req.body.last_name,
-    req.body.email_address, req.body.phone_number
+    req.body.email_address, req.body.phone_number, req.body.image
   ]
 
   try {

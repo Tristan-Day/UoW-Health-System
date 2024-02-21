@@ -6,6 +6,7 @@ import IndexGenerator from '../../components/IndexGenerator'
 import { Cleaning, Premises, RoomCreationForm, CleaningOrderForm } from '.'
 import Wards from './Wards'
 import WardCreationForm from './page/WardCreationForm'
+import Treatments from './Treatments'
 
 const Pages = {
   'Premises Management': {
@@ -19,6 +20,10 @@ const Pages = {
   'Cleaning Orders': {
     description: 'Issue, view, fulfil and cancel hospital cleaning orders.',
     site: 'cleaning'
+  },
+  'Treatments': {
+    description: 'Create, view, update and delete treatment services provided by the hopsital.',
+    site: 'treatments'
   }
 }
 
@@ -53,7 +58,11 @@ const AssetRoutes = (
       <Route path="create" element={<WardCreationForm />} />
     </Route>
 
-    <Route path="wards" element={<h1>Ward Management</h1>} />
+    <Route path="treatments">
+      <Route index element={<Treatments />} />
+      <Route path="create" element={<WardCreationForm />} />
+    </Route>
+
   </Route>
 )
 
