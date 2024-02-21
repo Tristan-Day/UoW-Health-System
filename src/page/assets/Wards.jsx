@@ -25,6 +25,7 @@ import BreadcrumbGenerator from '../../components/BreadcumbGenerator'
 import { deletePremises, getPremises } from './logic/Premises'
 import WardsAPI from './logic/Wards'
 import { Edit } from '@mui/icons-material'
+import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 
 const Wards = () => {
   const [query, setQuery] = useState('')
@@ -32,6 +33,8 @@ const Wards = () => {
 
   const [selection, setSelection] = useState()
   const [contents, setContents] = useState([])
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const navigate = useNavigate()
 
@@ -134,8 +137,17 @@ const Wards = () => {
       })
   }
 
+  function openDeleteDialog() {
+    setShowDeleteDialog(true);
+  }
+
   async function handleDelete() {
+    setShowDeleteDialog(false);
+
     setMessage({ text: 'Deleting room...', severity: 'info', loading: true })
+
+    console.log("selection");
+    console.log(selection);
 
     WardsAPI.deleteWard(selection)
       .then(res => {
@@ -149,7 +161,9 @@ const Wards = () => {
 
         setContents(contents.filter(room => room.id !== selection))
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
+
         setMessage({
           text: 'Ward to delete room - Please try again later',
           severity: 'error',
@@ -159,77 +173,90 @@ const Wards = () => {
   }
 
   return (
-    <Box>
-      <BreadcrumbGenerator />
-      <Typography variant="h4">Wards</Typography>
-
-      <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
-
-      <Box
-        sx={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}
-      >
-        <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <TextField
-            label="Search Wards"
-            onChange={event => setQuery(event.target.value)}
-            onKeyDown={event =>
-              event.key === 'Enter' ? handleSearch(query) : null
-            }
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    size="small"
-                    disabled={message && message.loading}
-                    onClick={() => handleSearch(query)}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
+    <div>
+      {showDeleteDialog && (
+        
+          <ConfirmationDialogue
+            message="Are you sure you want to proceed?"
+            proceedResponse="Delete"
+            denyResponse="Don't delete"
+            onProceed={handleDelete}
+            open={showDeleteDialog}
           />
-        </Box>
-        <Button
-          variant={selection ? 'outlined' : 'disabled'}
-          onClick={() => handleDelete(selection)}
-        >
-          Delete wards
-        </Button>
-      </Box>
-
-      <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
-
-      {message && (
-        <Grow in={true}>
-          <Alert severity={message.severity} sx={{ marginBottom: '1rem' }}>
-            {message.text}
-          </Alert>
-        </Grow>
+        
       )}
+      <Box>
+        <BreadcrumbGenerator />
+        <Typography variant="h4">Wards</Typography>
 
-      <DataGrid
-        rows={contents}
-        columns={Columns}
-        onRowSelectionModelChange={model => {
-          console.log(model[0])
-          setSelection(model[0])
-        }}
-        sx={{ height: '40vh' }}
-        autoPageSize
-      />
+        <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          aria-label="add"
-          sx={{ position: 'absolute' }}
-          onClick={() => navigate('create')}
+        <Box
+          sx={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}
         >
-          <AddIcon />
-        </Fab>
+          <Box sx={{ display: 'flex', gap: '1rem' }}>
+            <TextField
+              label="Search Wards"
+              onChange={event => setQuery(event.target.value)}
+              onKeyDown={event =>
+                event.key === 'Enter' ? handleSearch(query) : null
+              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="start">
+                    <IconButton
+                      size="small"
+                      disabled={message && message.loading}
+                      onClick={() => handleSearch(query)}
+                    >
+                      <SearchIcon />
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+          </Box>
+          <Button
+            variant={selection ? 'outlined' : 'disabled'}
+            onClick={() => openDeleteDialog()}
+          >
+            Delete wards
+          </Button>
+        </Box>
+
+        <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
+
+        {message && (
+          <Grow in={true}>
+            <Alert severity={message.severity} sx={{ marginBottom: '1rem' }}>
+              {message.text}
+            </Alert>
+          </Grow>
+        )}
+
+        <DataGrid
+          rows={contents}
+          columns={Columns}
+          onRowSelectionModelChange={model => {
+            console.log(model[0])
+            setSelection(model[0])
+          }}
+          sx={{ height: '40vh' }}
+          autoPageSize
+        />
+
+        <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
+          <Fab
+            color="primary"
+            aria-label="add"
+            sx={{ position: 'absolute' }}
+            onClick={() => navigate('create')}
+          >
+            <AddIcon />
+          </Fab>
+        </Box>
       </Box>
-    </Box>
+    </div>
   )
 }
 

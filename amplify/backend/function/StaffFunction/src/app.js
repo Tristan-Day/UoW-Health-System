@@ -107,112 +107,29 @@ app.post('/v1/resources/staff/search', async function (req, res) {
 
   // #swagger.description = 'Search for a staff member by a given field'
 
-  /* #swagger.parameters['fields'] = {
+  /* #swagger.parameters['query'] = {
         in: 'body',                            
-        description: 'The fields to search within',
-        schema: 'object',
-        required: true                   
-  } */
-
-  /* #swagger.parameters['string'] = {
-        in: 'query',                            
-        description: 'Search string or regex',                   
-        required: true                     
-  } */
-
-  /* #swagger.parameters['regex'] = {
-        in: 'query',                            
-        description: 'Specifies if the string is a regex query',                   
+        description: 'The string to match to',
+        schema: 'string',               
         required: false                     
   } */
-
-  /* #swagger.parameters['size'] = {
-        in: 'query',                            
-        description: 'Number of records in the page [Pagnetation]',                   
-        required: false                     
-  } */
-
-  /* #swagger.parameters['index'] = {
-        in: 'query',                            
-        description: 'The page index to retreive [Pagnetation]',                   
-        required: false                     
-  } */
-
-  // Basic error handling
-  if (req.body.fields === undefined) {
-    res.status(400).json({ error: `Missing body parameter 'fields'` })
-    return
-  }
-
-  if (!(Array.isArray(req.body.fields))) {
-    res.status(400).json({ error: `Parameter 'fields' must be of type 'array'` })
-    return
-  }
-
-  if (req.query.string === undefined) {
-    res.status(400).json({ error: `Missing body parameter 'string'` })
-    return
-  }
-
-  if (typeof req.query.string !== 'string') {
-    res.status(400).json({ error: `Parameter 'string' must be of type 'string'` });
-    return;
-  }
-
-  // Prevent SQL injection attacks
-  const allowlist = ['first_name', 'last_name', 'email_address', 'phone_number']
-
-  excluded = req.body.fields.filter((value) => !(allowlist.includes(value)))
-  columns = req.body.fields.filter((value) => allowlist.includes(value))
-
-  if (excluded.length > 0) {
-    res.status(400).json({ error: `Illegal field(s) '${excluded}'` })
-    return
-  }
-
-  // Generate an SQL statement
-  var conditions = []
-  const condition = req.query.regex ? '~' : '='
-
-  columns.forEach((field) => {
-    conditions.push(`${field} ${condition} $1`)
-  })
-  var query = `SELECT * FROM system.staff WHERE ${conditions.join(' OR ')}`
 
   var result
-  try {
-    result = await client.query(query, [req.query.string])
-  }
-  catch (error) {
-    res.status(500).send({ result: 'Unhandled error' })
-    return
-  }
 
-  if (result.rows.length < 1) {
-    res.status(404).json({ result: 'No matching staff' })
-    return
-  }
-
-  // Split results if pagnetation parameters are supplied
-  const pagnetationSize = req.query.size
-  const pagnetationIndex = req.query.index
-
-  if (pagnetationSize !== undefined && pagnetationIndex !== undefined) {
-    var pages = []
-
-    while (result.rows.length > 0) {
-      pages.push(result.rows.splice(0, pagnetationSize))
-    }
-
-    try {
-      res.status(200).json({ result: pages[pagnetationIndex] })
-    }
-    catch (error) {
-      res.status(416).json({ error: 'Page index out of range' })
-    }
+  if (req.body.query) {
+    const query = require('./queries').staff.search
+    result = await client.query(query, [req.body.query])
   }
   else {
+    const query = require("./queries").staff.all
+    result = await client.query(query)
+  }
+
+  if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows })
+  }
+  else {
+    res.status(404).json({ error: "No Matching Staff" })
   }
 })
 
