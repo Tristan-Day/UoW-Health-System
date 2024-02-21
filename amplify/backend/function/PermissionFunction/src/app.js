@@ -31,14 +31,15 @@ async function setup() {
 
   // Load credentials from secrets to avoid leakage
   const secretsClient = new SecretsManager.SecretsManagerClient({
-    region: 'eu-west-1',
+    region: 'eu-west-1'
   })
 
-  const response =
-    await secretsClient.send(new SecretsManager.GetSecretValueCommand({
+  const response = await secretsClient.send(
+    new SecretsManager.GetSecretValueCommand({
       SecretId: '/v1/database',
-      VersionStage: 'AWSCURRENT',
-    }))
+      VersionStage: 'AWSCURRENT'
+    })
+  )
 
   secrets = JSON.parse(response.SecretString)
   console.log('Sucessfully collected secrets')
@@ -54,7 +55,7 @@ async function setup() {
     ssl: { rejectUnauthorized: false },
 
     host: secrets.host,
-    port: secrets.port,
+    port: secrets.port
   })
 
   // Test the connection
@@ -74,7 +75,7 @@ function pagnetate(items, size, index) {
   try {
     return pages[index]
   } catch (error) {
-    throw new Error("Index out of range")
+    throw new Error('Index out of range')
   }
 }
 
@@ -86,20 +87,19 @@ async function identify(items, table, identifier) {
   // Where item is the name to lookup
   for (item of items) {
     const result = await client.query(
-      `SELECT ${identifier} FROM ${table} WHERE name = $1`, [item]
+      `SELECT ${identifier} FROM ${table} WHERE name = $1`,
+      [item]
     )
 
     if (result.rowCount > 0) {
       identifiers[item] = result.rows[0][identifier]
-    }
-    else {
+    } else {
       errors.push(item)
     }
   }
 
   return { result: identifiers, errors: errors }
 }
-
 
 app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   await setup()
@@ -114,7 +114,7 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   } */
 
   // Import the SQL statement from permission queries
-  const query = require("./queries").permissions.assigned
+  const query = require('./queries').permissions.assigned
   const result = await client.query(query, [req.params.identifier])
 
   if (req.body.permissions === undefined) {
@@ -122,17 +122,17 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
     return
   }
 
-  if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ error: "Permissions must be given as an array" })
+  if (!Array.isArray(req.body.permissions)) {
+    res.status(400).json({ error: 'Permissions must be given as an array' })
     return
   }
 
-  // Check each permission against the list of returned values 
-  const mapping = {};
+  // Check each permission against the list of returned values
+  const mapping = {}
 
-  req.body.permissions.forEach((item) => {
-    mapping[item] = result.rows.filter((row) => row.name === item).length > 0;
-  });
+  req.body.permissions.forEach(item => {
+    mapping[item] = result.rows.filter(row => row.name === item).length > 0
+  })
 
   res.status(200).json({ result: mapping })
 })
@@ -157,7 +157,7 @@ app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
   } */
 
   // Import the SQL statement from role queries
-  const query = require("./queries").roles.assigned
+  const query = require('./queries').roles.assigned
   const result = await client.query(query, [req.params.identifier])
 
   if (req.body.roles === undefined) {
@@ -165,17 +165,17 @@ app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
     return
   }
 
-  if (!(Array.isArray(req.body.roles))) {
-    res.status(400).json({ error: "Roles must be given as an array" })
+  if (!Array.isArray(req.body.roles)) {
+    res.status(400).json({ error: 'Roles must be given as an array' })
     return
   }
 
-  // Check each permission against the list of returned values 
-  const mapping = {};
+  // Check each permission against the list of returned values
+  const mapping = {}
 
-  req.body.roles.forEach((item) => {
-    mapping[item] = result.rows.filter((row) => row.name === item).length > 0;
-  });
+  req.body.roles.forEach(item => {
+    mapping[item] = result.rows.filter(row => row.name === item).length > 0
+  })
 
   res.status(200).json({ result: mapping })
 })
@@ -193,12 +193,13 @@ app.get('/v1/permissions/:name', async function (req, res) {
   } */
 
   const result = await client.query(
-    'SELECT name, description FROM system.permissions WHERE name = $1', [req.params.name])
+    'SELECT name, description FROM system.permissions WHERE name = $1',
+    [req.params.name]
+  )
 
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows[0] })
-  }
-  else {
+  } else {
     res.status(404).json({ error: 'Permission not found' })
   }
 })
@@ -224,10 +225,14 @@ app.get('/v1/permissions/roles/:name', async function (req, res) {
   }
 
   // Get permissions attached to the role
-  query = require("./queries").roles.permissions
+  query = require('./queries').roles.permissions
   const permissionResult = await client.query(query, [req.params.name])
 
-  res.status(200).json({ result: { ...roleResult.rows[0], permissions: permissionResult.rows } })
+  res
+    .status(200)
+    .json({
+      result: { ...roleResult.rows[0], permissions: permissionResult.rows }
+    })
 })
 
 app.get('/v1/permissions/:name/members', async function (req, res) {
@@ -257,7 +262,7 @@ app.get('/v1/permissions/:name/members', async function (req, res) {
   } */
 
   // Import the SQL statement from role queries
-  const query = require("./queries").permissions.members
+  const query = require('./queries').permissions.members
   const result = await client.query(query, [req.params.name])
 
   // Split results if pagnetation parameters are supplied
@@ -268,12 +273,10 @@ app.get('/v1/permissions/:name/members', async function (req, res) {
     try {
       page = pagnetate(result.rows, pagnetationSize, pagnetationIndex)
       res.status(200).json({ result: page })
-    }
-    catch (error) {
+    } catch (error) {
       res.status(416).json({ error: 'Error pagentating results' })
     }
-  }
-  else {
+  } else {
     res.status(200).json({ result: result.rows })
   }
 })
@@ -305,7 +308,7 @@ app.get('/v1/permissions/roles/:name/members', async function (req, res) {
   } */
 
   // Import the SQL statement from role queries
-  const query = require("./queries").roles.members
+  const query = require('./queries').roles.members
   const result = await client.query(query, [req.params.name])
 
   // Split results if pagnetation parameters are supplied
@@ -316,12 +319,10 @@ app.get('/v1/permissions/roles/:name/members', async function (req, res) {
     try {
       page = pagnetate(result.rows, pagnetationSize, pagnetationIndex)
       res.status(200).json({ result: page })
-    }
-    catch (error) {
+    } catch (error) {
       res.status(416).json({ error: 'Error pagentating results' })
     }
-  }
-  else {
+  } else {
     res.status(200).json({ result: result.rows })
   }
 })
@@ -346,20 +347,30 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   } */
 
   if (req.body.permissions === undefined) {
-    res.status(400).json({ error: "A set of permissions must be specified within the request body" })
+    res
+      .status(400)
+      .json({
+        error: 'A set of permissions must be specified within the request body'
+      })
     return
   }
 
-  if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ error: "Permissions must be given as an array" })
+  if (!Array.isArray(req.body.permissions)) {
+    res.status(400).json({ error: 'Permissions must be given as an array' })
     return
   }
 
   // Lookup the primary key for each permission
-  const lookup = await identify(req.body.permissions, "system.permissions", "permission_id")
+  const lookup = await identify(
+    req.body.permissions,
+    'system.permissions',
+    'permission_id'
+  )
 
   if (lookup.errors > 0) {
-    res.status(404).json({ error: 'Permission(s) not found', permissions: lookup.errors })
+    res
+      .status(404)
+      .json({ error: 'Permission(s) not found', permissions: lookup.errors })
     return
   }
 
@@ -368,22 +379,22 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
 
   // Attempt to grant each permission
   for (var [name, identifier] of Object.entries(permissions)) {
-
     try {
       await client.query(
-        'INSERT INTO system.staff_permissions (staff_id, permission_id) VALUES ($1, $2)', [req.params.identifier, identifier]
+        'INSERT INTO system.staff_permissions (staff_id, permission_id) VALUES ($1, $2)',
+        [req.params.identifier, identifier]
       )
-    }
-    catch (error) {
+    } catch (error) {
       errors.push(name)
     }
   }
 
   if (errors.length > 0) {
-    res.status(409).json({ error: "Some permissions where already granted", failed: errors })
-  }
-  else {
-    res.status(200).json({ result: "All permissions sucessfully granted" })
+    res
+      .status(409)
+      .json({ error: 'Some permissions where already granted', failed: errors })
+  } else {
+    res.status(200).json({ result: 'All permissions sucessfully granted' })
   }
 })
 
@@ -407,20 +418,30 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   } */
 
   if (req.body.permissions === undefined) {
-    res.status(400).json({ error: "A set of permissions must be specified within the request body" })
+    res
+      .status(400)
+      .json({
+        error: 'A set of permissions must be specified within the request body'
+      })
     return
   }
 
-  if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ error: "Permissions must be given as an array" })
+  if (!Array.isArray(req.body.permissions)) {
+    res.status(400).json({ error: 'Permissions must be given as an array' })
     return
   }
 
   // Lookup the primary key for each permission
-  const lookup = await identify(req.body.permissions, "system.permissions", "permission_id")
+  const lookup = await identify(
+    req.body.permissions,
+    'system.permissions',
+    'permission_id'
+  )
 
   if (lookup.errors > 0) {
-    res.status(404).json({ error: 'Permission(s) not found', permissions: lookup.errors })
+    res
+      .status(404)
+      .json({ error: 'Permission(s) not found', permissions: lookup.errors })
     return
   }
 
@@ -430,7 +451,8 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   // Attempt to revoke each permission
   for (var [name, identifier] of Object.entries(permissions)) {
     const result = await client.query(
-      'DELETE FROM system.staff_permissions WHERE staff_id = $1 AND permission_id = $2', [req.params.identifier, identifier]
+      'DELETE FROM system.staff_permissions WHERE staff_id = $1 AND permission_id = $2',
+      [req.params.identifier, identifier]
     )
 
     if (result.rowCount < 1) {
@@ -439,131 +461,162 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   }
 
   if (errors.length > 0) {
-    res.status(409).json({ error: "Some permissions where not revoked due to an error", permissions: errors })
-  }
-  else {
-    res.status(200).json({ result: "All permissions sucessfully revoked" })
+    res
+      .status(409)
+      .json({
+        error: 'Some permissions where not revoked due to an error',
+        permissions: errors
+      })
+  } else {
+    res.status(200).json({ result: 'All permissions sucessfully revoked' })
   }
 })
 
-app.put('/v1/permissions/roles/staff/:identifier/grant', async function (req, res) {
-  await setup()
+app.put(
+  '/v1/permissions/roles/staff/:identifier/grant',
+  async function (req, res) {
+    await setup()
 
-  // #swagger.description = 'Grant a specific set of roles to a given user'
+    // #swagger.description = 'Grant a specific set of roles to a given user'
 
-  /* #swagger.parameters['identifier'] = {
+    /* #swagger.parameters['identifier'] = {
         in: 'path',                            
         description: 'User identifier provided by cognito',
         schema: 'string',              
         required: true                     
   } */
 
-  /* #swagger.parameters['roles'] = {
+    /* #swagger.parameters['roles'] = {
         in: 'body',                            
         description: 'An array of role strings',
         schema: 'array',                
         required: true                     
   } */
 
-  if (req.body.roles === undefined) {
-    res.status(400).json({ error: "A set of roles must be specified within the request body" })
-    return
-  }
-
-  if (!(Array.isArray(req.body.roles))) {
-    res.status(400).json({ error: "Roles must be given as an array" })
-    return
-  }
-
-  // Lookup the primary key for each role
-  const lookup = await identify(req.body.roles, "system.roles", "role_id")
-
-  if (lookup.errors > 0) {
-    res.status(404).json({ error: `Roles(s) not found`, roles: lookup.errors })
-    return
-  }
-
-  var roles = lookup.result
-  var errors = []
-
-  // Attempt to grant each role
-  for (var [name, identifier] of Object.entries(roles)) {
-    try {
-      await client.query(
-        'INSERT INTO system.staff_roles (staff_id, role_id) VALUES ($1, $2)', [req.params.identifier, identifier]
-      )
+    if (req.body.roles === undefined) {
+      res
+        .status(400)
+        .json({
+          error: 'A set of roles must be specified within the request body'
+        })
+      return
     }
-    catch (error) {
-      errors.push(name)
+
+    if (!Array.isArray(req.body.roles)) {
+      res.status(400).json({ error: 'Roles must be given as an array' })
+      return
+    }
+
+    // Lookup the primary key for each role
+    const lookup = await identify(req.body.roles, 'system.roles', 'role_id')
+
+    if (lookup.errors > 0) {
+      res
+        .status(404)
+        .json({ error: `Roles(s) not found`, roles: lookup.errors })
+      return
+    }
+
+    var roles = lookup.result
+    var errors = []
+
+    // Attempt to grant each role
+    for (var [name, identifier] of Object.entries(roles)) {
+      try {
+        await client.query(
+          'INSERT INTO system.staff_roles (staff_id, role_id) VALUES ($1, $2)',
+          [req.params.identifier, identifier]
+        )
+      } catch (error) {
+        errors.push(name)
+      }
+    }
+
+    if (errors.length > 0) {
+      res
+        .status(409)
+        .json({
+          error: 'Some roles where not granted due to an error',
+          roles: errors
+        })
+    } else {
+      res.status(200).json({ result: 'All roles sucessfully granted' })
     }
   }
+)
 
-  if (errors.length > 0) {
-    res.status(409).json({ error: "Some roles where not granted due to an error", roles: errors })
-  }
-  else {
-    res.status(200).json({ result: "All roles sucessfully granted" })
-  }
-})
+app.put(
+  '/v1/permissions/roles/staff/:identifier/revoke',
+  async function (req, res) {
+    await setup()
 
-app.put('/v1/permissions/roles/staff/:identifier/revoke', async function (req, res) {
-  await setup()
+    // #swagger.description = 'Revoke a specific set of roles from given user'
 
-  // #swagger.description = 'Revoke a specific set of roles from given user'
-
-  /* #swagger.parameters['identifier'] = {
+    /* #swagger.parameters['identifier'] = {
         in: 'path',                            
         description: 'User identifier provided by cognito',
         schema: 'string',             
         required: true                     
   } */
 
-  /* #swagger.parameters['roles'] = {
+    /* #swagger.parameters['roles'] = {
         in: 'body',                            
         description: 'An array of role strings',
         schema: 'array',              
         required: true                     
   } */
 
-  if (req.body.roles === undefined) {
-    res.status(400).json({ error: "A set of roles must be specified within the request body" })
-    return
-  }
+    if (req.body.roles === undefined) {
+      res
+        .status(400)
+        .json({
+          error: 'A set of roles must be specified within the request body'
+        })
+      return
+    }
 
-  if (!(Array.isArray(req.body.roles))) {
-    res.status(400).json({ error: "Roles must be given as an array" })
-    return
-  }
+    if (!Array.isArray(req.body.roles)) {
+      res.status(400).json({ error: 'Roles must be given as an array' })
+      return
+    }
 
-  // Lookup the primary key for each role
-  const lookup = await identify(req.body.roles, "system.roles", "role_id")
+    // Lookup the primary key for each role
+    const lookup = await identify(req.body.roles, 'system.roles', 'role_id')
 
-  if (lookup.errors > 0) {
-    res.status(404).json({ error: `Roles(s) not found`, roles: lookup.errors })
-    return
-  }
+    if (lookup.errors > 0) {
+      res
+        .status(404)
+        .json({ error: `Roles(s) not found`, roles: lookup.errors })
+      return
+    }
 
-  var roles = lookup.result
-  var errors = []
+    var roles = lookup.result
+    var errors = []
 
-  // Attempt to revoke each role
-  for (var [name, identifier] of Object.entries(roles)) {
-    const result = await client.query(
-      'DELETE FROM system.staff_roles WHERE staff_id = $1 AND role_id = $2', [req.params.identifier, identifier]
-    )
+    // Attempt to revoke each role
+    for (var [name, identifier] of Object.entries(roles)) {
+      const result = await client.query(
+        'DELETE FROM system.staff_roles WHERE staff_id = $1 AND role_id = $2',
+        [req.params.identifier, identifier]
+      )
 
-    if (result.rowCount < 1) {
-      errors.push(name)
+      if (result.rowCount < 1) {
+        errors.push(name)
+      }
+    }
+
+    if (errors.length > 0) {
+      res
+        .status(409)
+        .json({
+          error: 'Some roles where not revoked due to an error',
+          failed: errors
+        })
+    } else {
+      res.status(200).json({ result: 'All roles sucessfully revoked' })
     }
   }
-
-  if (errors.length > 0) {
-    res.status(409).json({ error: "Some roles where not revoked due to an error", failed: errors })
-  }
-  else {
-    res.status(200).json({ result: "All roles sucessfully revoked" })
-  }
-})
+)
 
 app.put('/v1/permissions/roles/:name/create', async function (req, res) {
   await setup()
@@ -591,35 +644,39 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
   if (req.body.description !== undefined) {
     query = 'INSERT INTO system.roles (name, description) VALUES ($1, $2)'
     fields = [req.params.name, req.body.description]
-  }
-  else {
+  } else {
     query = 'INSERT INTO system.roles (name) VALUES ($1) RETURNING role_id'
     fields = [req.params.name]
   }
 
   try {
     await client.query(query, fields)
-  }
-  catch (error) {
-    res.status(409).json({ error: "Role already exists"})
+  } catch (error) {
+    res.status(409).json({ error: 'Role already exists' })
   }
 
-   // Handle optional permissions argument
-   if (req.body.permissions === undefined) {
-    res.status(200).json({ result: "Role sucessfully created" })
+  // Handle optional permissions argument
+  if (req.body.permissions === undefined) {
+    res.status(200).json({ result: 'Role sucessfully created' })
     return
   }
 
-  if (!(Array.isArray(req.body.permissions))) {
-    res.status(200).json({ result: "Role sucessfully created" })
+  if (!Array.isArray(req.body.permissions)) {
+    res.status(200).json({ result: 'Role sucessfully created' })
     return
   }
 
   // Lookup the primary key for each permission
-  const lookup = await identify(req.body.permissions, "system.permissions", "permission_id")
+  const lookup = await identify(
+    req.body.permissions,
+    'system.permissions',
+    'permission_id'
+  )
 
   if (lookup.errors > 0) {
-    res.status(404).json({ error: 'Permission(s) not found', permissions: errors })
+    res
+      .status(404)
+      .json({ error: 'Permission(s) not found', permissions: errors })
     return
   }
 
@@ -627,17 +684,18 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
   var errors = []
 
   // Lookup the primary key for the role
-  const role = await (await identify([req.params.name], "system.roles", "role_id")).result[req.params.name]
-
+  const role = await (
+    await identify([req.params.name], 'system.roles', 'role_id')
+  ).result[req.params.name]
 
   // Attempt to grant each permission
   for (var [name, permission] of Object.entries(permissions)) {
     try {
       await client.query(
-        'INSERT INTO system.role_permissions (role_id, permission_id) VALUES ($1, $2)', [role, permission]
+        'INSERT INTO system.role_permissions (role_id, permission_id) VALUES ($1, $2)',
+        [role, permission]
       )
-    }
-    catch (error) {
+    } catch (error) {
       errors.push(name)
     }
   }
@@ -671,30 +729,39 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
 
   if (req.body.description !== undefined) {
     const query = 'UPDATE system.roles SET description = $2 WHERE name = $1'
-    const result = await client.query(query, [req.params.name, req.body.description])
+    const result = await client.query(query, [
+      req.params.name,
+      req.body.description
+    ])
 
     if (result.rowsRowcount == 0) {
-      res.status(404).json({ error: "Role not found" })
+      res.status(404).json({ error: 'Role not found' })
       return
     }
   }
 
   // Handle optional permissions argument
   if (req.body.permissions === undefined) {
-    res.status(200).json({ result: "Role sucessfully updated" })
+    res.status(200).json({ result: 'Role sucessfully updated' })
     return
   }
 
-  if (!(Array.isArray(req.body.permissions))) {
-    res.status(400).json({ error: "Roles must be given as an array" })
+  if (!Array.isArray(req.body.permissions)) {
+    res.status(400).json({ error: 'Roles must be given as an array' })
     return
   }
 
   // Lookup the primary key for each permission
-  const lookup = await identify(req.body.permissions, "system.permissions", "permission_id")
+  const lookup = await identify(
+    req.body.permissions,
+    'system.permissions',
+    'permission_id'
+  )
 
   if (lookup.errors > 0) {
-    res.status(404).json({ error: 'Permission(s) not found', permissions: errors })
+    res
+      .status(404)
+      .json({ error: 'Permission(s) not found', permissions: errors })
     return
   }
 
@@ -702,26 +769,28 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
   var errors = []
 
   // Lookup the primary key for the role
-  const role = await (await identify([req.params.name], "system.roles", "role_id")).result[req.params.name]
+  const role = await (
+    await identify([req.params.name], 'system.roles', 'role_id')
+  ).result[req.params.name]
 
   // Remove existing permissions
-  await client.query(
-    "DELETE FROM system.role_permissions WHERE role_id = $1", [role]
-  )
+  await client.query('DELETE FROM system.role_permissions WHERE role_id = $1', [
+    role
+  ])
 
   // Attempt to grant each permission
   for (var [name, permission] of Object.entries(permissions)) {
     try {
       await client.query(
-        'INSERT INTO system.role_permissions (role_id, permission_id) VALUES ($1, $2)', [role, permission]
+        'INSERT INTO system.role_permissions (role_id, permission_id) VALUES ($1, $2)',
+        [role, permission]
       )
-    }
-    catch (error) {
+    } catch (error) {
       errors.push(name)
     }
   }
 
-  res.status(200).json({ result: "Role sucessfully updated", errors: errors})
+  res.status(200).json({ result: 'Role sucessfully updated', errors: errors })
 })
 
 app.post('/v1/permissions/roles/search', async function (req, res) {
@@ -741,17 +810,15 @@ app.post('/v1/permissions/roles/search', async function (req, res) {
   if (req.body.query) {
     const query = require('./queries').roles.search
     result = await client.query(query, [req.body.query])
-  }
-  else {
-    const query = require("./queries").roles.all
+  } else {
+    const query = require('./queries').roles.all
     result = await client.query(query)
   }
 
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows })
-  }
-  else {
-    res.status(404).json({ error: "No Matching Roles" })
+  } else {
+    res.status(404).json({ error: 'No Matching Roles' })
   }
 })
 
@@ -772,17 +839,15 @@ app.post('/v1/permissions/search', async function (req, res) {
   if (req.body.query) {
     const query = require('./queries').permissions.search
     result = await client.query(query, [req.body.query])
-  }
-  else {
-    const query = require("./queries").permissions.all
+  } else {
+    const query = require('./queries').permissions.all
     result = await client.query(query)
   }
 
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows })
-  }
-  else {
-    res.status(404).json({ error: "No Matching Permissions" })
+  } else {
+    res.status(404).json({ error: 'No Matching Permissions' })
   }
 })
 
@@ -798,18 +863,20 @@ app.delete('/v1/permissions/roles/:name', async function (req, res) {
         required: true                     
   } */
 
-  const result = await client.query('DELETE FROM system.roles WHERE name = $1', [req.params.name])
+  const result = await client.query(
+    'DELETE FROM system.roles WHERE name = $1',
+    [req.params.name]
+  )
 
   if (result.rowCount > 0) {
-    res.status(200).json({ result: "Role sucessfully deleted" })
-  }
-  else {
-    res.status(404).json({ error: "Role not found" })
+    res.status(200).json({ result: 'Role sucessfully deleted' })
+  } else {
+    res.status(404).json({ error: 'Role not found' })
   }
 })
 
 app.listen(3000, function () {
-  console.log("App started")
+  console.log('App started')
 })
 
 module.exports = app

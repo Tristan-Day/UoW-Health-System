@@ -1,21 +1,20 @@
-const lambdaLocal = require("lambda-local")
-const PROFILE = "Winchester Health Systems"
+const lambdaLocal = require('lambda-local')
+const PROFILE = 'Winchester Health Systems'
 
 test('Get all buildings', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/resources/buildings",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/resources/buildings',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -29,19 +28,18 @@ test('Get all buildings', async () => {
 
 test('Get all rooms within a building', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/resources/buildings/TEST-BUILDING/",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/resources/buildings/TEST-BUILDING/',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
