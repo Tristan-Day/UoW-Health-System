@@ -111,7 +111,7 @@ test('Search for a staff member', async () => {
     "headers": {
       "Content-Type": "application/json"
     },
-    "body": JSON.stringify({ query: "Boris" })
+    "body": JSON.stringify({ query: "Tristan" })
   }
 
   const res = await lambdaLocal.execute({
@@ -125,7 +125,7 @@ test('Search for a staff member', async () => {
   expect(res.statusCode).toBe(200);
 
   // Assert the number of returned items
-  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
+  expect(JSON.parse(res.body).result.length).toBe(1)
 });
 
 test('Delete a staff member', async () => {

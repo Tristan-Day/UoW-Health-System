@@ -12,6 +12,7 @@ const awsServerlessExpressMiddleware = require('aws-serverless-express/middlewar
 const AWS = require('aws-sdk')
 const { Pool } = require('pg')
 const ScheduleItemAPI = require('./scheduleItemAPI')
+const SecretsManager = require('@aws-sdk/client-secrets-manager')
 
 // declare a new express app
 const app = express()
