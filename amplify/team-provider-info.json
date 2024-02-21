@@ -19,7 +19,7 @@
         },
         "CleaningOrderFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/CleaningOrderFunction-6765554b45353761624d-build.zip"
+          "s3Key": "amplify-builds/CleaningOrderFunction-627130394e3550634c73-build.zip"
         },
         "PatientFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
@@ -27,23 +27,23 @@
         },
         "PermissionFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/PermissionFunction-354f6230535277775879-build.zip"
+          "s3Key": "amplify-builds/PermissionFunction-777148703141432f7767-build.zip"
         },
         "RoomFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/RoomFunction-50676776477441676a37-build.zip"
+          "s3Key": "amplify-builds/RoomFunction-55494373616636344b2f-build.zip"
         },
         "ScheduleItemFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/ScheduleItemFunction-2b334568447054476f4d-build.zip"
+          "s3Key": "amplify-builds/ScheduleItemFunction-4f704c57476a5a497053-build.zip"
         },
         "ShiftsFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/ShiftsFunction-414f6850616458312f56-build.zip"
+          "s3Key": "amplify-builds/ShiftsFunction-6c685a676e344a61314c-build.zip"
         },
         "StaffFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/StaffFunction-4169724757456f6f5952-build.zip"
+          "s3Key": "amplify-builds/StaffFunction-7846496f4e763566356d-build.zip"
         },
         "TreatmentCategoryFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
@@ -51,19 +51,19 @@
         },
         "TreatmentFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/TreatmentFunction-74597943346a5637536d-build.zip"
+          "s3Key": "amplify-builds/TreatmentFunction-7869737a51684a674b65-build.zip"
         },
         "WardFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/WardFunction-43657876416f386f7332-build.zip"
+          "s3Key": "amplify-builds/WardFunction-5935377a6b587266634d-build.zip"
         },
         "WardOrderFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/WardOrderFunction-7379622f49316e514278-build.zip"
+          "s3Key": "amplify-builds/WardOrderFunction-437632733134704c6c47-build.zip"
         },
         "BuildingFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/BuildingFunction-4b2b6868344337534f72-build.zip"
+          "s3Key": "amplify-builds/BuildingFunction-6278564339787468644c-build.zip"
         }
       },
       "api": {

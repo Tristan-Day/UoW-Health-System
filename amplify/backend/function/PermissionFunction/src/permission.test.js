@@ -1,22 +1,20 @@
-const lambdaLocal = require("lambda-local")
-const PROFILE = "Winchester Health Systems"
-
+const lambdaLocal = require('lambda-local')
+const PROFILE = 'Winchester Health Systems'
 
 test('Retreive a permission', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/permissions/test.permission.alpha",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/permissions/test.permission.alpha',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -25,24 +23,25 @@ test('Retreive a permission', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert permission description
-  expect(JSON.parse(res.body).result.description).toBe("This is a test permission")
+  expect(JSON.parse(res.body).result.description).toBe(
+    'This is a test permission'
+  )
 })
 
 test('Create a new role', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/roles/TEST/create",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/roles/TEST/create',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "description": "Role creation demonstration" })
+    body: JSON.stringify({ description: 'Role creation demonstration' })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -53,19 +52,18 @@ test('Create a new role', async () => {
 
 test('Attempt to overwrite an existing role', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/roles/TEST/create",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/roles/TEST/create',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "description": "Role creation demonstration" })
+    body: JSON.stringify({ description: 'Role creation demonstration' })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -76,19 +74,21 @@ test('Attempt to overwrite an existing role', async () => {
 
 test('Update a role and assign permissions', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/roles/TEST/update",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/roles/TEST/update',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "description": "This is a test role", permissions: ["test.permission.alpha"] })
+    body: JSON.stringify({
+      description: 'This is a test role',
+      permissions: ['test.permission.alpha']
+    })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -99,19 +99,18 @@ test('Update a role and assign permissions', async () => {
 
 test('Retreive a role', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/permissions/roles/TEST",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/permissions/roles/TEST',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -120,25 +119,28 @@ test('Retreive a role', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert that permissions have been granted
-  expect(JSON.parse(res.body).result.description).toBe("Role creation demonstration")
-  expect(JSON.parse(res.body).result.permissions[0].name).toBe("test.permission.alpha")
+  expect(JSON.parse(res.body).result.description).toBe(
+    'Role creation demonstration'
+  )
+  expect(JSON.parse(res.body).result.permissions[0].name).toBe(
+    'test.permission.alpha'
+  )
 })
 
 test('Grant a permission', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/staff/ACCESS/grant",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/staff/ACCESS/grant',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "permissions": ["test.permission.beta"] })
+    body: JSON.stringify({ permissions: ['test.permission.beta'] })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -149,19 +151,18 @@ test('Grant a permission', async () => {
 
 test('Attempt to grant an existing permission', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/staff/ACCESS/grant",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/staff/ACCESS/grant',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "permissions": ["test.permission.beta"] })
+    body: JSON.stringify({ permissions: ['test.permission.beta'] })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -172,19 +173,18 @@ test('Attempt to grant an existing permission', async () => {
 
 test('Assign a role', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/roles/staff/ACCESS/grant",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/roles/staff/ACCESS/grant',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "roles": ["TEST"] })
+    body: JSON.stringify({ roles: ['TEST'] })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -195,19 +195,18 @@ test('Assign a role', async () => {
 
 test('Get role members', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/permissions/roles/TEST/members",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/permissions/roles/TEST/members',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -221,19 +220,18 @@ test('Get role members', async () => {
 
 test('Get permission members', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/permissions/test.permission.beta/members",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/permissions/test.permission.beta/members',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -247,19 +245,18 @@ test('Get permission members', async () => {
 
 test('Get staff roles', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/permissions/roles/staff/ACCESS",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/permissions/roles/staff/ACCESS',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "roles": ["TEST"] })
+    body: JSON.stringify({ roles: ['TEST'] })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -268,24 +265,25 @@ test('Get staff roles', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert the role name
-  expect(JSON.parse(res.body).result["TEST"]).toBe(true)
+  expect(JSON.parse(res.body).result['TEST']).toBe(true)
 })
 
 test('Get staff permissions', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": "/v1/permissions/staff/ACCESS",
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: '/v1/permissions/staff/ACCESS',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "permissions": ["test.permission.alpha", "test.permission.beta"] })
+    body: JSON.stringify({
+      permissions: ['test.permission.alpha', 'test.permission.beta']
+    })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -294,25 +292,24 @@ test('Get staff permissions', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert assigned permissions
-  expect(JSON.parse(res.body).result["test.permission.alpha"]).toBe(true)
-  expect(JSON.parse(res.body).result["test.permission.beta"]).toBe(true)
+  expect(JSON.parse(res.body).result['test.permission.alpha']).toBe(true)
+  expect(JSON.parse(res.body).result['test.permission.beta']).toBe(true)
 })
 
 test('Retreive all roles', async () => {
   const payload = {
-    "httpMethod": "POST",
-    "path": `/v1/permissions/roles/search`,
-    "queryStringParameters": {
+    httpMethod: 'POST',
+    path: `/v1/permissions/roles/search`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -326,19 +323,18 @@ test('Retreive all roles', async () => {
 
 test('Retreive all permissions', async () => {
   const payload = {
-    "httpMethod": "POST",
-    "path": `/v1/permissions/search`,
-    "queryStringParameters": {
+    httpMethod: 'POST',
+    path: `/v1/permissions/search`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -352,19 +348,18 @@ test('Retreive all permissions', async () => {
 
 test('Delete a role', async () => {
   const payload = {
-    "httpMethod": "DELETE",
-    "path": "/v1/permissions/roles/TEST",
-    "queryStringParameters": {
+    httpMethod: 'DELETE',
+    path: '/v1/permissions/roles/TEST',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -375,19 +370,18 @@ test('Delete a role', async () => {
 
 test('Revoke a permission', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/permissions/staff/ACCESS/revoke",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/permissions/staff/ACCESS/revoke',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ "permissions": ["test.permission.beta"] })
+    body: JSON.stringify({ permissions: ['test.permission.beta'] })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })

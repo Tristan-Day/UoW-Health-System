@@ -9,9 +9,10 @@ See the License for the specific language governing permissions and limitations 
 const express = require('express')
 const bodyParser = require('body-parser')
 const awsServerlessExpressMiddleware = require('aws-serverless-express/middleware')
+const SecretsManager = require('@aws-sdk/client-secrets-manager')
 const AWS = require('aws-sdk')
 const { Pool } = require('pg')
-const WardOrderAPI = require('./wardOrderAPI')
+const WardAPI = require('./wardApi')
 
 // declare a new express app
 const app = express()
@@ -60,54 +61,48 @@ async function setup() {
   return connection;
 }
 
+app.get('/v1/resources/ward', (req, res) => {
 
-app.get('/v1/resources/ward/order', (req, res) => {
-
-  // #swagger.description = 'View an order item'
-
-  /* #swagger.parameters['WARD_ORDER_ID'] = {
-        in: 'query string',                            
-        description: 'The unique identifier for the ward order.',               
-        required: false              
-  } */
+  // #swagger.description = 'View a treatment item'
 
   /* #swagger.parameters['WARD_ID'] = {
+      in: 'query string',                            
+      description: 'The unique ID for the ward.',               
+      required: false              
+  } */
+
+  /* #swagger.parameters['WARD_NAME'] = {
+    in: 'query string',                            
+    description: 'The name of the ward.',               
+    required: false              
+  } */
+
+  /* #swagger.parameters['SPECIALISATION'] = {
         in: 'query string',                            
-        description: 'The unique identifier for the ward.',               
+        description: 'The ward specialisation.',               
         required: false              
   } */
 
-  /* #swagger.parameters['PRIORITY'] = {
+  /* #swagger.parameters['DESCRIPTION'] = {
         in: 'query string',                            
-        description: 'The priority of the ward order.',               
+        description: 'The ward description.',               
         required: false              
   } */
 
-  /* #swagger.parameters['ORDER_DESCRIPTION'] = {
+  /* #swagger.parameters['ICON_DATA'] = {
         in: 'query string',                            
-        description: 'The description of the ward order.',               
+        description: 'The reference for data for an icon.',               
         required: false              
   } */
 
-  /* #swagger.parameters['DATE_POSTED'] = {
-        in: 'query string',                            
-        description: 'A string in the ISO date format.',               
-        required: false              
-  } */
-
-  /* #swagger.parameters['HOURS_VALID_FOR'] = {
-        in: 'query string',                            
-        description: 'An integer showing the number of hours the order is valid for.',               
-        required: false              
-  } */
-
-  return WardOrderAPI.query(req, res, setup);
+  return WardAPI.query(req, res, setup);
 
 });
 
-app.post('/v1/resources/ward/order', (req, res) => {
 
-  // #swagger.description = 'Import or update a ward order'
+app.post('/v1/resources/ward', (req, res) => {
+
+  // #swagger.description = 'Import or update a ward'
 
   /* #swagger.parameters['ACTION_TYPE'] = {
         in: 'body',                            
@@ -115,49 +110,43 @@ app.post('/v1/resources/ward/order', (req, res) => {
         required: false
   } */
 
-  /* #swagger.parameters['WARD_ORDER_ID'] = {
+  /* #swagger.parameters['WARD_ID'] = {
       in: 'body',                            
-      description: 'The unique identifier for the ward order.',               
+      description: 'The unique ID for the ward.',               
       required: false              
   } */
 
-  /* #swagger.parameters['WARD_ID'] = {
+  /* #swagger.parameters['WARD_NAME'] = {
+    in: 'body',                            
+    description: 'The name of the ward.',               
+    required: false              
+  } */
+
+  /* #swagger.parameters['SPECIALISATION'] = {
         in: 'body',                            
-        description: 'The unique identifier for the ward.',               
+        description: 'The ward specialisation.',               
         required: false              
   } */
 
-  /* #swagger.parameters['PRIORITY'] = {
+  /* #swagger.parameters['DESCRIPTION'] = {
         in: 'body',                            
-        description: 'The priority of the ward order.',               
+        description: 'The ward description.',               
         required: false              
   } */
 
-  /* #swagger.parameters['ORDER_DESCRIPTION'] = {
+  /* #swagger.parameters['ICON_DATA'] = {
         in: 'body',                            
-        description: 'The description of the ward order.',               
+        description: 'The reference for data for an icon.',               
         required: false              
   } */
 
-  /* #swagger.parameters['DATE_POSTED'] = {
-        in: 'body',                            
-        description: 'A string in the ISO date format.',               
-        required: false              
-  } */
-
-  /* #swagger.parameters['HOURS_VALID_FOR'] = {
-        in: 'body',                            
-        description: 'An integer showing the number of hours the order is valid for.',               
-        required: false              
-  } */
-
-  return WardOrderAPI.upsert(req, res, setup);
+  return WardAPI.upsert(req, res, setup);
 
 });
 
-app.put('/v1/resources/ward/order', (req, res) => {
+app.put('/v1/resources/ward', (req, res) => {
 
-  // #swagger.description = 'Import or update a ward order'
+  // #swagger.description = 'Import or update a ward'
 
   /* #swagger.parameters['ACTION_TYPE'] = {
         in: 'body',                            
@@ -165,59 +154,54 @@ app.put('/v1/resources/ward/order', (req, res) => {
         required: false
   } */
 
-  /* #swagger.parameters['WARD_ORDER_ID'] = {
+  /* #swagger.parameters['WARD_ID'] = {
       in: 'body',                            
-      description: 'The unique identifier for the ward order.',               
+      description: 'The unique ID for the ward.',               
       required: false              
   } */
+
+  /* #swagger.parameters['WARD_NAME'] = {
+    in: 'body',                            
+    description: 'The name of the ward.',               
+    required: false              
+  } */
+
+  /* #swagger.parameters['SPECIALISATION'] = {
+        in: 'body',                            
+        description: 'The ward specialisation.',               
+        required: false              
+  } */
+
+  /* #swagger.parameters['DESCRIPTION'] = {
+        in: 'body',                            
+        description: 'The ward description.',               
+        required: false              
+  } */
+
+  /* #swagger.parameters['ICON_DATA'] = {
+        in: 'body',                            
+        description: 'The reference for data for an icon.',               
+        required: false              
+  } */
+
+  return WardAPI.upsert(req, res, setup);
+
+});
+
+app.delete('/v1/resources/ward', (req, res) => {
+
+  // #swagger.description = 'Import or update a ward'
 
   /* #swagger.parameters['WARD_ID'] = {
-        in: 'body',                            
-        description: 'The unique identifier for the ward.',               
-        required: false              
-  } */
-
-  /* #swagger.parameters['PRIORITY'] = {
-        in: 'body',                            
-        description: 'The priority of the ward order.',               
-        required: false              
-  } */
-
-  /* #swagger.parameters['ORDER_DESCRIPTION'] = {
-        in: 'body',                            
-        description: 'The description of the ward order.',               
-        required: false              
-  } */
-
-  /* #swagger.parameters['DATE_POSTED'] = {
-        in: 'body',                            
-        description: 'A string in the ISO date format.',               
-        required: false              
-  } */
-
-  /* #swagger.parameters['HOURS_VALID_FOR'] = {
-        in: 'body',                            
-        description: 'An integer showing the number of hours the order is valid for.',               
-        required: false              
-  } */
-
-  return WardOrderAPI.upsert(req, res, setup);
-
-});
-
-app.delete('/v1/resources/ward/order', (req, res) => {
-
-  // #swagger.description = 'Delete a ward order'
-
-  /* #swagger.parameters['WARD_ORDER_ID'] = {
       in: 'body',                            
-      description: 'The unique identifier for the ward order.',               
+      description: 'The unique ID for the ward.',               
       required: false              
   } */
 
-  return WardOrderAPI.delete(req, res, setup);
+  return WardAPI.delete(req, res, setup);
 
 });
+
 
 app.listen(3000, function () {
   console.log("App started")
