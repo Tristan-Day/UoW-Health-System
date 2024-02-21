@@ -108,13 +108,10 @@ test('Search for a staff member', async () => {
   const payload = {
     "httpMethod": "POST",
     "path": "/v1/resources/staff/search",
-    "queryStringParameters": {
-      "string": "Boris"
-    },
     "headers": {
       "Content-Type": "application/json"
     },
-    "body": JSON.stringify({ fields: ["first_name"] })
+    "body": JSON.stringify({ query: "Boris" })
   }
 
   const res = await lambdaLocal.execute({
@@ -129,30 +126,6 @@ test('Search for a staff member', async () => {
 
   // Assert the number of returned items
   expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
-});
-
-test('Search for a staff member using an invalid field', async () => {
-  const payload = {
-    "httpMethod": "POST",
-    "path": "/v1/resources/staff/search",
-    "queryStringParameters": {
-      "string": "Boris"
-    },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({ fields: ["invalid_field"] })
-  }
-
-  const res = await lambdaLocal.execute({
-    event: payload,
-    lambdaPath: "./index.js",
-    profileName: PROFILE,
-    verboseLevel: 0
-  })
-
-  // Assert the error response code
-  expect(res.statusCode).toBe(400);
 });
 
 test('Delete a staff member', async () => {
