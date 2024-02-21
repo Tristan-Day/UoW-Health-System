@@ -2,26 +2,21 @@ import {
   Typography,
   Box,
   Divider,
-  TextField,
   Button,
   Grow,
-  Fab,
-  InputAdornment,
-  IconButton,
   Checkbox,
   FormControlLabel
 } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
-
-import SearchIcon from '@mui/icons-material/Search'
-import AddIcon from '@mui/icons-material/Add'
 import Alert from '@mui/material/Alert'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
+import { Searchbox } from '../../components'
+
 import { cancelOrder, getOrders } from './logic/Cleaning'
 
 const Columns = [
@@ -48,7 +43,6 @@ const Columns = [
 ]
 
 const Cleaning = () => {
-  const [query, setQuery] = useState('')
   const [filter, setFilter] = useState()
 
   const [message, setMessage] = useState({
@@ -152,35 +146,9 @@ const Cleaning = () => {
 
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '1rem'
-        }}
-      >
-        <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <TextField
-            label="Search Rooms"
-            onChange={event => setQuery(event.target.value)}
-            onKeyDown={event =>
-              event.key === 'Enter' ? handleSearch(query) : null
-            }
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="start">
-                  <IconButton
-                    size="small"
-                    disabled={message && message.loading}
-                    onClick={() => handleSearch(query)}
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }}
-          />
+      <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
+        <Box display="flex" gap={2}>
+          <Searchbox label="Search Roles" onSubmit={handleSearch} />
           <FormControlLabel
             control={
               <Checkbox onChange={event => setFilter(event.target.checked)} />
@@ -189,7 +157,12 @@ const Cleaning = () => {
             sx={{ alignItems: 'center' }}
           />
         </Box>
+
         <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button variant="contained" onClick={() => navigate('create')}>
+            Create New Order
+          </Button>
+          <Divider orientation="vertical" />
           <Button
             variant={selection !== undefined ? 'outlined' : 'disabled'}
             onClick={() => handleCancel(selection)}
@@ -222,16 +195,6 @@ const Cleaning = () => {
         onRowSelectionModelChange={model => handleSelection(model[0])}
         sx={{ height: '40vh' }}
       />
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          sx={{ position: 'absolute' }}
-          onClick={() => navigate('create')}
-        >
-          <AddIcon />
-        </Fab>
-      </Box>
     </Box>
   )
 }

@@ -195,7 +195,7 @@ const RoleDetails = () => {
       >
         <Typography variant="h6">Description</Typography>
         <TextField
-          value={role ? role.description : ""}
+          value={role ? role.description : ''}
           onChange={event => {
             setRole({ ...role, description: event.target.value })
           }}
