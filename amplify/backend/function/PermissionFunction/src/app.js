@@ -599,10 +599,47 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
 
   try {
     await client.query(query, fields)
-    res.status(200).json({ result: "Role sucessfully created" })
   }
   catch (error) {
-    res.status(409).json({ error: "Role already exists", funny: error })
+    res.status(409).json({ error: "Role already exists"})
+  }
+
+   // Handle optional permissions argument
+   if (req.body.permissions === undefined) {
+    res.status(200).json({ result: "Role sucessfully created" })
+    return
+  }
+
+  if (!(Array.isArray(req.body.permissions))) {
+    res.status(200).json({ result: "Role sucessfully created" })
+    return
+  }
+
+  // Lookup the primary key for each permission
+  const lookup = await identify(req.body.permissions, "system.permissions", "permission_id")
+
+  if (lookup.errors > 0) {
+    res.status(404).json({ error: 'Permission(s) not found', permissions: errors })
+    return
+  }
+
+  var permissions = lookup.result
+  var errors = []
+
+  // Lookup the primary key for the role
+  const role = await (await identify([req.params.name], "system.roles", "role_id")).result[req.params.name]
+
+
+  // Attempt to grant each permission
+  for (var [name, permission] of Object.entries(permissions)) {
+    try {
+      await client.query(
+        'INSERT INTO system.role_permissions (role_id, permission_id) VALUES ($1, $2)', [role, permission]
+      )
+    }
+    catch (error) {
+      errors.push(name)
+    }
   }
 })
 
@@ -683,7 +720,6 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
       errors.push(name)
     }
   }
-
 
   res.status(200).json({ result: "Role sucessfully updated", errors: errors})
 })
