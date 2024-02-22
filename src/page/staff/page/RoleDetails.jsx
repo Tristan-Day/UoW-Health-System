@@ -162,18 +162,21 @@ const RoleDetails = () => {
   return (
     <Box>
       <BreadcrumbGenerator />
-      <Typography variant="h4">System Role - {identifier}</Typography>
 
-      <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
+      <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
+        <Typography variant="h4">System Role - {identifier}</Typography>
 
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button
-          variant={role ? 'outlined' : 'disabled'}
-          onClick={() => handleSubmit()}
-        >
-          Save
-        </Button>
-        <Button onClick={() => navigate(-1)}>Return</Button>
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button
+            variant="contained"
+            disabled={Boolean(message)}
+            onClick={() => handleSubmit()}
+          >
+            Save
+          </Button>
+          <Divider orientation="vertical" />
+          <Button onClick={() => navigate(-1)}>Return</Button>
+        </Box>
       </Box>
 
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
