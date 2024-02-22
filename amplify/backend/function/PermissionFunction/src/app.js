@@ -656,13 +656,13 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
   }
 
   // Handle optional permissions argument
-  if (req.body.permissions === undefined) {
+  if (!(req.body.permissions)) {
     res.status(200).json({ result: 'Role sucessfully created' })
     return
   }
 
   if (!Array.isArray(req.body.permissions)) {
-    res.status(200).json({ result: 'Role sucessfully created' })
+    res.status(400).json({ error: 'Permissions must be given as an array' })
     return
   }
 
@@ -699,6 +699,8 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
       errors.push(name)
     }
   }
+
+  res.status(200).json({ result: 'Role sucessfully created', errors: errors })
 })
 
 app.put('/v1/permissions/roles/:name/update', async function (req, res) {
