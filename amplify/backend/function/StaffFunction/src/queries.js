@@ -1,6 +1,6 @@
 const ALL_STAFF = `
   SELECT
-    *
+    staff.staff_id, staff.first_name, staff.last_name, staff.email_address, staff.phone_number
   FROM
     system.staff staff
 `
