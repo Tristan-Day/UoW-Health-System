@@ -113,6 +113,13 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
         required: true                     
   } */
 
+  /* #swagger.parameters['permissions'] = {
+      in: 'body',                            
+      description: 'An array of permission names to test the specified user against',
+      schema: 'array',                  
+      required: true,           
+  } */
+
   // Import the SQL statement from permission queries
   const query = require('./queries').permissions.assigned
   const result = await client.query(query, [req.params.identifier])
@@ -160,7 +167,7 @@ app.get('/v1/permissions/roles/staff/:identifier', async function (req, res) {
   const query = require('./queries').roles.assigned
   const result = await client.query(query, [req.params.identifier])
 
-  if (req.body.roles === undefined) {
+  if (!req.body.roles) {
     res.status(200).json({ result: result.rows })
     return
   }
@@ -228,11 +235,9 @@ app.get('/v1/permissions/roles/:name', async function (req, res) {
   query = require('./queries').roles.permissions
   const permissionResult = await client.query(query, [req.params.name])
 
-  res
-    .status(200)
-    .json({
-      result: { ...roleResult.rows[0], permissions: permissionResult.rows }
-    })
+  res.status(200).json({
+    result: { ...roleResult.rows[0], permissions: permissionResult.rows }
+  })
 })
 
 app.get('/v1/permissions/:name/members', async function (req, res) {
@@ -347,11 +352,9 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
   } */
 
   if (req.body.permissions === undefined) {
-    res
-      .status(400)
-      .json({
-        error: 'A set of permissions must be specified within the request body'
-      })
+    res.status(400).json({
+      error: 'A set of permissions must be specified within the request body'
+    })
     return
   }
 
@@ -418,11 +421,9 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   } */
 
   if (req.body.permissions === undefined) {
-    res
-      .status(400)
-      .json({
-        error: 'A set of permissions must be specified within the request body'
-      })
+    res.status(400).json({
+      error: 'A set of permissions must be specified within the request body'
+    })
     return
   }
 
@@ -461,12 +462,10 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
   }
 
   if (errors.length > 0) {
-    res
-      .status(409)
-      .json({
-        error: 'Some permissions where not revoked due to an error',
-        permissions: errors
-      })
+    res.status(409).json({
+      error: 'Some permissions where not revoked due to an error',
+      permissions: errors
+    })
   } else {
     res.status(200).json({ result: 'All permissions sucessfully revoked' })
   }
@@ -494,11 +493,9 @@ app.put(
   } */
 
     if (req.body.roles === undefined) {
-      res
-        .status(400)
-        .json({
-          error: 'A set of roles must be specified within the request body'
-        })
+      res.status(400).json({
+        error: 'A set of roles must be specified within the request body'
+      })
       return
     }
 
@@ -533,12 +530,10 @@ app.put(
     }
 
     if (errors.length > 0) {
-      res
-        .status(409)
-        .json({
-          error: 'Some roles where not granted due to an error',
-          roles: errors
-        })
+      res.status(409).json({
+        error: 'Some roles where not granted due to an error',
+        roles: errors
+      })
     } else {
       res.status(200).json({ result: 'All roles sucessfully granted' })
     }
@@ -567,11 +562,9 @@ app.put(
   } */
 
     if (req.body.roles === undefined) {
-      res
-        .status(400)
-        .json({
-          error: 'A set of roles must be specified within the request body'
-        })
+      res.status(400).json({
+        error: 'A set of roles must be specified within the request body'
+      })
       return
     }
 
@@ -606,12 +599,10 @@ app.put(
     }
 
     if (errors.length > 0) {
-      res
-        .status(409)
-        .json({
-          error: 'Some roles where not revoked due to an error',
-          failed: errors
-        })
+      res.status(409).json({
+        error: 'Some roles where not revoked due to an error',
+        failed: errors
+      })
     } else {
       res.status(200).json({ result: 'All roles sucessfully revoked' })
     }
@@ -656,7 +647,7 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
   }
 
   // Handle optional permissions argument
-  if (!(req.body.permissions)) {
+  if (!req.body.permissions) {
     res.status(200).json({ result: 'Role sucessfully created' })
     return
   }

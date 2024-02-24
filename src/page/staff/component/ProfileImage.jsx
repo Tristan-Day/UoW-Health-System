@@ -1,19 +1,10 @@
 import { Typography, Box, Button, Paper } from '@mui/material'
-
 import { styled } from '@mui/material/styles'
 
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 
-import { useState, useEffect } from 'react'
-
 const ProfileImage = props => {
-  const [image, setImage] = useState()
-
-  useEffect(() => {
-    props.onUpdate(image)
-  }, [image])
-
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
     width: 1
@@ -23,10 +14,9 @@ const ProfileImage = props => {
     const reader = new FileReader()
 
     reader.onloadend = () => {
-      setImage({
-        preview: URL.createObjectURL(event.target.files[0]),
-        data: reader.result
-      })
+      if (props.onChange) {
+        props.onChange(reader.result)
+      }
     }
 
     reader.readAsDataURL(event.target.files[0])
@@ -41,7 +31,7 @@ const ProfileImage = props => {
         gap: 2
       }}
     >
-      {image ? (
+      {props.image ? (
         <Box
           sx={{
             width: 200,
@@ -51,7 +41,7 @@ const ProfileImage = props => {
           }}
         >
           <img
-            src={image.preview}
+            src={props.image}
             style={{
               width: '200px',
               height: 'auto',

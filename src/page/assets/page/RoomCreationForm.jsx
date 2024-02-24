@@ -19,6 +19,7 @@ import { getBuildings, createPremises } from '../logic/Premises'
 const RoomCreationForm = () => {
   const [buildings, setBuildings] = useState([])
 
+  // Validation and feedback
   const [message, setMessage] = useState()
   const [errors, setErrors] = useState({})
 
@@ -54,6 +55,20 @@ const RoomCreationForm = () => {
     setMessage(undefined)
     const errors = {}
 
+    if (form.room && form.room.length > 20) {
+      setMessage({
+        severity: 'error',
+        text: 'Room name cannot exceed 20 characters'
+      })
+      errors.room = true
+    } else if (!(form.room && form.room.trim())) {
+      setMessage({
+        severity: 'error',
+        text: 'A room name is required - Please enter a room name'
+      })
+      errors.room = true
+    }
+
     if (!(form.building && form.building.trim())) {
       setMessage({
         severity: 'error',
@@ -62,12 +77,12 @@ const RoomCreationForm = () => {
       errors.building = true
     }
 
-    if (!(form.room && form.room.trim())) {
+    if (form.description && form.description.length > 100) {
       setMessage({
         severity: 'error',
-        text: 'A room name is required - Please enter a room name'
+        text: 'Description cannot exceed 100 characters'
       })
-      errors.room = true
+      errors.description = true
     }
 
     setErrors(errors)
@@ -177,6 +192,7 @@ const RoomCreationForm = () => {
           onChange={event =>
             setForm({ ...form, description: event.target.value.trim() })
           }
+          error={errors.description}
         />
       </Stack>
     </Box>

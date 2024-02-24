@@ -16,7 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import BreadcrumbGenerator from '../../../components/generator/BreadcumbGenerator'
 
 import {
-  getPermissions,
+  searchPermissions,
   getRoleMembers,
   getRolePermissions,
   updateRole
@@ -104,7 +104,7 @@ const RoleDetails = () => {
         const result = await getRolePermissions(identifier)
 
         setPermissionList(
-          (await getPermissions()).map(permission => ({
+          (await searchPermissions()).map(permission => ({
             ...permission,
             id: permission.name
           }))
@@ -200,6 +200,9 @@ const RoleDetails = () => {
         <TextField
           value={role ? role.description : ''}
           onChange={event => {
+            setRole({ ...role, description: event.target.value })
+          }}
+          onBlur={event => {
             setRole({ ...role, description: event.target.value })
           }}
         />

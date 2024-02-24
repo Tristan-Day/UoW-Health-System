@@ -1,6 +1,6 @@
 import { get, del, post, put } from 'aws-amplify/api'
 
-export const getRoles = async query => {
+export const searchRoles = async query => {
   // Retreive all roles
   if (query) {
     const operation = post({
@@ -24,8 +24,8 @@ export const getRoles = async query => {
   }
 }
 
-export const getPermissions = async query => {
-  // Retreive all roles
+export const searchPermissions = async query => {
+  // Retreive all permissions
   if (query) {
     const operation = post({
       apiName: 'PermissionHandler',
@@ -124,6 +124,26 @@ export const grantPermissions = async (identifier, permissions) => {
     options: {
       body: { permissions: permissions }
     }
+  })
+
+  const response = await operation.response
+  return (await response.body.json()).result
+}
+
+export const getPermissions = async identifier => {
+  const operation = get({
+    apiName: 'PermissionHandler',
+    path: `/v1/permissions/staff/${identifier}`
+  })
+
+  const response = await operation.response
+  return (await response.body.json()).result
+}
+
+export const getRoles = async identifier => {
+  const operation = get({
+    apiName: 'PermissionHandler',
+    path: `/v1/permissions/roles/staff/${identifier}`
   })
 
   const response = await operation.response

@@ -10,30 +10,30 @@ const SEARCH_PERMISSIONS =
 
 const USER_PERMISSIONS = `
   SELECT 
-    pe.name,
-    pe.description
+    perm.name,
+    perm.description
   FROM 
     system.staff staff
-  LEFT JOIN 
+  INNER JOIN 
     system.staff_permissions sp ON staff.staff_id = sp.staff_id
-  LEFT JOIN 
-    system.permissions pe ON sp.permission_id = pe.permission_id
+  INNER JOIN 
+    system.permissions perm ON sp.permission_id = perm.permission_id
   WHERE 
     staff.staff_id = $1
   UNION
   SELECT 
-    pe.name,
-    pe.description
+    perm.name,
+    perm.description
   FROM 
     system.staff staff
-  LEFT JOIN 
+  INNER JOIN 
     system.staff_roles sr ON staff.staff_id = sr.staff_id
-  LEFT JOIN 
-    system.roles ro ON sr.role_id = ro.role_id
-  LEFT JOIN 
-    system.role_permissions rp ON ro.role_id = rp.role_id
-  LEFT JOIN 
-    system.permissions pe ON rp.permission_id = pe.permission_id
+  INNER JOIN 
+    system.roles role ON sr.role_id = role.role_id
+  INNER JOIN  
+    system.role_permissions rp ON role.role_id = rp.role_id
+  INNER JOIN 
+    system.permissions perm ON rp.permission_id = perm.permission_id
   WHERE 
     staff.staff_id = $1
   `
@@ -48,9 +48,9 @@ const PERMISSION_MEMBERS = `
   LEFT JOIN 
     system.staff_permissions sp ON staff.staff_id = sp.staff_id
   LEFT JOIN 
-    system.permissions pe ON sp.permission_id = pe.permission_id
+    system.permissions perm ON sp.permission_id = perm.permission_id
   WHERE 
-    pe.name = $1
+    perm.name = $1
   UNION
   SELECT 
     staff.staff_id,
@@ -61,27 +61,27 @@ const PERMISSION_MEMBERS = `
   LEFT JOIN 
     system.staff_roles sr ON staff.staff_id = sr.staff_id
   LEFT JOIN 
-    system.roles ro ON sr.role_id = ro.role_id
+    system.roles role ON sr.role_id = role.role_id
   LEFT JOIN 
-    system.role_permissions rp ON ro.role_id = rp.role_id
+    system.role_permissions rp ON role.role_id = rp.role_id
   LEFT JOIN 
-    system.permissions pe ON rp.permission_id = pe.permission_id
+    system.permissions perm ON rp.permission_id = perm.permission_id
   WHERE 
-    pe.name = $1
+    perm.name = $1
 `
 
 const USER_ROLES = `
-  SELECT
-    ro.name,
-    ro.description
+  SELECT 
+    role.name,
+    role.description
   FROM
     system.staff staff
-  LEFT JOIN
-    system.staff_roles sr ON staff.staff_id = sr.staff_id
-  LEFT JOIN 
-    system.roles ro ON sr.role_id = ro.role_id
+  INNER JOIN
+      system.staff_roles assignment ON staff.staff_id = assignment.staff_id
+  INNER JOIN 
+      system.roles role ON assignment.role_id = role.role_id
   WHERE
-    staff.staff_id = $1
+      staff.staff_id = $1
   `
 
 const ALL_ROLES = `
@@ -92,8 +92,7 @@ const ALL_ROLES = `
     system.roles role
 `
 
-const SEARCH_ROLES = 
-  ALL_ROLES + " WHERE role.name ILIKE '%' || $1 || '%'"
+const SEARCH_ROLES = ALL_ROLES + " WHERE role.name ILIKE '%' || $1 || '%'"
 
 const ROLE_MEMBERS = `
   SELECT
@@ -103,25 +102,25 @@ const ROLE_MEMBERS = `
   FROM
     system.staff staff
   LEFT JOIN
-    system.staff_roles sr ON staff.staff_id = sr.staff_id
+    system.staff_roles assignment ON staff.staff_id = assignment.staff_id
   LEFT JOIN 
-    system.roles ro ON sr.role_id = ro.role_id
+    system.roles role ON assignment.role_id = role.role_id
   WHERE
-    ro.name  = $1
+    role.name  = $1
 `
 
 const ROLE_PERMISSIONS = `
   SELECT
-    permissions.name,
-    permissions.description
+    perm.name,
+    perm.description
   FROM
-    system.permissions permissions
+    system.permissions perm
   LEFT JOIN
-    system.role_permissions rp ON rp.permission_id = permissions.permission_id
+    system.role_permissions rp ON rp.permission_id = perm.permission_id
   LEFT JOIN
-    system.roles ro ON ro.role_id = rp.role_id 
+    system.roles role ON role.role_id = rp.role_id 
   WHERE
-    ro.name = $1
+    role.name = $1
 `
 
 const permissions = {
