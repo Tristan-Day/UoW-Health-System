@@ -115,7 +115,7 @@ const Cleaning = () => {
     }
   }
 
-  async function handleCancel() {
+  async function handleCancel(selection) {
     setMessage({ text: 'Canceling order...', severity: 'info', loading: true })
 
     cancelOrder(contents[selection].identifier)
@@ -137,7 +137,7 @@ const Cleaning = () => {
       })
   }
 
-  async function handleFulfil() {}
+  async function handleFulfil(selection) {}
 
   return (
     <Box>
@@ -148,7 +148,7 @@ const Cleaning = () => {
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
         <Box display="flex" gap={2}>
-          <Searchbox label="Search Roles" onSubmit={handleSearch} />
+          <Searchbox label="Search Orders" onSubmit={handleSearch} />
           <FormControlLabel
             control={
               <Checkbox onChange={event => setFilter(event.target.checked)} />
@@ -189,11 +189,11 @@ const Cleaning = () => {
       )}
 
       <DataGrid
-        autoPageSize
         rows={contents}
         columns={Columns}
         onRowSelectionModelChange={model => handleSelection(model[0])}
         sx={{ height: '40vh' }}
+        autoPageSize
       />
     </Box>
   )

@@ -90,7 +90,7 @@ const Premises = () => {
       })
   }
 
-  async function handleDelete() {
+  async function handleDelete(selection) {
     setMessage({ text: 'Deleting room...', severity: 'info', loading: true })
 
     deletePremises(selection)

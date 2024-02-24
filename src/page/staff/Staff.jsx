@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
 import { Searchbox } from '../../components'
 
-import { getStaff } from './logic/Personel'
+import { getStaff, deleteUser } from './logic/Personel'
 
 const Columns = [
   {
@@ -97,8 +97,28 @@ const Staff = () => {
     })
   }
 
-  async function handleDelete() {
+  async function handleDelete(selection) {
     setMessage({ text: 'Deleting User...', severity: 'info', loading: true })
+
+    deleteUser(selection)
+      .then(() => {
+        setMessage({
+          text: 'User sucessfully deleted',
+          severity: 'success',
+          loading: false
+        })
+
+        setContents(contents.filter(user => user.identifier !== selection))
+      })
+      .catch(() => {
+        setMessage({
+          text: 'Failed to delete user - Please try again later',
+          severity: 'error',
+          loading: false
+        })
+      })
+
+    setSelection(undefined)
   }
 
   return (
@@ -118,13 +138,13 @@ const Staff = () => {
           <Divider orientation="vertical" />
           <Button
             variant={selection !== undefined ? 'outlined' : 'disabled'}
-            onClick={() => navigate(selection.name)}
+            onClick={() => navigate(selection.identifier)}
           >
             View Details
           </Button>
           <Button
             variant={selection !== undefined ? 'outlined' : 'disabled'}
-            onClick={() => handleDelete()}
+            onClick={() => handleDelete(selection.identifier)}
           >
             Delete User
           </Button>
@@ -142,11 +162,11 @@ const Staff = () => {
       )}
 
       <DataGrid
-        autoPageSize
         rows={contents}
         columns={Columns}
         onRowSelectionModelChange={model => handleSelection(model[0])}
         sx={{ height: '40vh' }}
+        autoPageSize
       />
     </Box>
   )

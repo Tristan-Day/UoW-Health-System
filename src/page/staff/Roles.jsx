@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
 import { Searchbox } from '../../components'
 
-import { getRoles, deleteRole } from './logic/Permissions'
+import { searchRoles, deleteRole } from './logic/Permissions'
 
 const Columns = [
   {
@@ -47,7 +47,7 @@ const Roles = () => {
   async function handleSearch(query) {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    getRoles(query)
+    searchRoles(query)
       .then(result => {
         setContents(
           result.map(role => ({
@@ -76,10 +76,10 @@ const Roles = () => {
     })
   }
 
-  async function handleDelete() {
+  async function handleDelete(selection) {
     setMessage({ text: 'Deleting Role...', severity: 'info', loading: true })
 
-    deleteRole(selection.id)
+    deleteRole(selection)
       .then(() => {
         setMessage({
           text: 'Role sucessfully deleted',
@@ -87,7 +87,7 @@ const Roles = () => {
           loading: false
         })
 
-        setContents(contents.filter(role => role.id !== selection.id))
+        setContents(contents.filter(role => role.id !== selection))
       })
       .catch(() => {
         setMessage({
@@ -96,6 +96,8 @@ const Roles = () => {
           loading: false
         })
       })
+
+    setSelection(undefined)
   }
 
   return (
@@ -121,7 +123,7 @@ const Roles = () => {
           </Button>
           <Button
             variant={selection !== undefined ? 'outlined' : 'disabled'}
-            onClick={() => handleDelete()}
+            onClick={() => handleDelete(selection.name)}
           >
             Delete Role
           </Button>
@@ -139,11 +141,11 @@ const Roles = () => {
       )}
 
       <DataGrid
-        autoPageSize
         rows={contents}
         columns={Columns}
         onRowSelectionModelChange={model => handleSelection(model[0])}
         sx={{ height: '40vh' }}
+        autoPageSize
       />
     </Box>
   )

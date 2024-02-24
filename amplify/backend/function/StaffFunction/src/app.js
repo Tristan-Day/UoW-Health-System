@@ -65,22 +65,6 @@ async function setup() {
   console.log('Established database connection')
 }
 
-function getConstraintName(constraint) {
-  switch (constraint) {
-    case 'email_unique':
-      field = 'Email address'
-      break
-
-    case 'phone_unique':
-      field = 'Phone number'
-      break
-
-    default:
-      field = 'Identifier'
-      break
-  }
-}
-
 app.get('/v1/resources/staff/:identifier', async function (req, res) {
   await setup()
 
@@ -172,35 +156,22 @@ app.put('/v1/resources/staff/:identifier/create', async function (req, res) {
         required: true                     
   } */
 
-  const query = `
-    INSERT INTO system.staff (staff_id, first_name, last_name, email_address, phone_number, image)
-    VALUES ($1, $2, $3, $4, $5, $6)
-  `
-
   fields = [
-    req.params.identifier,
     req.body.first_name,
     req.body.last_name,
+
     req.body.email_address,
     req.body.phone_number,
     req.body.image
   ]
 
   try {
-    await client.query(query, fields)
-    res.status(200).json({ result: 'User sucessfully created' })
-  } catch (error) {
-    console.log(error)
+    const query = require('./queries').staff.create
+    await client.query(query, [req.params.identifier, ...fields])
 
-    if (error.constraint !== undefined) {
-      const field = getConstraintName(error.constraint)
-      res.status(400).json({ error: `${field} must be unique`, field: field })
-    } else {
-      res.status(400).json({
-        error: `Missing required field ${error.column}`,
-        field: error.column
-      })
-    }
+    res.status(200).json({ result: 'User Created' })
+  } catch (error) {
+    res.status(400).json({ error: error })
   }
 })
 
@@ -243,25 +214,22 @@ app.put('/v1/resources/staff/:identifier/update', async function (req, res) {
         required: false                     
   } */
 
-  // Filter columns to generate a query based on provided body parameters
-  const columns = ['first_name', 'last_name', 'email_address', 'phone_number']
+  fields = [
+    req.body.first_name,
+    req.body.last_name,
 
-  const fields = columns.filter(field => req.body[field] !== undefined)
-  const placeholders = fields.map((_, index) => `$${index + 2}`)
-
-  const query = `
-    INSERT INTO system.staff (staff_id, ${fields.join(', ')})
-    VALUES ({${placeholders.join(', ')}})
-  `
+    req.body.email_address,
+    req.body.phone_number,
+    req.body.image
+  ]
 
   try {
-    await client.query(query, fields)
+    const query = require('./queries').staff.update
+    await client.query(query, [req.params.identifier, ...fields])
+
     res.status(200).json({ result: 'Update Sucessful' })
   } catch (error) {
-    if (error.constraint !== undefined) {
-      const field = getConstraintName(error.constraint)
-      res.status(400).json({ error: `${field} must be unique`, field: field })
-    }
+    res.status(400).json({ error: error })
   }
 })
 
@@ -282,9 +250,9 @@ app.delete('/v1/resources/staff/:identifier', async function (req, res) {
   )
 
   if (result.rowCount > 0) {
-    res.status(200).json({ result: 'Staff member sucessfully deleted' })
+    res.status(200).json({ result: 'User Sucessfully Deleted' })
   } else {
-    res.status(404).json({ error: 'Staff member not found' })
+    res.status(404).json({ error: 'User not found' })
   }
 })
 
