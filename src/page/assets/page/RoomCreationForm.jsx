@@ -30,21 +30,21 @@ const RoomCreationForm = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getBuildings()
-
+    getBuildings()
+      .then(result => {
         setBuildings(
           result.map(building => {
             return building.name
           })
         )
-      } catch (error) {
-        return
-      }
-    }
-    fetchData()
-    handleValidation()
+      })
+      .catch(() => {
+        setMessage({
+          text: 'Failed to load buildings list - Please try again later',
+          severity: 'error'
+        })
+        setTimeout(() => setMessage(undefined), 7000)
+      })
   }, [])
 
   useEffect(() => {
