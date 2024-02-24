@@ -18,8 +18,8 @@ import BreadcrumbGenerator from '../../../components/generator/BreadcumbGenerato
 import ProfileImage from '../component/ProfileImage'
 
 import {
-  getPermissions,
-  getRoles,
+  searchPermissions,
+  searchRoles,
   grantPermissions,
   grantRoles
 } from '../logic/Permissions'
@@ -79,7 +79,7 @@ const StaffCreationForm = () => {
     async function fetchData() {
       try {
         setPermissionList(
-          (await getPermissions()).map(permission => ({
+          (await searchPermissions()).map(permission => ({
             ...permission,
             id: permission.name
           }))
@@ -95,7 +95,7 @@ const StaffCreationForm = () => {
 
       try {
         setRoleList(
-          (await getRoles()).map(role => ({
+          (await searchRoles()).map(role => ({
             ...role,
             id: role.name
           }))
@@ -123,23 +123,47 @@ const StaffCreationForm = () => {
     setMessage(undefined)
     const errors = {}
 
-    if (!(form.identifier && form.identifier.trim())) {
+    if (form.phone_number && form.phone_number.match('[^0-9]')) {
       setMessage({
         severity: 'error',
-        text: 'A Cognito UUID is required - Please enter a valid UUID'
+        text: 'Phone Number can only contain numbers'
       })
-      errors.identifier = true
-    }
-
-    if (!(form.first_name && form.first_name.trim())) {
+      errors.phone_number = true
+    } else if (form.phone_number && form.phone_number.length !== 11) {
       setMessage({
         severity: 'error',
-        text: "'First Name' is a required field - Please enter a first name"
+        text: 'Phone Number must be 11 digits'
       })
-      errors.first_name = true
+      errors.phone_number = true
+    } else if (!(form.phone_number && form.phone_number.trim())) {
+      setMessage({
+        severity: 'error',
+        text: "'Phone Number' is a required field - Please enter a valid phone number"
+      })
+      errors.phone_number = true
     }
 
-    if (!(form.last_name && form.last_name.trim())) {
+    if (!(form.email_address && form.email_address.match(/^\S+@\S+\.\S+$/))) {
+      setMessage({
+        severity: 'error',
+        text: 'A valid Email Address is required - Please enter a valid email address'
+      })
+      errors.email_address = true
+    } else if (!(form.email_address && form.email_address.trim())) {
+      setMessage({
+        severity: 'error',
+        text: 'A valid Email Address is required - Please enter an email address'
+      })
+      errors.email_address = true
+    }
+
+    if (form.last_name && form.last_name.length > 20) {
+      setMessage({
+        severity: 'error',
+        text: 'Last Name cannot exceed 20 characters'
+      })
+      errors.last_name = true
+    } else if (!(form.last_name && form.last_name.trim())) {
       setMessage({
         severity: 'error',
         text: "'Last Name' is a required field - Please enter a last name"
@@ -147,26 +171,32 @@ const StaffCreationForm = () => {
       errors.last_name = true
     }
 
-    if (
-      !(
-        form.email_address &&
-        form.email_address.trim() &&
-        form.email_address.includes('@')
-      )
-    ) {
+    if (form.first_name && form.first_name.length > 20) {
       setMessage({
         severity: 'error',
-        text: "A valid 'Email Address' is a required - Please enter an email address"
+        text: 'First Name cannot exceed 20 characters'
       })
-      errors.email_address = true
+      errors.first_name = true
+    } else if (!(form.first_name && form.first_name.trim())) {
+      setMessage({
+        severity: 'error',
+        text: "'First Name' is a required field - Please enter a first name"
+      })
+      errors.first_name = true
     }
 
-    if (!(form.phone_number && form.phone_number.trim())) {
+    if (form.identifier && form.identifier.length > 50) {
       setMessage({
         severity: 'error',
-        text: "'Phone Number' is a required field - Please enter a valid phone number"
+        text: 'User UUID cannot exceed 50 characters'
       })
-      errors.phone_number = true
+      errors.identifier = true
+    } else if (!(form.identifier && form.identifier.trim())) {
+      setMessage({
+        severity: 'error',
+        text: 'A Cognito UUID is required - Please enter a valid UUID'
+      })
+      errors.identifier = true
     }
 
     setErrors(errors)
@@ -198,7 +228,7 @@ const StaffCreationForm = () => {
       await grantRoles(form.identifier, roleSelection)
     } catch {
       setMessage({
-        text: 'Failed to assign roles - User was sucessfully created',
+        text: 'Failed to assign roles',
         severity: 'error'
       })
 
@@ -209,7 +239,7 @@ const StaffCreationForm = () => {
       await grantPermissions(form.identifier, permissionSelection)
     } catch {
       setMessage({
-        text: 'Failed to grant permissions - User and roles where sucessfully assigned',
+        text: 'Failed to grant permissions',
         severity: 'error'
       })
 
@@ -325,7 +355,8 @@ const StaffCreationForm = () => {
             />
           </Stack>
           <ProfileImage
-            onUpdate={image => setForm({ ...form, image: image })}
+            image={form.image}
+            onChange={image => setForm({ ...form, image: image })}
           />
         </Box>
       </Box>

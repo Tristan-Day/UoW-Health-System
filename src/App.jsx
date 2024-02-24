@@ -21,12 +21,12 @@ Amplify.configure(awsExports)
 
 // Autodetect Theme Preference
 var theme = 'light'
-// if (
-//   window.matchMedia &&
-//   window.matchMedia('(prefers-color-scheme: dark)').matches
-// ) {
-//   theme = 'dark'
-// }
+if (
+  window.matchMedia &&
+  window.matchMedia('(prefers-color-scheme: dark)').matches
+) {
+  theme = 'dark'
+}
 
 function App() {
   const [authorised, setAuthorisation] = useState(false)

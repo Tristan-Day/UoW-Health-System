@@ -74,20 +74,20 @@ const CleaningOrderForm = () => {
     setMessage(undefined)
     const errors = {}
 
-    if (!form.building) {
-      setMessage({
-        severity: 'error',
-        text: 'A building is required - Please select a building'
-      })
-      errors.building = true
-    }
-
     if (!form.room) {
       setMessage({
         severity: 'error',
         text: 'A room is required - Please select a room'
       })
       errors.room = true
+    }
+
+    if (!form.building) {
+      setMessage({
+        severity: 'error',
+        text: 'A building is required - Please select a building'
+      })
+      errors.building = true
     }
 
     setErrors(errors)

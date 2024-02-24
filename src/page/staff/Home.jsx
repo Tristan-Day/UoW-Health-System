@@ -3,8 +3,14 @@ import { Outlet, Route } from 'react-router-dom'
 
 import IndexGenerator from '../../components/generator/IndexGenerator'
 
-import { Roles, RoleDetails, RoleCreationForm, Staff } from '.'
-import StaffCreationForm from './page/StaffCreationForm'
+import {
+  Roles,
+  RoleDetails,
+  RoleCreationForm,
+  Staff,
+  StaffDetails,
+  StaffCreationForm
+} from '.'
 
 const Pages = {
   'Role Management': {
@@ -46,6 +52,7 @@ const StaffRoutes = (
     <Route path="list">
       <Route index element={<Staff />} />
       <Route path="create" element={<StaffCreationForm />} />
+      <Route path=":identifier" element={<StaffDetails />} />
     </Route>
 
     <Route path="schedules" element={<h1>Staff Schedule Management</h1>} />

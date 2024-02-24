@@ -15,7 +15,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../../components/generator/BreadcumbGenerator'
-import { createRole, getPermissions } from '../logic/Permissions'
+import { createRole, searchPermissions } from '../logic/Permissions'
 
 const Columns = [
   {
@@ -39,10 +39,7 @@ const RoleCreationForm = () => {
   const [permissionList, setPermissionList] = useState([])
   const [permissionSelection, setPermissionSelection] = useState([])
 
-  const [form, setForm] = useState({
-    name: '',
-    description: ''
-  })
+  const [form, setForm] = useState({})
 
   const navigate = useNavigate()
 
@@ -56,7 +53,7 @@ const RoleCreationForm = () => {
     async function fetchData() {
       try {
         setPermissionList(
-          (await getPermissions()).map(permission => ({
+          (await searchPermissions()).map(permission => ({
             ...permission,
             id: permission.name
           }))
@@ -90,6 +87,22 @@ const RoleCreationForm = () => {
         text: 'A role name is required - Please enter a role name'
       })
       errors.name = true
+    }
+
+    if (form.name && form.name.length > 20) {
+      setMessage({
+        severity: 'error',
+        text: 'Role name cannot exceed 20 characters'
+      })
+      errors.name = true
+    }
+
+    if (form.description && form.description.length > 100) {
+      setMessage({
+        severity: 'error',
+        text: 'Description cannot exceed 100 characters'
+      })
+      errors.description = true
     }
 
     setErrors(errors)
@@ -168,6 +181,7 @@ const RoleCreationForm = () => {
           onBlur={event => {
             setForm({ ...form, description: event.target.value })
           }}
+          error={errors.description}
         />
       </Stack>
 
