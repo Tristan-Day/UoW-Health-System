@@ -68,7 +68,7 @@ async function setup() {
 app.get('/v1/resources/rooms/:name', async function (req, res) {
   await setup()
 
-  // #swagger.description = 'Retreive rooms matching a given name from the database'
+  // #swagger.description = 'Retreive a room matching a given name from the database'
 
   /* #swagger.parameters['name'] = {
         in: 'path',                            
@@ -91,7 +91,7 @@ app.get('/v1/resources/rooms/:name', async function (req, res) {
 app.post('/v1/resources/rooms/search', async function (req, res) {
   await setup()
 
-  // #swagger.description = 'Retreive rooms containing a given query'
+  // #swagger.description = 'Retreive rooms matching a given query'
 
   /* #swagger.parameters['query'] = {
         in: 'body',                            
@@ -200,12 +200,10 @@ app.put('/v1/resources/rooms/:name/create', async function (req, res) {
 
   try {
     const roomResult = await client.query(query, fields)
-    res
-      .status(200)
-      .json({
-        result: 'Room sucessfully created',
-        identifier: roomResult.rows[0].room_id
-      })
+    res.status(200).json({
+      result: 'Room sucessfully created',
+      identifier: roomResult.rows[0].room_id
+    })
   } catch (error) {
     res.status(409).json({ error: 'Room already exists' })
   }
@@ -231,6 +229,7 @@ app.put('/v1/resources/rooms/:identifier/update', async function (req, res) {
   } */
 
   var identifier
+
   try {
     identifier = parseInt(req.params.identifier)
   } catch (error) {
