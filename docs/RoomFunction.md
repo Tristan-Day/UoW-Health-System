@@ -6,12 +6,12 @@ Handles room management
 **Schemes:** http
 
 ---
-### /v1/resources/room/{name}
+### /v1/resources/rooms/{name}
 
 #### GET
 ##### Description
 
-Get rooms matching a given name
+Retreive a room matching a given name from the database
 
 ##### Parameters
 
@@ -24,9 +24,28 @@ Get rooms matching a given name
 | Code | Description |
 | ---- | ----------- |
 | 200 | OK |
+
+### /v1/resources/rooms/search
+
+#### POST
+##### Description
+
+Retreive rooms matching a given query
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| query | body | The string to match to | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | OK |
 | 404 | Not Found |
 
-### /v1/resources/room/{name}/create
+### /v1/resources/rooms/{name}/create
 
 #### PUT
 ##### Description
@@ -50,7 +69,7 @@ Create a new room
 | 400 | Bad Request |
 | 409 | Conflict |
 
-### /v1/resources/room/{identifier}/update
+### /v1/resources/rooms/{identifier}/update
 
 #### PUT
 ##### Description
@@ -72,7 +91,7 @@ Update the description for a give room
 | 400 | Bad Request |
 | 404 | Not Found |
 
-### /v1/resources/room/{identifier}
+### /v1/resources/rooms/{identifier}
 
 #### DELETE
 ##### Description
