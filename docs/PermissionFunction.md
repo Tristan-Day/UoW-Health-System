@@ -18,6 +18,7 @@ Get all or check the presense of a set of given permissions
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
 | identifier | path | The staff identifier provided by cognito | Yes | string |
+| permissions | body | An array of permission names to test the specified user against | Yes | string |
 
 ##### Responses
 
@@ -252,7 +253,7 @@ Add a new role to the database
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| name | path | The role to update or create | Yes | string |
+| name | path | The role to create | Yes | string |
 | description | body | The description string | No | string |
 
 ##### Responses
@@ -260,6 +261,8 @@ Add a new role to the database
 | Code | Description |
 | ---- | ----------- |
 | 200 | OK |
+| 400 | Bad Request |
+| 404 | Not Found |
 | 409 | Conflict |
 
 ### /v1/permissions/roles/{name}/update
@@ -283,4 +286,44 @@ Add a new role to the database
 | ---- | ----------- |
 | 200 | OK |
 | 400 | Bad Request |
+| 404 | Not Found |
+
+### /v1/permissions/roles/search
+
+#### POST
+##### Description
+
+Retreive roles matching a given query
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| query | body | The string to match to | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | OK |
+| 404 | Not Found |
+
+### /v1/permissions/search
+
+#### POST
+##### Description
+
+Retreive permissions matching a given query
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| query | body | The string to match to | No | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | OK |
 | 404 | Not Found |

@@ -55,21 +55,14 @@ Search for a staff member by a given field
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ------ |
-| fields | body | The fields to search within | Yes | string |
-| string | query | Search string or regex | Yes | string |
-| regex | query | Specifies if the string is a regex query | No | string |
-| size | query | Number of records in the page [Pagnetation] | No | string |
-| index | query | The page index to retreive [Pagnetation] | No | string |
+| query | body | The string to match to | No | string |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
 | 200 | OK |
-| 400 | Bad Request |
 | 404 | Not Found |
-| 416 | Range Not Satisfiable |
-| 500 | Internal Server Error |
 
 ### /v1/resources/staff/{identifier}/create
 
@@ -116,4 +109,5 @@ Update a staff member in the database
 
 | Code | Description |
 | ---- | ----------- |
-| default |  |
+| 200 | OK |
+| 400 | Bad Request |
