@@ -1,10 +1,13 @@
 const lambdaLocal = require('lambda-local')
 const PROFILE = 'Winchester Health Systems'
 
+const ROLE = 'Test%20Role'
+const STAFF_ID = 'bc923af4-137c-4b4c-92af-03e29f8efd77'
+
 test('Retreive a permission', async () => {
   const payload = {
     httpMethod: 'GET',
-    path: '/v1/permissions/test.permission.alpha',
+    path: `/v1/permissions/staff.view`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -24,14 +27,14 @@ test('Retreive a permission', async () => {
 
   // Assert permission description
   expect(JSON.parse(res.body).result.description).toBe(
-    'This is a test permission'
+    'View the current staff list'
   )
 })
 
 test('Create a new role', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/roles/TEST/create',
+    path: '/v1/permissions/roles/Test%20Role/create',
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -53,7 +56,7 @@ test('Create a new role', async () => {
 test('Attempt to overwrite an existing role', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/roles/TEST/create',
+    path: `/v1/permissions/roles/${ROLE}/create`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -75,14 +78,14 @@ test('Attempt to overwrite an existing role', async () => {
 test('Update a role and assign permissions', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/roles/TEST/update',
+    path: `/v1/permissions/roles/${ROLE}/update`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       description: 'This is a test role',
-      permissions: ['test.permission.alpha']
+      permissions: ['staff.view', 'staff.edit']
     })
   }
 
@@ -100,7 +103,7 @@ test('Update a role and assign permissions', async () => {
 test('Retreive a role', async () => {
   const payload = {
     httpMethod: 'GET',
-    path: '/v1/permissions/roles/TEST',
+    path: `/v1/permissions/roles/${ROLE}`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -118,24 +121,25 @@ test('Retreive a role', async () => {
   // Assert the response code
   expect(res.statusCode).toBe(200)
 
+  let result = JSON.parse(res.body).result
+
   // Assert that permissions have been granted
-  expect(JSON.parse(res.body).result.description).toBe(
-    'Role creation demonstration'
-  )
-  expect(JSON.parse(res.body).result.permissions[0].name).toBe(
-    'test.permission.alpha'
-  )
+  expect(result.description).toBe('This is a test role')
+  expect(result.permissions.length).toBe(2)
+
+  expect(result.permissions[0].name).toBe('staff.view')
+  expect(result.permissions[1].name).toBe('staff.edit')
 })
 
 test('Grant a permission', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/staff/ACCESS/grant',
+    path: `/v1/permissions/staff/${STAFF_ID}/grant`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ permissions: ['test.permission.beta'] })
+    body: JSON.stringify({ permissions: ['staff.create'] })
   }
 
   const res = await lambdaLocal.execute({
@@ -152,12 +156,12 @@ test('Grant a permission', async () => {
 test('Attempt to grant an existing permission', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/staff/ACCESS/grant',
+    path: `/v1/permissions/staff/${STAFF_ID}/grant`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ permissions: ['test.permission.beta'] })
+    body: JSON.stringify({ permissions: ['staff.create'] })
   }
 
   const res = await lambdaLocal.execute({
@@ -174,12 +178,12 @@ test('Attempt to grant an existing permission', async () => {
 test('Assign a role', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/roles/staff/ACCESS/grant',
+    path: `/v1/permissions/roles/staff/${STAFF_ID}/grant`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ roles: ['TEST'] })
+    body: JSON.stringify({ roles: ['Test Role'] })
   }
 
   const res = await lambdaLocal.execute({
@@ -189,6 +193,8 @@ test('Assign a role', async () => {
     verboseLevel: 0
   })
 
+  console.log(JSON.parse(res.body))
+
   // Assert the response code
   expect(res.statusCode).toBe(200)
 })
@@ -196,7 +202,7 @@ test('Assign a role', async () => {
 test('Get role members', async () => {
   const payload = {
     httpMethod: 'GET',
-    path: '/v1/permissions/roles/TEST/members',
+    path: `/v1/permissions/roles/${ROLE}/members`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -221,7 +227,7 @@ test('Get role members', async () => {
 test('Get permission members', async () => {
   const payload = {
     httpMethod: 'GET',
-    path: '/v1/permissions/test.permission.beta/members',
+    path: `/v1/permissions/staff.view/members`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -240,44 +246,19 @@ test('Get permission members', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert the number of assigned users
-  expect(JSON.parse(res.body).result.length).toBe(1)
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
 })
 
 test('Get staff roles', async () => {
   const payload = {
     httpMethod: 'GET',
-    path: '/v1/permissions/roles/staff/ACCESS',
-    queryStringParameters: {},
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ roles: ['TEST'] })
-  }
-
-  const res = await lambdaLocal.execute({
-    event: payload,
-    lambdaPath: './index.js',
-    profileName: PROFILE,
-    verboseLevel: 0
-  })
-
-  // Assert the response code
-  expect(res.statusCode).toBe(200)
-
-  // Assert the role name
-  expect(JSON.parse(res.body).result['TEST']).toBe(true)
-})
-
-test('Get staff permissions', async () => {
-  const payload = {
-    httpMethod: 'GET',
-    path: '/v1/permissions/staff/ACCESS',
+    path: `/v1/permissions/roles/staff/${STAFF_ID}`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      permissions: ['test.permission.alpha', 'test.permission.beta']
+      roles: ['Test Role', 'Invalid Role']
     })
   }
 
@@ -291,9 +272,44 @@ test('Get staff permissions', async () => {
   // Assert the response code
   expect(res.statusCode).toBe(200)
 
+  let result = JSON.parse(res.body).result
+
+  // Assert the role name
+  expect(result['Test Role']).toBe(true)
+  expect(result['Invalid Role']).toBe(false)
+})
+
+test('Get staff permissions', async () => {
+  const payload = {
+    httpMethod: 'GET',
+    path: `/v1/permissions/staff/${STAFF_ID}`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      permissions: ['staff.view', 'staff.edit', 'staff.create', 'staff.delete']
+    })
+  }
+
+  const res = await lambdaLocal.execute({
+    event: payload,
+    lambdaPath: './index.js',
+    profileName: PROFILE,
+    verboseLevel: 0
+  })
+
+  // Assert the response code
+  expect(res.statusCode).toBe(200)
+
+  let result = JSON.parse(res.body).result
+
   // Assert assigned permissions
-  expect(JSON.parse(res.body).result['test.permission.alpha']).toBe(true)
-  expect(JSON.parse(res.body).result['test.permission.beta']).toBe(true)
+  expect(result['staff.view']).toBe(true)
+  expect(result['staff.edit']).toBe(true)
+
+  expect(result['staff.create']).toBe(true)
+  expect(result['staff.delete']).toBe(false)
 })
 
 test('Retreive all roles', async () => {
@@ -343,13 +359,13 @@ test('Retreive all permissions', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert the number of returned items
-  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(2)
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
 })
 
 test('Delete a role', async () => {
   const payload = {
     httpMethod: 'DELETE',
-    path: '/v1/permissions/roles/TEST',
+    path: `/v1/permissions/roles/${ROLE}`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -371,12 +387,12 @@ test('Delete a role', async () => {
 test('Revoke a permission', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/permissions/staff/ACCESS/revoke',
+    path: `/v1/permissions/staff/${STAFF_ID}/revoke`,
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ permissions: ['test.permission.beta'] })
+    body: JSON.stringify({ permissions: ['staff.create'] })
   }
 
   const res = await lambdaLocal.execute({

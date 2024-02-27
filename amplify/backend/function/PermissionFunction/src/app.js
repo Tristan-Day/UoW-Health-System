@@ -644,6 +644,7 @@ app.put('/v1/permissions/roles/:name/create', async function (req, res) {
     await client.query(query, fields)
   } catch (error) {
     res.status(409).json({ error: 'Role already exists' })
+    return
   }
 
   // Handle optional permissions argument

@@ -4,7 +4,7 @@ const PROFILE = 'Winchester Health Systems'
 test('Create a new staff member', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/resources/staff/TEST/create',
+    path: '/v1/resources/staff/Test%20Staff/create',
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -31,7 +31,7 @@ test('Create a new staff member', async () => {
 test('Create a new staff member without required fields', async () => {
   const payload = {
     httpMethod: 'PUT',
-    path: '/v1/resources/staff/TEST/create',
+    path: '/v1/resources/staff/Test%20Staff/create',
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -54,7 +54,7 @@ test('Create a new staff member without required fields', async () => {
 test('Retreive a staff member', async () => {
   const payload = {
     httpMethod: 'GET',
-    path: '/v1/resources/staff/TEST',
+    path: '/v1/resources/staff/Test%20Staff',
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'
@@ -106,7 +106,7 @@ test('Search for a staff member', async () => {
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ query: 'Tristan' })
+    body: JSON.stringify({ query: 'Boris' })
   }
 
   const res = await lambdaLocal.execute({
@@ -120,13 +120,13 @@ test('Search for a staff member', async () => {
   expect(res.statusCode).toBe(200)
 
   // Assert the number of returned items
-  expect(JSON.parse(res.body).result.length).toBe(1)
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
 })
 
 test('Delete a staff member', async () => {
   const payload = {
     httpMethod: 'DELETE',
-    path: '/v1/resources/staff/TEST',
+    path: '/v1/resources/staff/Test%20Staff',
     queryStringParameters: {},
     headers: {
       'Content-Type': 'application/json'

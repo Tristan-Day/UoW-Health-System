@@ -1,8 +1,11 @@
 const lambdaLocal = require('lambda-local')
 const PROFILE = 'Winchester Health Systems'
 
-// Room identifier must be set statically since lambda-local does not support simultanious executions due to port conflict
-const ROOM_ID = '1'
+// Ward A - Nightinggale Wing
+const ROOM_ID = '114'
+
+// Staff Member Tristan Day
+const STAFF_ID = '758601d7-eb34-45d3-989b-394d14c901a5'
 
 test('Issue a new cleaning order', async () => {
   const payload = {
@@ -82,7 +85,7 @@ test('Fulfill a cleaning order', async () => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      cleaner: 'TEST-CLEANER'
+      cleaner: STAFF_ID
     })
   }
 
@@ -106,7 +109,7 @@ test('Attempt to fulfill a completed order', async () => {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      cleaner: 'TEST-CLEANER'
+      cleaner: STAFF_ID
     })
   }
 
