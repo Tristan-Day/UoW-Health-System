@@ -185,7 +185,7 @@ app.put(
       return
     }
 
-    if (req.body.cleaner === undefined) {
+    if (!(req.body.cleaner)) {
       res.status(400).json({ error: 'A cleaner must be specified' })
       return
     }
