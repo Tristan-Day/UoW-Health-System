@@ -1,2 +1,7 @@
 export { default as Home } from './Home'
 export { default as Authentication } from './Authentication'
+
+export { StaffRoutes } from './staff/'
+export { PatientRoutes } from './patients/'
+export { AssetRoutes } from './assets/'
+export { ScheduleRoutes } from './schedule/'

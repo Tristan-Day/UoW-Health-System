@@ -3,10 +3,11 @@ import { Typography, Box, Divider, Button, Grow } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import Alert from '@mui/material/Alert'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
+import { AuthenticationContext } from '../../App'
 import { Searchbox } from '../../components'
 
 import { searchRoles, deleteRole } from './logic/Permissions'
@@ -25,6 +26,7 @@ const Columns = [
 ]
 
 const Roles = () => {
+  const permissions = useContext(AuthenticationContext).permissions
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
@@ -111,18 +113,31 @@ const Roles = () => {
         <Searchbox label="Search Roles" onSubmit={handleSearch} />
 
         <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <Button variant="contained" onClick={() => navigate('create')}>
+          <Button
+            variant={
+              permissions.includes('roles.create') ? 'contained' : 'disabled'
+            }
+            onClick={() => navigate('create')}
+          >
             Create New Role
           </Button>
           <Divider orientation="vertical" />
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('roles.edit')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => navigate(selection.name)}
           >
             View Details
           </Button>
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('roles.delete')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => handleDelete(selection.name)}
           >
             Delete Role

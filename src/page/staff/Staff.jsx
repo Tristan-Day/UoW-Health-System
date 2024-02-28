@@ -2,10 +2,11 @@ import { Typography, Box, Divider, Button, Grow, Alert } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
+import { AuthenticationContext } from '../../App'
 import { Searchbox } from '../../components'
 
 import { getStaff, deleteUser } from './logic/Personel'
@@ -45,6 +46,7 @@ const Columns = [
 ]
 
 const Staff = () => {
+  const permissions = useContext(AuthenticationContext).permissions
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
@@ -132,18 +134,31 @@ const Staff = () => {
         <Searchbox label="Search Staff" onSubmit={handleSearch} />
 
         <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <Button variant="contained" onClick={() => navigate('create')}>
+          <Button
+            variant={
+              permissions.includes('staff.create') ? 'contained' : 'disabled'
+            }
+            onClick={() => navigate('create')}
+          >
             Create New User
           </Button>
           <Divider orientation="vertical" />
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('staff.edit')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => navigate(selection.identifier)}
           >
             View Details
           </Button>
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('staff.delete')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => handleDelete(selection.identifier)}
           >
             Delete User
