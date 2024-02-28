@@ -124,7 +124,7 @@ app.get('/v1/permissions/staff/:identifier', async function (req, res) {
   const query = require('./queries').permissions.assigned
   const result = await client.query(query, [req.params.identifier])
 
-  if (req.body.permissions === undefined) {
+  if (!(req.body.permissions)) {
     res.status(200).json({ result: result.rows })
     return
   }
@@ -351,7 +351,7 @@ app.put('/v1/permissions/staff/:identifier/grant', async function (req, res) {
         required: true                     
   } */
 
-  if (req.body.permissions === undefined) {
+  if (!(req.body.permissions)) {
     res.status(400).json({
       error: 'A set of permissions must be specified within the request body'
     })
@@ -420,7 +420,7 @@ app.put('/v1/permissions/staff/:identifier/revoke', async function (req, res) {
         required: true                     
   } */
 
-  if (req.body.permissions === undefined) {
+  if (!(req.body.permissions)) {
     res.status(400).json({
       error: 'A set of permissions must be specified within the request body'
     })
@@ -492,7 +492,7 @@ app.put(
         required: true                     
   } */
 
-    if (req.body.roles === undefined) {
+    if (!(req.body.roles)) {
       res.status(400).json({
         error: 'A set of roles must be specified within the request body'
       })
@@ -561,7 +561,7 @@ app.put(
         required: true                     
   } */
 
-    if (req.body.roles === undefined) {
+    if (!(req.body.roles)) {
       res.status(400).json({
         error: 'A set of roles must be specified within the request body'
       })
@@ -735,7 +735,7 @@ app.put('/v1/permissions/roles/:name/update', async function (req, res) {
   }
 
   // Handle optional permissions argument
-  if (req.body.permissions === undefined) {
+  if (!(req.body.permissions)) {
     res.status(200).json({ result: 'Role sucessfully updated' })
     return
   }

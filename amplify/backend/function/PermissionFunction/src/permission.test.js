@@ -312,6 +312,31 @@ test('Get staff permissions', async () => {
   expect(result['staff.delete']).toBe(false)
 })
 
+test('Get all staff permissions', async () => {
+  const payload = {
+    httpMethod: 'GET',
+    path: `/v1/permissions/staff/${STAFF_ID}`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: ''
+  }
+
+  const res = await lambdaLocal.execute({
+    event: payload,
+    lambdaPath: './index.js',
+    profileName: PROFILE,
+    verboseLevel: 0
+  })
+
+  // Assert the response code
+  expect(res.statusCode).toBe(200)
+
+  // Assert assigned permissions
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(3)
+})
+
 test('Retreive all roles', async () => {
   const payload = {
     httpMethod: 'POST',
