@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 
 import { useNavigate } from 'react-router-dom'
-
 import BreadcrumbGenerator from './BreadcumbGenerator'
 
 const IndexGenerator = props => {
@@ -23,7 +22,7 @@ const IndexGenerator = props => {
       <Grid container spacing={2}>
         {Object.keys(props.contents).map(function (key) {
           return (
-            <Grid item>
+            <Grid item key={key}>
               <Card
                 sx={{ width: '20rem', minHeight: '7rem' }}
                 onClick={() => {

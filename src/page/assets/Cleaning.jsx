@@ -11,10 +11,11 @@ import {
 import { DataGrid } from '@mui/x-data-grid'
 import Alert from '@mui/material/Alert'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
+import { AuthenticationContext } from '../../App'
 import { Searchbox } from '../../components'
 
 import { cancelOrder, getOrders } from './logic/Cleaning'
@@ -43,6 +44,7 @@ const Columns = [
 ]
 
 const Cleaning = () => {
+  const permissions = useContext(AuthenticationContext).permissions
   const [filter, setFilter] = useState()
 
   const [message, setMessage] = useState({
@@ -108,7 +110,7 @@ const Cleaning = () => {
   }
 
   async function handleSelection(index) {
-    if (contents[index] && contents[index].fulfilled === undefined) {
+    if (!(contents[index] && contents[index].fulfilled)) {
       setSelection(index)
     } else {
       setSelection(undefined)
@@ -159,18 +161,31 @@ const Cleaning = () => {
         </Box>
 
         <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <Button variant="contained" onClick={() => navigate('create')}>
+          <Button
+            variant={
+              permissions.includes('cleaning.issue') ? 'contained' : 'disabled'
+            }
+            onClick={() => navigate('create')}
+          >
             Create New Order
           </Button>
           <Divider orientation="vertical" />
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('cleaning.cancel')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => handleCancel(selection)}
           >
             Cancel Order
           </Button>
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('cleaning.fulfil')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => handleFulfil(selection)}
           >
             Fulfil Order

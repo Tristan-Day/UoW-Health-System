@@ -3,10 +3,11 @@ import { Typography, Box, Divider, Button, Grow } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import Alert from '@mui/material/Alert'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
+import { AuthenticationContext } from '../../App'
 import { Searchbox } from '../../components'
 
 import { deletePremises, getPremises } from './logic/Premises'
@@ -46,6 +47,7 @@ const Columns = [
 ]
 
 const Premises = () => {
+  const permissions = useContext(AuthenticationContext).permissions
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
@@ -123,12 +125,21 @@ const Premises = () => {
         <Searchbox label="Search Premises" onSubmit={handleSearch} />
 
         <Box sx={{ display: 'flex', gap: '1rem' }}>
-          <Button variant="contained" onClick={() => navigate('create')}>
+          <Button
+            variant={
+              permissions.includes('premises.create') ? 'contained' : 'disabled'
+            }
+            onClick={() => navigate('create')}
+          >
             Add Premises
           </Button>
           <Divider orientation="vertical" />
           <Button
-            variant={selection !== undefined ? 'outlined' : 'disabled'}
+            variant={
+              selection !== undefined && permissions.includes('premises.delete')
+                ? 'outlined'
+                : 'disabled'
+            }
             onClick={() => handleDelete(selection)}
           >
             Delete Room
