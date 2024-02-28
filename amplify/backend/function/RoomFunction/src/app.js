@@ -150,12 +150,12 @@ app.put('/v1/resources/rooms/:name/create', async function (req, res) {
         required: false                     
   } */
 
-  if (req.body.building === undefined) {
+  if (!(req.body.building)) {
     res.status(400).json({ error: 'A buidling name is required' })
     return
   }
 
-  if (req.body.floor === undefined) {
+  if (!(req.body.floor)) {
     res.status(400).json({ error: 'A floor number is required' })
     return
   }
@@ -237,7 +237,7 @@ app.put('/v1/resources/rooms/:identifier/update', async function (req, res) {
     return
   }
 
-  if (req.body.description === undefined) {
+  if (!(req.body.description)) {
     res.status(400).json({ error: 'No description provided' })
     return
   }
