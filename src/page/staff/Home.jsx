@@ -1,7 +1,10 @@
 import { Box } from '@mui/material'
+
+import { useContext } from 'react'
 import { Outlet, Route } from 'react-router-dom'
 
 import IndexGenerator from '../../components/generator/IndexGenerator'
+import { AuthenticationContext } from '../../App'
 
 import {
   Roles,
@@ -12,23 +15,30 @@ import {
   StaffCreationForm
 } from '.'
 
-const Pages = {
-  'Role Management': {
-    description: 'Create and update staff roles.',
-    site: 'roles'
-  },
-  'Staff List': {
-    description: 'View, create, update and delete staff.',
-    site: 'list'
-  },
-  'Schedule Management': {
+const Links = () => {
+  const permissions = useContext(AuthenticationContext).permissions
+  const pages = {}
+
+  if (permissions.includes('roles.view')) {
+    pages['Role Management'] = {
+      description: 'Create and update staff roles.',
+      site: 'roles'
+    }
+  }
+
+  if (permissions.includes('staff.view')) {
+    pages['Staff List'] = {
+      description: 'View, create, update and delete staff.',
+      site: 'list'
+    }
+  }
+
+  pages['Schedule Management'] = {
     description: 'View, create, update and delete staff schedules.',
     site: 'schedules'
   }
-}
 
-const Links = () => {
-  return <IndexGenerator title="Staff Management" contents={Pages} />
+  return <IndexGenerator title="Staff Management" contents={pages} />
 }
 
 const Template = () => {
@@ -39,24 +49,30 @@ const Template = () => {
   )
 }
 
-const StaffRoutes = (
-  <Route path="staff" element={<Template />}>
-    <Route index path="*" element={<Links />} />
+const StaffRoutes = permissions => {
+  return (
+    <Route path="staff" element={<Template />}>
+      <Route index path="*" element={<Links />} />
 
-    <Route path="roles">
-      <Route index element={<Roles />} />
-      <Route path="create" element={<RoleCreationForm />} />
-      <Route path=":identifier" element={<RoleDetails />} />
+      {permissions.includes('roles.view') ? (
+        <Route path="roles">
+          <Route index element={<Roles />} />
+          <Route path="create" element={<RoleCreationForm />} />
+          <Route path=":identifier" element={<RoleDetails />} />
+        </Route>
+      ) : null}
+
+      {permissions.includes('staff.view') ? (
+        <Route path="list">
+          <Route index element={<Staff />} />
+          <Route path="create" element={<StaffCreationForm />} />
+          <Route path=":identifier" element={<StaffDetails />} />
+        </Route>
+      ) : null}
+
+      <Route path="schedules" element={<h1>Staff Schedule Management</h1>} />
     </Route>
-
-    <Route path="list">
-      <Route index element={<Staff />} />
-      <Route path="create" element={<StaffCreationForm />} />
-      <Route path=":identifier" element={<StaffDetails />} />
-    </Route>
-
-    <Route path="schedules" element={<h1>Staff Schedule Management</h1>} />
-  </Route>
-)
+  )
+}
 
 export { StaffRoutes }
