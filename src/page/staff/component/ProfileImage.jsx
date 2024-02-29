@@ -7,7 +7,7 @@ import CloudUploadIcon from '@mui/icons-material/CloudUpload'
 const ProfileImage = props => {
   const VisuallyHiddenInput = styled('input')({
     clip: 'rect(0 0 0 0)',
-    width: 1
+    width: 0
   })
 
   async function handleFileUpload(event) {
@@ -71,7 +71,7 @@ const ProfileImage = props => {
         variant="contained"
         startIcon={<CloudUploadIcon />}
       >
-        Upload file
+        Upload Image
         <VisuallyHiddenInput
           type="file"
           accept="image/*"
