@@ -124,7 +124,7 @@ const Treatments = () => {
         setContents(
           result.rows.map(room => ({
             ...room,
-            id: room.ward_id
+            id: room.treatment_id
           }))
         )
         setMessage(undefined)
