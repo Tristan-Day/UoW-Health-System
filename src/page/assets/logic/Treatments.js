@@ -14,7 +14,7 @@ class TreatmentsAPI {
           return (await response.body.json()).success;
     }
 
-    static upsertTreatment = async function(actionType, name, description, wardId, treatmentId) {
+    static upsertTreatment = async function(actionType, name, categoryId, wardId, treatmentId) {
       if(wardId != null && actionType == "INSERT") {
         const operation = post({
           apiName: 'TreatmentHandler',
@@ -23,14 +23,19 @@ class TreatmentsAPI {
             body: {
               ACTION_TYPE: actionType,
               NAME: name,
-              CATAGORY_ID: description,
+              CATEGORY_ID: categoryId,
               WARD_ID: wardId,
             }
           }
         });
     
         const response = ((await operation.response));
-        return (await response.body.json()).success;
+
+        let body = (await response.body.json());
+
+        console.log(body);
+
+        return body.success;
       }
 
       const operation = post({
@@ -40,7 +45,7 @@ class TreatmentsAPI {
           body: {
             ACTION_TYPE: actionType,
             NAME: name,
-            CATAGORY_ID: description,
+            CATEGORY_ID: categoryId,
             WARD_ID: wardId,
             TREATMENT_ID: treatmentId
           }

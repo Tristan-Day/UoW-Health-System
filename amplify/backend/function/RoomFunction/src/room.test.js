@@ -1,52 +1,49 @@
-const lambdaLocal = require("lambda-local")
-const PROFILE = "Winchester Health Systems"
+const lambdaLocal = require('lambda-local')
+const PROFILE = 'Winchester Health Systems'
 
-// Function to parse a name and turn it into a usable identifier
-async function lookup(name) {
+// Retreives the test room identifier from the database
+async function getTestIdentifier() {
   const payload = {
-    "httpMethod": "GET",
-    "path": `/v1/resources/rooms/${name}`,
-    "queryStringParameters": {
+    httpMethod: 'POST',
+    path: `/v1/resources/rooms/search`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: JSON.stringify({ query: 'Test Room' })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
 
   if (res.statusCode !== 200) {
-    console.log(res)
-    throw new Error("Unable to retreive room identifier")
+    throw new Error('Unable to retreive room identifier')
   }
 
-  return JSON.parse(res.body).result[0]
+  return JSON.parse(res.body).result[0].room_id
 }
 
 test('Create a new room', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/resources/rooms/TEST/create",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/resources/rooms/Test%20Room/create`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "building": "TEST-BUILDING",
-      "floor": 0,
+    body: JSON.stringify({
+      building: 'Butterfield Wing',
+      floor: 2
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -57,21 +54,20 @@ test('Create a new room', async () => {
 
 test('Create a new room without specifying a floor', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/resources/rooms/TEST/create",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/resources/rooms/Test%20Room/create`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "building": "West Downs Centre",
+    body: JSON.stringify({
+      building: 'Butterfield Wing'
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -82,21 +78,20 @@ test('Create a new room without specifying a floor', async () => {
 
 test('Create a new room without specifying a building', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": "/v1/resources/rooms/TEST/create",
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: '/v1/resources/rooms/Test%20Room/create',
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "floor": 0,
+    body: JSON.stringify({
+      floor: 2
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -106,24 +101,23 @@ test('Create a new room without specifying a building', async () => {
 })
 
 test('Update a room description', async () => {
-  const identifier = (await lookup("TEST")).room_id
+  const identifier = await getTestIdentifier()
 
   const payload = {
-    "httpMethod": "PUT",
-    "path": `/v1/resources/rooms/${identifier}/update`,
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/resources/rooms/${identifier}/update`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "description": "This is a test room",
+    body: JSON.stringify({
+      description: 'This is a test room'
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -134,19 +128,18 @@ test('Update a room description', async () => {
 
 test('Retreive details of a room', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": `/v1/resources/rooms/TEST`,
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: `/v1/resources/rooms/Test%20Room`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -154,29 +147,27 @@ test('Retreive details of a room', async () => {
   // Assert the response code
   expect(res.statusCode).toBe(200)
 
-  // Assert the room name
-  expect(JSON.parse(res.body).result[0].room).toBe("TEST")
+  let result = JSON.parse(res.body).result
 
-  // Assert the room floor and description
-  expect(JSON.parse(res.body).result[0].floor).toBe(0)
-  expect(JSON.parse(res.body).result[0].description).toBe("This is a test room")
+  // Assert the room name
+  expect(result.room).toBe('Test Room')
+  expect(result.description).toBe('This is a test room')
 })
 
 test('Retreive all rooms', async () => {
   const payload = {
-    "httpMethod": "POST",
-    "path": `/v1/resources/rooms/search`,
-    "queryStringParameters": {
+    httpMethod: 'POST',
+    path: `/v1/resources/rooms/search`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -189,24 +180,23 @@ test('Retreive all rooms', async () => {
 })
 
 test('Delete a room', async () => {
-  const identifier = (await lookup("TEST")).room_id
+  const identifier = await getTestIdentifier()
 
   const payload = {
-    "httpMethod": "DELETE",
-    "path": `/v1/resources/rooms/${identifier}`,
-    "queryStringParameters": {
+    httpMethod: 'DELETE',
+    path: `/v1/resources/rooms/${identifier}`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "description": "This is a test room",
+    body: JSON.stringify({
+      description: 'This is a test room'
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -214,5 +204,3 @@ test('Delete a room', async () => {
   // Assert the response code
   expect(res.statusCode).toBe(200)
 })
-
-
