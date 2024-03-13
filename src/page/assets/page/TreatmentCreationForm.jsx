@@ -43,9 +43,6 @@ const TreatmentCreationForm = props => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  console.log('props')
-  console.log(location.state)
-
   let action = 'CREATE'
   if (
     location.state &&
@@ -92,12 +89,28 @@ const TreatmentCreationForm = props => {
     //   errors.building = true
     // }
 
-    if (!(form.ward_id && form.ward_id.trim())) {
+    if (!(form.treatment_name && form.treatment_name.trim())) {
       setMessage({
         severity: 'error',
-        text: 'A ward name is required - Please enter a ward name'
+        text: 'A treatment name is required - Please enter a treatment name'
       })
-      errors.ward = true
+      errors.treatment_name = true
+    }
+
+    if (!(form.treatment_category_id)) {
+      setMessage({
+        severity: 'error',
+        text: 'A treatment category name is required - Please select a treatment category name'
+      })
+      errors.treatment_category = true
+    }
+
+    if (!(form.ward_id)) {
+      setMessage({
+        severity: 'error',
+        text: 'A ward is required - Please select a ward'
+      })
+      errors.ward_id = true
     }
 
     setErrors(errors)
@@ -107,6 +120,9 @@ const TreatmentCreationForm = props => {
   }
 
   async function handleSubmit() {
+    console.log("form");
+    console.log(form);
+
     if (!handleValidation) {
       return
     }
@@ -116,7 +132,7 @@ const TreatmentCreationForm = props => {
 
       TreatmentsAPI.upsertTreatment(
         'UPDATE',
-        form.name,
+        form.treatment_name,
         form.treatment_category_id,
         form.ward_id,
         location.state.treatment_id
@@ -147,7 +163,7 @@ const TreatmentCreationForm = props => {
 
     TreatmentsAPI.upsertTreatment(
       'INSERT',
-      form.name,
+      form.treatment_name,
       form.treatment_category_id,
       form.ward_id,
       null
@@ -175,12 +191,15 @@ const TreatmentCreationForm = props => {
       <TextField
         {...params}
         label="Enter a ward name"
-        onChange={event => {
+        onChange={(event, newVal) => {
+          console.log(event.target.value);
+          console.log(newVal);
           if (event.target.value) {
-            setForm({ ...form, ward_id: event.target.value })
+            setForm({ ...form, ward_id: parseInt(newVal.id) })
           }
         }}
         InputProps={{ ...params.InputProps, type: 'search' }}
+        error={errors.ward_id}
       />
     )
   }
@@ -197,6 +216,7 @@ const TreatmentCreationForm = props => {
           }
         }}
         InputProps={{ ...params.InputProps, type: 'search' }}
+        error={errors.treatment_category}
       />
     )
   }
@@ -225,27 +245,29 @@ const TreatmentCreationForm = props => {
         <TextField
           label="Enter a treatment Name"
           onChange={event => {
-            setForm({ ...form, ward: event.target.value })
+            setForm({ ...form, treatment_name: event.target.value })
           }}
           onBlur={event => {
-            setForm({ ...form, ward: event.target.value })
+            setForm({ ...form, treatment_name: event.target.value })
           }}
           value={form.ward}
-          defaultValue={form.ward}
-          error={errors.ward}
+          error={errors.treatment_name}
         />
         <Autocomplete 
           //TODO: switch over ward so it uses ID instead of name
           disablePortal
           disableClearable
+          label="Ward name..."
           renderInput={renderWardName}
-          onBlur={event => {
-            setForm({ ...form, ward_id: event.target.value })
+          getOptionLabel={option => option.label}
+          onChange={(e, newVal) => {
+            console.log(newVal);
+            setForm({ ...form, ward_id: newVal.id })
           }}
           options={
             wards
               ? wards.map(ward => {
-                  return ward.ward_name
+                  return {label: ward.ward_name, id: ward.ward_id}
                 })
               : []
           }
@@ -253,13 +275,9 @@ const TreatmentCreationForm = props => {
         <Autocomplete
           disablePortal
           disableClearable
+          label="treatment category name..."
           renderInput={renderTreatmentCategorySearch}
           getOptionLabel={option => option.label}
-          // onBlur={(event) => {
-          //   // console.log("e")
-          //   // console.log(event.target.value)
-          //   setForm({ ...form, treatment_category_id: event.target.value })
-          // }}
           onChange={(e, newVal) => {
             console.log(newVal)
             setForm({ ...form, treatment_category_id: parseInt(newVal.id) })
@@ -267,8 +285,6 @@ const TreatmentCreationForm = props => {
           options={
             treatmentCategories
               ? treatmentCategories.map((treatmentCategory, index) => {
-                // console.log(treatmentCategory)
-                // console.log(index)
                   return {label: treatmentCategory.category_name, id: treatmentCategory.treatment_id}
                 })
               : []
