@@ -7,6 +7,7 @@ import { Cleaning, Premises, RoomCreationForm, CleaningOrderForm } from '.'
 import Wards from './Wards'
 import WardCreationForm from './page/WardCreationForm'
 import Treatments from './Treatments'
+import TreatmentCreationForm from './page/TreatmentCreationForm'
 
 const Pages = {
   'Premises Management': {
@@ -60,7 +61,7 @@ const AssetRoutes = (
 
     <Route path="treatments">
       <Route index element={<Treatments />} />
-      <Route path="create" element={<WardCreationForm />} />
+      <Route path="create" element={<TreatmentCreationForm />} />
     </Route>
 
   </Route>

@@ -31,14 +31,15 @@ async function setup() {
 
   // Load credentials from secrets to avoid leakage
   const secretsClient = new SecretsManager.SecretsManagerClient({
-    region: 'eu-west-1',
+    region: 'eu-west-1'
   })
 
-  const response =
-    await secretsClient.send(new SecretsManager.GetSecretValueCommand({
+  const response = await secretsClient.send(
+    new SecretsManager.GetSecretValueCommand({
       SecretId: '/v1/database',
-      VersionStage: 'AWSCURRENT',
-    }))
+      VersionStage: 'AWSCURRENT'
+    })
+  )
 
   secrets = JSON.parse(response.SecretString)
   console.log('Sucessfully collected secrets')
@@ -54,7 +55,7 @@ async function setup() {
     ssl: { rejectUnauthorized: false },
 
     host: secrets.host,
-    port: secrets.port,
+    port: secrets.port
   })
 
   // Test the connection
@@ -62,22 +63,6 @@ async function setup() {
   clientConnected = true
 
   console.log('Established database connection')
-}
-
-function getConstraintName(constraint) {
-  switch (constraint) {
-    case 'email_unique':
-      field = 'Email address'
-      break
-
-    case 'phone_unique':
-      field = 'Phone number'
-      break
-
-    default:
-      field = 'Identifier'
-      break
-  }
 }
 
 app.get('/v1/resources/staff/:identifier', async function (req, res) {
@@ -92,12 +77,13 @@ app.get('/v1/resources/staff/:identifier', async function (req, res) {
   } */
 
   const result = await client.query(
-    'SELECT * FROM system.staff WHERE staff_id = $1', [req.params.identifier])
+    'SELECT * FROM system.staff WHERE staff_id = $1',
+    [req.params.identifier]
+  )
 
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows[0] })
-  }
-  else {
+  } else {
     res.status(404).json({ error: 'Staff member not found' })
   }
 })
@@ -119,17 +105,15 @@ app.post('/v1/resources/staff/search', async function (req, res) {
   if (req.body.query) {
     const query = require('./queries').staff.search
     result = await client.query(query, [req.body.query])
-  }
-  else {
-    const query = require("./queries").staff.all
+  } else {
+    const query = require('./queries').staff.all
     result = await client.query(query)
   }
 
   if (result.rows.length > 0) {
     res.status(200).json({ result: result.rows })
-  }
-  else {
-    res.status(404).json({ error: "No Matching Staff" })
+  } else {
+    res.status(404).json({ error: 'No Matching Staff' })
   }
 })
 
@@ -172,30 +156,22 @@ app.put('/v1/resources/staff/:identifier/create', async function (req, res) {
         required: true                     
   } */
 
-  const query = `
-    INSERT INTO system.staff (staff_id, first_name, last_name, email_address, phone_number, image)
-    VALUES ($1, $2, $3, $4, $5, $6)
-  `
-
   fields = [
-    req.params.identifier, req.body.first_name, req.body.last_name,
-    req.body.email_address, req.body.phone_number, req.body.image
+    req.body.first_name,
+    req.body.last_name,
+
+    req.body.email_address,
+    req.body.phone_number,
+    req.body.image
   ]
 
   try {
-    await client.query(query, fields)
-    res.status(200).json({ result: 'User sucessfully created' })
-  }
-  catch (error) {
-    console.log(error)
+    const query = require('./queries').staff.create
+    await client.query(query, [req.params.identifier, ...fields])
 
-    if (error.constraint !== undefined) {
-      const field = getConstraintName(error.constraint)
-      res.status(400).json({ error: `${field} must be unique`, field: field })
-    }
-    else {
-      res.status(400).json({ error: `Missing required field ${error.column}`, field: error.column })
-    }
+    res.status(200).json({ result: 'User Created' })
+  } catch (error) {
+    res.status(400).json({ error: error })
   }
 })
 
@@ -238,26 +214,22 @@ app.put('/v1/resources/staff/:identifier/update', async function (req, res) {
         required: false                     
   } */
 
-  // Filter columns to generate a query based on provided body parameters
-  const columns = ['first_name', 'last_name', 'email_address', 'phone_number'];
+  fields = [
+    req.body.first_name,
+    req.body.last_name,
 
-  const fields = columns.filter(field => req.body[field] !== undefined);
-  const placeholders = fields.map((_, index) => `$${index + 2}`)
-
-  const query = `
-    INSERT INTO system.staff (staff_id, ${fields.join(", ")})
-    VALUES ({${placeholders.join(', ')}})
-  `
+    req.body.email_address,
+    req.body.phone_number,
+    req.body.image
+  ]
 
   try {
-    await client.query(query, fields)
+    const query = require('./queries').staff.update
+    await client.query(query, [req.params.identifier, ...fields])
+
     res.status(200).json({ result: 'Update Sucessful' })
-  }
-  catch (error) {
-    if (error.constraint !== undefined) {
-      const field = getConstraintName(error.constraint)
-      res.status(400).json({ error: `${field} must be unique`, field: field })
-    }
+  } catch (error) {
+    res.status(400).json({ error: error })
   }
 })
 
@@ -273,13 +245,14 @@ app.delete('/v1/resources/staff/:identifier', async function (req, res) {
   } */
 
   const result = await client.query(
-    'DELETE FROM system.staff WHERE staff_id = $1', [req.params.identifier])
+    'DELETE FROM system.staff WHERE staff_id = $1',
+    [req.params.identifier]
+  )
 
   if (result.rowCount > 0) {
-    res.status(200).json({ result: 'Staff member sucessfully deleted' })
-  }
-  else {
-    res.status(404).json({ error: 'Staff member not found' })
+    res.status(200).json({ result: 'User Sucessfully Deleted' })
+  } else {
+    res.status(404).json({ error: 'User not found' })
   }
 })
 

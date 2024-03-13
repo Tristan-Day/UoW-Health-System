@@ -17,6 +17,7 @@ import { AssetRoutes } from './page/assets'
 import { StaffRoutes } from './page/staff'
 
 import awsExports from './aws-exports'
+import Landing from './page/Landing'
 Amplify.configure(awsExports)
 
 // Autodetect Theme Preference
@@ -51,7 +52,12 @@ function App() {
           {authorised ? (
             <Routes>
               <Route path="*" element={<Home />}>
-                {ScheduleRoutes} {PatientRoutes} {AssetRoutes} {StaffRoutes}
+                <Route index path="*" element={<Landing />} />
+
+                {ScheduleRoutes}
+                {PatientRoutes}
+                {AssetRoutes}
+                {StaffRoutes}
               </Route>
             </Routes>
           ) : (

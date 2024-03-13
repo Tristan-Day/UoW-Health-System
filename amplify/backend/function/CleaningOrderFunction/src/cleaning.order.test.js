@@ -1,24 +1,26 @@
-const lambdaLocal = require("lambda-local")
-const PROFILE = "Winchester Health Systems"
+const lambdaLocal = require('lambda-local')
+const PROFILE = 'Winchester Health Systems'
 
-// Room identifier must be set statically since lambda-local does not support simultanious executions due to port conflict
-const ROOM_ID = "1"
+// Ward A - Nightinggale Wing
+const ROOM_ID = '114'
+
+// Staff Member Tristan Day
+const STAFF_ID = '758601d7-eb34-45d3-989b-394d14c901a5'
 
 test('Issue a new cleaning order', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}/issue`,
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}/issue`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -29,19 +31,18 @@ test('Issue a new cleaning order', async () => {
 
 test('Attempt to issue a duplicate order', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}/issue`,
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}/issue`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -52,19 +53,18 @@ test('Attempt to issue a duplicate order', async () => {
 
 test('Collect active cleaning orders', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}`,
-    "queryStringParameters": {
+    httpMethod: 'GET',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -78,21 +78,20 @@ test('Collect active cleaning orders', async () => {
 
 test('Fulfill a cleaning order', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}/fulfil`,
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}/fulfil`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "cleaner": "TEST-CLEANER"
+    body: JSON.stringify({
+      cleaner: STAFF_ID
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -103,21 +102,20 @@ test('Fulfill a cleaning order', async () => {
 
 test('Attempt to fulfill a completed order', async () => {
   const payload = {
-    "httpMethod": "PUT",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}/fulfil`,
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}/fulfil`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": JSON.stringify({
-      "cleaner": "TEST-CLEANER"
+    body: JSON.stringify({
+      cleaner: STAFF_ID
     })
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -128,20 +126,20 @@ test('Attempt to fulfill a completed order', async () => {
 
 test('Collect all cleaning orders', async () => {
   const payload = {
-    "httpMethod": "GET",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}`,
-    "queryStringParameters": {
-      "fulfilled": true
+    httpMethod: 'GET',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}`,
+    queryStringParameters: {
+      fulfilled: true
     },
-    "headers": {
-      "Content-Type": "application/json"
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
@@ -155,37 +153,35 @@ test('Collect all cleaning orders', async () => {
 
 test('Cancel an order', async () => {
   var payload = {
-    "httpMethod": "PUT",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}/issue`,
-    "queryStringParameters": {
+    httpMethod: 'PUT',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}/issue`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
 
   payload = {
-    "httpMethod": "DELETE",
-    "path": `/v1/orders/cleaning/room/${ROOM_ID}`,
-    "queryStringParameters": {
+    httpMethod: 'DELETE',
+    path: `/v1/orders/cleaning/room/${ROOM_ID}`,
+    queryStringParameters: {},
+    headers: {
+      'Content-Type': 'application/json'
     },
-    "headers": {
-      "Content-Type": "application/json"
-    },
-    "body": ""
+    body: ''
   }
 
   const res = await lambdaLocal.execute({
     event: payload,
-    lambdaPath: "./index.js",
+    lambdaPath: './index.js',
     profileName: PROFILE,
     verboseLevel: 0
   })
