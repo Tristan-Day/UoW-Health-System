@@ -62,6 +62,18 @@ const Treatments = () => {
       sortable: false,
     },
     {
+      field: 'name',
+      headerName: 'Name',
+      width: 200,
+      sortable: false
+    },
+    {
+      field: 'ward_id',
+      headerName: 'Ward ID',
+      width: 200,
+      sortable: false
+    },
+    {
       field: 'category_id',
       headerName: 'Category',
       width: 300,
@@ -79,18 +91,6 @@ const Treatments = () => {
           <Typography>{treatmentCategoryName}</Typography>
         );
       }
-    },
-    {
-      field: 'name',
-      headerName: 'Name',
-      width: 200,
-      sortable: false
-    },
-    {
-      field: 'ward_id',
-      headerName: 'Ward ID',
-      width: 200,
-      sortable: false
     },
     {
       field: 'actions',
@@ -121,8 +121,19 @@ const Treatments = () => {
     TreatmentsAPI.getTreatment({})
       .then(result => {
         // Provide each record with an ID
+        let results = result.rows;
+
+        console.log(results);
+
+        if(query && query.trim() && query.length > 1) {
+          results = results.filter((treatment) => {
+            console.log(treatment.name)
+            return treatment.name.indexOf(query) > -1
+          });
+        } 
+
         setContents(
-          result.rows.map(room => ({
+          results.map(room => ({
             ...room,
             id: room.treatment_id
           }))
@@ -196,7 +207,7 @@ const Treatments = () => {
         >
           <Box sx={{ display: 'flex', gap: '1rem' }}>
             <TextField
-              label="Search Wards"
+              label="Search Treatments"
               onChange={event => setQuery(event.target.value)}
               onKeyDown={event =>
                 event.key === 'Enter' ? handleSearch(query) : null
