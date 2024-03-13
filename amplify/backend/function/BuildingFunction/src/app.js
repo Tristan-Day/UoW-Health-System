@@ -31,14 +31,15 @@ async function setup() {
 
   // Load credentials from secrets to avoid leakage
   const secretsClient = new SecretsManager.SecretsManagerClient({
-    region: 'eu-west-1',
+    region: 'eu-west-1'
   })
 
-  const response =
-    await secretsClient.send(new SecretsManager.GetSecretValueCommand({
+  const response = await secretsClient.send(
+    new SecretsManager.GetSecretValueCommand({
       SecretId: '/v1/database',
-      VersionStage: 'AWSCURRENT',
-    }))
+      VersionStage: 'AWSCURRENT'
+    })
+  )
 
   secrets = JSON.parse(response.SecretString)
   console.log('Sucessfully collected secrets')
@@ -54,7 +55,7 @@ async function setup() {
     ssl: { rejectUnauthorized: false },
 
     host: secrets.host,
-    port: secrets.port,
+    port: secrets.port
   })
 
   // Test the connection
@@ -69,7 +70,7 @@ app.get('/v1/resources/buildings', async function (req, res) {
 
   // #swagger.description = 'Retreive all buildings from the database'
 
-  const query = "SELECT building_id, name FROM system.buildings"
+  const query = 'SELECT building_id, name FROM system.buildings'
   const result = await client.query(query)
 
   res.status(200).json({
@@ -89,23 +90,22 @@ app.get('/v1/resources/buildings/:building/', async function (req, res) {
       required: true                     
   } */
 
-  const query = require("./queries").buildings.contents
+  const query = require('./queries').buildings.contents
   const result = await client.query(query, [req.params.building])
 
   if (result.rows.length > 0) {
     res.status(200).json({
       result: result.rows
     })
-  }
-  else {
+  } else {
     res.status(404).json({
-      error: "No rooms found"
+      error: 'No rooms found'
     })
   }
 })
 
 app.listen(3000, function () {
-  console.log("App started")
+  console.log('App started')
 })
 
 module.exports = app

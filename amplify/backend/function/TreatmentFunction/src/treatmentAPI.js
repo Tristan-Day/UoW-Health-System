@@ -247,7 +247,7 @@ class TreatmentAPI {
                 `;
                 const values = [
                     req.body["NAME"],
-                    req.body["CATEGORY"],
+                    req.body["CATEGORY_ID"],
                     req.body["WARD_ID"],
                     //where
                     req.body["TREATMENT_ID"]
