@@ -34,7 +34,7 @@ function Landing() {
   return (
     <div style={{ margin: '1rem' }}>
       <img src='../logo-text.svg' width={200} ></img>
-      <br></br>
+      <br></br> 
       <Typography variant="body">
         Major usability concerns in Hospital Management Systems in the areas of
         user control and flexibility, error prevention and flexibility and
