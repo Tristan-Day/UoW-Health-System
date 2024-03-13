@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1992" height="1169" viewBox="0 0 1992 1169">
+  <defs>
+    <clipPath id="clip-logo-text">
+      <rect width="1992" height="1169"/>
+    </clipPath>
+  </defs>
+  <g id="logo-text" clip-path="url(#clip-logo-text)">
+    <g id="Group_2" data-name="Group 2" transform="translate(-349 -89.08)">
+      <g id="Group_1" data-name="Group 1" transform="translate(1076 -63)">
+        <text id="Winchester_Health_Systems" data-name="Winchester 
+Health
+Systems" transform="translate(114 586)" fill="#e22727" font-size="170" font-family="MicrosoftJhengHeiUIBold, Microsoft JhengHei UI"><tspan x="0" y="0">Winchester </tspan><tspan x="0" y="216">Health</tspan><tspan x="0" y="432">Systems</tspan></text>
+      </g>
+      <path id="health_and_safety_FILL0_wght300_GRAD200_opsz24" d="M404.728-398.964H495.7v-90.974h90.974V-580.91H495.7v-90.974H404.728v90.974H313.754v90.972h90.974ZM450.234-141.3q-129.9-32.19-215.068-148.583T150-549.98V-779.373L450.214-892.46,750.427-779.373v229q0,144.2-85.146,260.545T450.234-141.3Zm-.02-81.175q96.432-31.841,159.2-123.27T672.19-549.727v-175.81L450.214-808.905,228.238-725.537v175.81q0,112.555,62.772,203.983T450.214-222.474ZM450.214-515.969Z" transform="translate(360.999 1190.46)" fill="#e22727"/>
+    </g>
+  </g>
+</svg>

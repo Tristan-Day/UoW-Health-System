@@ -25,14 +25,23 @@ function Landing() {
       site: 'patients'
     },
     Staff: {
-      description: 'Manage administrative information about staff, including schedules and roles.',
+      description:
+        'Manage administrative information about staff, including schedules and roles.',
       site: 'staff'
     }
   }
 
   return (
     <div style={{ margin: '1rem' }}>
-      <h1>Welcome Back!</h1>
+      <img src='../logo-text.svg' width={200} ></img>
+      <br></br>
+      <Typography variant="body">
+        Major usability concerns in Hospital Management Systems in the areas of
+        user control and flexibility, error prevention and flexibility and
+        efficiency of use have been identified. The purpose of this application
+        is to present a small slice of a hospital management system to present a
+        prototype which addresses many of these concerns.
+      </Typography>
 
       <div>
         <h2>My Schedule and Tasks</h2>
