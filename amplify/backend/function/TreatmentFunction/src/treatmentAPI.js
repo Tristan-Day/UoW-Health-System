@@ -243,11 +243,11 @@ class TreatmentAPI {
             if (req.body["ACTION_TYPE"] === "UPDATE") {
 
                 const queryString = `
-                UPDATE "system".treatments SET NAME = $1, CATEGORY = $2, WARD_ID = $3 WHERE TREATMENT_ID = $4;
+                UPDATE "system".treatments SET NAME = $1, CATEGORY_ID = $2, WARD_ID = $3 WHERE TREATMENT_ID = $4;
                 `;
                 const values = [
                     req.body["NAME"],
-                    req.body["CATEGORY"],
+                    req.body["CATEGORY_ID"],
                     req.body["WARD_ID"],
                     //where
                     req.body["TREATMENT_ID"]
@@ -275,7 +275,7 @@ class TreatmentAPI {
             return;
         }
 
-        if (!Validator.deleteIsValid(req.body)) {
+        if (!Validator.deleteIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
@@ -289,7 +289,7 @@ class TreatmentAPI {
             const queryString = `
                     DELETE FROM "system".treatments WHERE TREATMENT_ID = $1;
                     `;
-            const values = [req.body["TREATMENT_ID"]];
+            const values = [req.query["TREATMENT_ID"]];
 
             let query = await client.query(queryString, values);
             result = { success: query };
