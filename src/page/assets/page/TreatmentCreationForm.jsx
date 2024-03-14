@@ -37,8 +37,7 @@ const TreatmentCreationForm = props => {
   const [treatmentCategorySelectionError, setTreatmentCategorySelectionError] =
     useState(true)
 
-  const [form, setForm] = useState({
-  })
+  const [form, setForm] = useState({})
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -52,14 +51,15 @@ const TreatmentCreationForm = props => {
     action = 'UPDATE'
   }
 
+  console.log(location.state)
+
   useEffect(() => {
     let props = location.state
     if (props && props.action && props.action === 'UPDATE') {
       setForm({
-        ward_id: location.state.ward_name,
-        name: location.state.description,
-        category_id: location.state.icon_data,
-        id: location.state.ward_id
+        ...location.state,
+        treatment_name: location.state.name,
+        treatment_category_id: location.state.category_id
       })
     }
     handleValidation()
@@ -97,7 +97,7 @@ const TreatmentCreationForm = props => {
       errors.treatment_name = true
     }
 
-    if (!(form.treatment_category_id)) {
+    if (!form.treatment_category_id) {
       setMessage({
         severity: 'error',
         text: 'A treatment category name is required - Please select a treatment category name'
@@ -105,7 +105,7 @@ const TreatmentCreationForm = props => {
       errors.treatment_category = true
     }
 
-    if (!(form.ward_id)) {
+    if (!form.ward_id) {
       setMessage({
         severity: 'error',
         text: 'A ward is required - Please select a ward'
@@ -120,8 +120,8 @@ const TreatmentCreationForm = props => {
   }
 
   async function handleSubmit() {
-    console.log("form");
-    console.log(form);
+    console.log('form')
+    console.log(form)
 
     if (!handleValidation) {
       return
@@ -135,11 +135,11 @@ const TreatmentCreationForm = props => {
         form.treatment_name,
         form.treatment_category_id,
         form.ward_id,
-        location.state.treatment_id
-      )
-        .then(res => {
+        form.id
+      ).then(res => {
           setMessage({ text: 'ward sucessfully created', severity: 'success' })
 
+          console.log("output")
           console.log(res)
 
           setTimeout(() => setMessage(undefined), 7000)
@@ -154,6 +154,7 @@ const TreatmentCreationForm = props => {
 
           setTimeout(() => setMessage(undefined), 7000)
         })
+
       return
     }
 
@@ -192,8 +193,8 @@ const TreatmentCreationForm = props => {
         {...params}
         label="Enter a ward name"
         onChange={(event, newVal) => {
-          console.log(event.target.value);
-          console.log(newVal);
+          // console.log(event.target.value)
+          // console.log(newVal)
           if (event.target.value) {
             setForm({ ...form, ward_id: parseInt(newVal.id) })
           }
@@ -210,7 +211,7 @@ const TreatmentCreationForm = props => {
         {...params}
         label="Enter a treatment category name"
         onChange={(event, newVal) => {
-          console.log(event.target)
+          // console.log(event.target)
           if (newVal) {
             setForm({ ...form, treatment_category_id: parseInt(newVal.id) })
           }
@@ -219,6 +220,40 @@ const TreatmentCreationForm = props => {
         error={errors.treatment_category}
       />
     )
+  }
+
+  const getWardValue = () => {
+    if (!form.ward_id) {
+      return null
+    }
+
+    let filteredWards = wards.filter(ward => ward.ward_id === form.ward_id)
+
+    if (filteredWards.length === 0) {
+      return null
+    }
+
+    return { label: filteredWards[0].ward_name, id: filteredWards[0].ward_id }
+  }
+
+  const getTreatmentCategoryValue = () => {
+    if (!form.treatment_category_id) {
+      return null
+    }
+
+    let filteredCategories = treatmentCategories.filter(
+      treatmentCategory =>
+        treatmentCategory.treatment_id === form.treatment_category_id
+    )
+
+    if (filteredCategories.length === 0) {
+      return null
+    }
+
+    return {
+      label: filteredCategories[0].category_name,
+      id: filteredCategories[0].treatment_id
+    }
   }
 
   return (
@@ -250,10 +285,10 @@ const TreatmentCreationForm = props => {
           onBlur={event => {
             setForm({ ...form, treatment_name: event.target.value })
           }}
-          value={form.ward}
+          value={form.treatment_name}
           error={errors.treatment_name}
         />
-        <Autocomplete 
+        <Autocomplete
           //TODO: switch over ward so it uses ID instead of name
           disablePortal
           disableClearable
@@ -261,16 +296,18 @@ const TreatmentCreationForm = props => {
           renderInput={renderWardName}
           getOptionLabel={option => option.label}
           onChange={(e, newVal) => {
-            console.log(newVal);
+            // console.log(newVal)
             setForm({ ...form, ward_id: newVal.id })
           }}
           options={
             wards
               ? wards.map(ward => {
-                  return {label: ward.ward_name, id: ward.ward_id}
+                  // console.log(ward)
+                  return { label: ward.ward_name, id: ward.ward_id }
                 })
               : []
           }
+          value={getWardValue()}
         />
         <Autocomplete
           disablePortal
@@ -279,16 +316,20 @@ const TreatmentCreationForm = props => {
           renderInput={renderTreatmentCategorySearch}
           getOptionLabel={option => option.label}
           onChange={(e, newVal) => {
-            console.log(newVal)
+            // console.log(newVal)
             setForm({ ...form, treatment_category_id: parseInt(newVal.id) })
           }}
           options={
             treatmentCategories
               ? treatmentCategories.map((treatmentCategory, index) => {
-                  return {label: treatmentCategory.category_name, id: treatmentCategory.treatment_id}
+                  return {
+                    label: treatmentCategory.category_name,
+                    id: treatmentCategory.treatment_id
+                  }
                 })
               : []
           }
+          value={getTreatmentCategoryValue()}
         />
       </Stack>
 
