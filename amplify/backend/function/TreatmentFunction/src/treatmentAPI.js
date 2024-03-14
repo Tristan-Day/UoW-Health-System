@@ -243,7 +243,7 @@ class TreatmentAPI {
             if (req.body["ACTION_TYPE"] === "UPDATE") {
 
                 const queryString = `
-                UPDATE "system".treatments SET NAME = $1, CATEGORY = $2, WARD_ID = $3 WHERE TREATMENT_ID = $4;
+                UPDATE "system".treatments SET NAME = $1, CATEGORY_ID = $2, WARD_ID = $3 WHERE TREATMENT_ID = $4;
                 `;
                 const values = [
                     req.body["NAME"],
