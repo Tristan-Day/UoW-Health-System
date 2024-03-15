@@ -1,20 +1,16 @@
 import { Amplify } from 'aws-amplify'
-import { Authenticator } from '@aws-amplify/ui-react'
-import { withAuthenticator } from '@aws-amplify/ui-react'
+import { Authenticator, withAuthenticator } from '@aws-amplify/ui-react'
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
 import { Home, Authentication } from './page'
-import { isAuthorised } from './logic/authentication'
+import { getAuthorisation } from './logic/authentication'
 
-import { ScheduleRoutes } from './page/schedule'
-import { PatientRoutes } from './page/patients'
-import { AssetRoutes } from './page/assets'
-import { StaffRoutes } from './page/staff'
+import { StaffRoutes, PatientRoutes, AssetRoutes, ScheduleRoutes } from './page'
 
 import awsExports from './aws-exports'
 import Landing from './page/Landing'
@@ -29,43 +25,62 @@ if (
   theme = 'dark'
 }
 
+export const AuthenticationContext = createContext({
+  authorised: false,
+  permissons: []
+})
+
 function App() {
-  const [authorised, setAuthorisation] = useState(false)
+  const [authorisation, setAuthorisation] = useState({
+    authorised: false,
+    permissions: []
+  })
 
   useEffect(() => {
-    isAuthorised()
+    getAuthorisation()
       .then(result => {
-        console.log(result)
-        setAuthorisation(result)
+        setAuthorisation({
+          authorised: true,
+          permissions: result
+        })
       })
-      .catch(error => {
-        setAuthorisation(false)
-      })
+      .catch(() =>
+        setAuthorisation({
+          authorised: false,
+          permissions: []
+        })
+      )
   }, [])
 
-  return (
-    // Wrap all routes with Cognito Authentication
-    <BrowserRouter>
-      <Authenticator>
-        <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
-          <CssBaseline />
-          {authorised ? (
-            <Routes>
-              <Route path="*" element={<Home />}>
-                <Route index path="*" element={<Landing />} />
+  useEffect(() => {
+    console.log(authorisation)
+  }, [authorisation])
 
-                {ScheduleRoutes}
-                {PatientRoutes}
-                {AssetRoutes}
-                {StaffRoutes}
-              </Route>
-            </Routes>
-          ) : (
-            <Authentication />
-          )}
-        </ThemeProvider>
+  return (
+    <AuthenticationContext.Provider value={authorisation}>
+      {/* AWS Cognito Authentication */}
+      <Authenticator>
+        <BrowserRouter>
+          {/* Handles Darkmode */}
+          <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
+            <CssBaseline />
+            {authorisation.authorised ? (
+              <Routes>
+                <Route path="*" element={<Home />}>
+                  <Route index path="*" element={<Landing />} />
+                  {ScheduleRoutes} {PatientRoutes}
+                  {AssetRoutes(authorisation.permissions)}
+                  {StaffRoutes(authorisation.permissions)}
+                </Route>
+              </Routes>
+            ) : (
+              // The Placeholder Screen
+              <Authentication />
+            )}
+          </ThemeProvider>
+        </BrowserRouter>
       </Authenticator>
-    </BrowserRouter>
+    </AuthenticationContext.Provider>
   )
 }
 

@@ -6,12 +6,9 @@ import {
   Button,
   Stack,
   Autocomplete,
-  Fab,
   Grow,
   Alert
 } from '@mui/material'
-
-import SaveIcon from '@mui/icons-material/Save'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -22,6 +19,7 @@ import { getBuildings, createPremises } from '../logic/Premises'
 const RoomCreationForm = () => {
   const [buildings, setBuildings] = useState([])
 
+  // Validation and feedback
   const [message, setMessage] = useState()
   const [errors, setErrors] = useState({})
 
@@ -32,21 +30,21 @@ const RoomCreationForm = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getBuildings()
-
+    getBuildings()
+      .then(result => {
         setBuildings(
           result.map(building => {
             return building.name
           })
         )
-      } catch (error) {
-        return
-      }
-    }
-    fetchData()
-    handleValidation()
+      })
+      .catch(() => {
+        setMessage({
+          text: 'Failed to load buildings list - Please try again later',
+          severity: 'error'
+        })
+        setTimeout(() => setMessage(undefined), 7000)
+      })
   }, [])
 
   useEffect(() => {
@@ -57,6 +55,20 @@ const RoomCreationForm = () => {
     setMessage(undefined)
     const errors = {}
 
+    if (form.room && form.room.length > 20) {
+      setMessage({
+        severity: 'error',
+        text: 'Room name cannot exceed 20 characters'
+      })
+      errors.room = true
+    } else if (!(form.room && form.room.trim())) {
+      setMessage({
+        severity: 'error',
+        text: 'A room name is required - Please enter a room name'
+      })
+      errors.room = true
+    }
+
     if (!(form.building && form.building.trim())) {
       setMessage({
         severity: 'error',
@@ -65,12 +77,12 @@ const RoomCreationForm = () => {
       errors.building = true
     }
 
-    if (!(form.room && form.room.trim())) {
+    if (form.description && form.description.length > 100) {
       setMessage({
         severity: 'error',
-        text: 'A room name is required - Please enter a room name'
+        text: 'Description cannot exceed 100 characters'
       })
-      errors.room = true
+      errors.description = true
     }
 
     setErrors(errors)
@@ -122,7 +134,18 @@ const RoomCreationForm = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h4">Create a Room</Typography>
-        <Button onClick={() => navigate(-1)}>Return</Button>
+
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button
+            variant="contained"
+            disabled={Boolean(message)}
+            onClick={() => handleSubmit()}
+          >
+            Submit
+          </Button>
+          <Divider orientation="vertical" />
+          <Button onClick={() => navigate(-1)}>Return</Button>
+        </Box>
       </Box>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
@@ -169,19 +192,9 @@ const RoomCreationForm = () => {
           onChange={event =>
             setForm({ ...form, description: event.target.value.trim() })
           }
+          error={errors.description}
         />
       </Stack>
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          sx={{ position: 'absolute' }}
-          disabled={Boolean(message)}
-          onClick={() => handleSubmit()}
-        >
-          <SaveIcon />
-        </Fab>
-      </Box>
     </Box>
   )
 }

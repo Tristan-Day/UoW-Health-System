@@ -6,12 +6,9 @@ import {
   Button,
   Stack,
   Autocomplete,
-  Fab,
   Grow,
   Alert
 } from '@mui/material'
-
-import SendIcon from '@mui/icons-material/Send'
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -37,53 +34,60 @@ const CleaningOrderForm = () => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setBuildings(await getBuildings())
-      } catch (error) {
-        return
-      }
-    }
-    fetchData()
-    handleValidation()
+    setMessage({
+      text: 'Loading buildings...',
+      severity: 'info',
+      loading: true
+    })
+
+    getBuildings()
+      .then(result => {
+        setBuildings(result)
+        setMessage(undefined)
+      })
+      .catch(() => {
+        setMessage({
+          text: 'Failed to load buildings list - Please try again later',
+          severity: 'error'
+        })
+
+        setTimeout(() => setMessage(undefined), 7000)
+      })
   }, [])
 
   useEffect(() => {
+    if (!form.building) {
+      return
+    }
+
     handleValidation()
   }, [form])
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!(form && form.building)) {
-        return
-      }
+    if (!(form && form.building)) {
+      return
+    }
 
-      try {
-        const rooms = await getRooms(form.building)
-
+    getRooms(form.building)
+      .then(result => {
         setRooms(
-          rooms.filter(room => {
+          result.filter(room => {
             return room.floor === form.floor
           })
         )
-      } catch (error) {
-        return
-      }
-    }
-    fetchData()
+      })
+      .catch(() => {
+        setMessage({
+          text: 'Failed to load available rooms',
+          severity: 'error'
+        })
+        setTimeout(() => setMessage(undefined), 7000)
+      })
   }, [form.building, form.floor])
 
   async function handleValidation() {
     setMessage(undefined)
     const errors = {}
-
-    if (!form.building) {
-      setMessage({
-        severity: 'error',
-        text: 'A building is required - Please select a building'
-      })
-      errors.building = true
-    }
 
     if (!form.room) {
       setMessage({
@@ -91,6 +95,14 @@ const CleaningOrderForm = () => {
         text: 'A room is required - Please select a room'
       })
       errors.room = true
+    }
+
+    if (!form.building) {
+      setMessage({
+        severity: 'error',
+        text: 'A building is required - Please select a building'
+      })
+      errors.building = true
     }
 
     setErrors(errors)
@@ -107,12 +119,10 @@ const CleaningOrderForm = () => {
     setMessage({ text: 'Submitting order...', severity: 'info' })
 
     const identifier = rooms
-      .map(room => {
-        if (room.name === form.room) {
-          return room.room_id
-        }
+      .filter(room => {
+        return room.name === form.room
       })
-      .at(0)
+      .at(0).room_id
 
     issueOrder(identifier)
       .then(() => {
@@ -164,8 +174,20 @@ const CleaningOrderForm = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography variant="h4">Submit a Cleaning Order</Typography>
-        <Button onClick={() => navigate(-1)}>Return</Button>
+
+        <Box sx={{ display: 'flex', gap: '1rem' }}>
+          <Button
+            variant="contained"
+            disabled={Boolean(message)}
+            onClick={() => handleSubmit()}
+          >
+            Submit
+          </Button>
+          <Divider orientation="vertical" />
+          <Button onClick={() => navigate(-1)}>Return</Button>
+        </Box>
       </Box>
+
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       {message && (
@@ -216,17 +238,6 @@ const CleaningOrderForm = () => {
           }
         />
       </Stack>
-
-      <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-        <Fab
-          color="primary"
-          sx={{ position: 'absolute' }}
-          disabled={Boolean(message)}
-          onClick={() => handleSubmit()}
-        >
-          <SendIcon />
-        </Fab>
-      </Box>
     </Box>
   )
 }
