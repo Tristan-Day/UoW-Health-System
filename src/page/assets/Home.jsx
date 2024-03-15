@@ -30,9 +30,18 @@ const Links = () => {
     }
   }
 
-  pages['Ward Management'] = {
-    description: 'Create, view, update and delete wards.',
-    site: 'wards'
+  if (permissions.includes('wards.view')) {
+    pages['Ward Management'] = {
+      description: 'Create, view, update and delete wards.',
+      site: 'wards'
+    }
+  }
+
+  if (permissions.includes('treatments.view')) {
+    pages['Treatments'] = {
+      description: 'Create, view, update and delete treatment services provided by the hopsital.',
+      site: 'treatments'
+    }
   }
 
   return <IndexGenerator title="Asset Management" contents={pages} />
@@ -65,7 +74,20 @@ const AssetRoutes = permissions => {
         </Route>
       ) : null}
 
-      <Route path="wards" element={<h1>Ward Management</h1>} />
+      {permissions.includes('wards.view') ? (
+        <Route path="wards">
+          <Route index element={<Wards />} />
+          <Route path="create" element={<WardCreationForm />} />
+        </Route>
+      ) : null}
+
+      {permissions.includes('treatments.view') ? (
+        <Route path="treatments">
+          <Route index element={<Treatments />} />
+          <Route path="create" element={<TreatmentCreationForm />} />
+        </Route>
+      ) : null}
+
     </Route>
   )
 }
