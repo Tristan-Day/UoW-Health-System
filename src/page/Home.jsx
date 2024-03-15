@@ -61,14 +61,16 @@ const Home = () => {
 
   return (
     <Box>
-      <AppBar position="static" sx={{ position: 'sticky', top: '0' }}>
+      <AppBar
+        position="static"
+        sx={{ position: 'sticky', top: '0', zIndex: 100 }}
+      >
         <Toolbar>
           <IconButton
             size="large"
             edge="start"
             color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2, zIndex: 100 }}
+            sx={{ mr: 2 }}
             onClick={() => {
               setOpen(true)
             }}

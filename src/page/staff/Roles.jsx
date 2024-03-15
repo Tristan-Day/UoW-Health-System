@@ -10,43 +10,22 @@ import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
 import { AuthenticationContext } from '../../App'
 import { Searchbox } from '../../components'
 
-import { deletePremises, getPremises } from './logic/Premises'
+import { searchRoles, deleteRole } from './logic/Permissions'
 
 const Columns = [
   {
-    field: 'identifier',
-    headerName: 'ID',
-    width: 50,
-    disableColumnMenu: true,
-    sortable: false
-  },
-  {
-    field: 'building',
-    headerName: 'Building Name',
-    width: 200
-  },
-  {
-    field: 'room',
-    headerName: 'Room Name',
-    width: 200
-  },
-  {
-    field: 'floor',
-    headerName: 'Floor',
-    width: 70,
-    disableColumnMenu: true,
-    sortable: false
+    field: 'name',
+    headerName: 'Name',
+    width: 250
   },
   {
     field: 'description',
     headerName: 'Description',
-    width: 300,
-    disableColumnMenu: true,
-    sortable: false
+    width: 350
   }
 ]
 
-const Premises = () => {
+const Roles = () => {
   const permissions = useContext(AuthenticationContext).permissions
   const [message, setMessage] = useState()
 
@@ -70,14 +49,12 @@ const Premises = () => {
   async function handleSearch(query) {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    getPremises(query)
+    searchRoles(query)
       .then(result => {
-        // Provide each record with an ID
         setContents(
-          result.map(room => ({
-            ...room,
-            id: room.room_id,
-            identifier: room.room_id
+          result.map(role => ({
+            ...role,
+            id: role.name
           }))
         )
         setMessage(undefined)
@@ -92,57 +69,78 @@ const Premises = () => {
       })
   }
 
-  async function handleDelete(selection) {
-    setMessage({ text: 'Deleting room...', severity: 'info', loading: true })
+  async function handleSelection(index) {
+    contents.forEach(role => {
+      if (role.name === index) {
+        setSelection(role)
+        return
+      }
+    })
+  }
 
-    deletePremises(selection)
+  async function handleDelete(selection) {
+    setMessage({ text: 'Deleting Role...', severity: 'info', loading: true })
+
+    deleteRole(selection)
       .then(() => {
         setMessage({
-          text: 'Room sucessfully deleted',
+          text: 'Role sucessfully deleted',
           severity: 'success',
           loading: false
         })
 
-        setContents(contents.filter(room => room.id !== selection))
+        setContents(contents.filter(role => role.id !== selection))
       })
       .catch(() => {
         setMessage({
-          text: 'Failed to delete room - Please try again later',
+          text: 'Failed to delete role - Please try again later',
           severity: 'error',
           loading: false
         })
       })
+
+    setSelection(undefined)
   }
 
   return (
     <Box>
       <BreadcrumbGenerator />
-      <Typography variant="h4">Physical Premises</Typography>
+      <Typography variant="h4">System Roles</Typography>
 
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
-        <Searchbox label="Search Premises" onSubmit={handleSearch} />
+        <Searchbox label="Search Roles" onSubmit={handleSearch} />
 
         <Box sx={{ display: 'flex', gap: '1rem' }}>
           <Button
             variant={
-              permissions.includes('premises.create') ? 'contained' : 'disabled'
+              permissions.includes('roles.create') ? 'contained' : 'disabled'
             }
             onClick={() => navigate('create')}
           >
-            Add Premises
+            Create New Role
           </Button>
           <Divider orientation="vertical" />
           <Button
             variant={
-              selection !== undefined && permissions.includes('premises.delete')
+              selection !== undefined && permissions.includes('roles.edit')
                 ? 'outlined'
                 : 'disabled'
             }
-            onClick={() => handleDelete(selection)}
+            onClick={() => navigate(selection.name)}
           >
-            Delete Room
+            View Details
+          </Button>
+          <Button
+            variant={
+              selection !== undefined && permissions.includes('roles.delete')
+                ? 'outlined'
+                : 'disabled'
+            }
+            onClick={() => handleDelete(selection.name)}
+          >
+            Delete Role
           </Button>
         </Box>
       </Box>
@@ -160,7 +158,7 @@ const Premises = () => {
       <DataGrid
         rows={contents}
         columns={Columns}
-        onRowSelectionModelChange={model => setSelection(model[0])}
+        onRowSelectionModelChange={model => handleSelection(model[0])}
         sx={{ height: '40vh' }}
         autoPageSize
       />
@@ -168,4 +166,4 @@ const Premises = () => {
   )
 }
 
-export default Premises
+export default Roles

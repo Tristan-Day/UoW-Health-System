@@ -12,18 +12,10 @@
       "AmplifyAppId": "d3mszj6ixlalqt"
     },
     "categories": {
-      "auth": {
-        "healthsystem1f893f31": {},
-        "healthsystem334c9ea1": {}
-      },
       "function": {
         "AppointmentFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
           "s3Key": "amplify-builds/AppointmentFunction-6a6656544a6f326d7043-build.zip"
-        },
-        "BuildingFunction": {
-          "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/BuildingFunction-68467a63323766714f49-build.zip"
         },
         "CleaningOrderFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
@@ -68,11 +60,14 @@
         "WardOrderFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
           "s3Key": "amplify-builds/WardOrderFunction-2b3267554d533575436b-build.zip"
+        },
+        "BuildingFunction": {
+          "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
+          "s3Key": "amplify-builds/BuildingFunction-68467a63323766714f49-build.zip"
         }
       },
       "api": {
         "AppointmentsHandler": {},
-        "BuildingHandler": {},
         "CleaningOrderHandler": {},
         "PatientHandler": {},
         "PermissionHandler": {},
@@ -83,7 +78,12 @@
         "TreatmentCategoryHandler": {},
         "TreatmentHandler": {},
         "WardHandler": {},
-        "WardOrderHandler": {}
+        "WardOrderHandler": {},
+        "BuildingHandler": {}
+      },
+      "auth": {
+        "healthsystem1f893f31": {},
+        "healthsystem334c9ea1": {}
       }
     }
   }

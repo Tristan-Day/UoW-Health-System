@@ -1,18 +1,16 @@
 import { getCurrentUser } from 'aws-amplify/auth'
 import { get } from 'aws-amplify/api'
 
-export const isAuthorised = async () => {
+export const getAuthorisation = async () => {
   const user = await getCurrentUser()
 
-  try {
-    const operation = get({
-      apiName: 'StaffHandler',
-      path: `/v1/resources/staff/${user.username}`
-    })
+  const operation = get({
+    apiName: 'PermissionHandler',
+    path: `/v1/permissions/staff/${user.username}`
+  })
 
-    await operation.response
-    return true
-  } catch (error) {
-    return false
-  }
+  const response = await operation.response
+  return (await response.body.json()).result.map(permission => {
+    return permission.name
+  })
 }
