@@ -275,7 +275,7 @@ class TreatmentAPI {
             return;
         }
 
-        if (!Validator.deleteIsValid(req.body)) {
+        if (!Validator.deleteIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
@@ -289,7 +289,7 @@ class TreatmentAPI {
             const queryString = `
                     DELETE FROM "system".treatments WHERE TREATMENT_ID = $1;
                     `;
-            const values = [req.body["TREATMENT_ID"]];
+            const values = [req.query["TREATMENT_ID"]];
 
             let query = await client.query(queryString, values);
             result = { success: query };
