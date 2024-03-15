@@ -21,7 +21,7 @@ import Alert from '@mui/material/Alert'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import BreadcrumbGenerator from '../../components/BreadcumbGenerator'
+import { BreadcrumbGenerator } from '../../components'
 import { deletePremises, getPremises } from './logic/Premises'
 import WardsAPI from './logic/Wards'
 import { Edit } from '@mui/icons-material'
