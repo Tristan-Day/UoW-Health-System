@@ -33,17 +33,6 @@ const Links = () => {
   pages['Ward Management'] = {
     description: 'Create, view, update and delete wards.',
     site: 'wards'
-<<<<<<< HEAD
-  },
-  'Cleaning Orders': {
-    description: 'Issue, view, fulfil and cancel hospital cleaning orders.',
-    site: 'cleaning'
-  },
-  'Treatments': {
-    description: 'Create, view, update and delete treatment services provided by the hopsital.',
-    site: 'treatments'
-=======
->>>>>>> c0265560e06dded77ab68f8c1b55eafa78ceac8a
   }
 
   return <IndexGenerator title="Asset Management" contents={pages} />
@@ -76,24 +65,9 @@ const AssetRoutes = permissions => {
         </Route>
       ) : null}
 
-<<<<<<< HEAD
-    <Route path="wards">
-      <Route index element={<Wards />} />
-      <Route path="create" element={<WardCreationForm />} />
-    </Route>
-
-    <Route path="treatments">
-      <Route index element={<Treatments />} />
-      <Route path="create" element={<TreatmentCreationForm />} />
-    </Route>
-
-  </Route>
-)
-=======
       <Route path="wards" element={<h1>Ward Management</h1>} />
     </Route>
   )
 }
->>>>>>> c0265560e06dded77ab68f8c1b55eafa78ceac8a
 
 export { AssetRoutes }

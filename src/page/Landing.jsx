@@ -1,8 +1,11 @@
 import { Card, CardContent, Grid, Typography } from '@mui/material'
+import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthenticationContext } from '../App'
 
 function Landing() {
   const navigate = useNavigate()
+  const permissions = useContext(AuthenticationContext).permissions
 
   const ScheduleTaskPages = {
     'Personal Schedule': {
@@ -31,10 +34,37 @@ function Landing() {
     }
   }
 
+  function canShow(keyName) {
+    if (
+      permissions.includes('personal.view') &&
+      keyName === 'Personal Schedule'
+    ) {
+      return true
+    }
+
+    if (permissions.includes('tasks.view') && keyName === 'My Tasks') {
+      return true
+    }
+
+    if (permissions.includes('premises.view') && keyName === 'Hospital Admin') {
+      return true
+    }
+
+    if (permissions.includes('patient.view') && keyName === 'Patients') {
+      return true
+    }
+
+    if (permissions.includes('staff.view') && keyName === 'Staff') {
+      return true
+    }
+
+    return false
+  }
+
   return (
     <div style={{ margin: '1rem' }}>
-      <img src='../logo-text.svg' width={200} ></img>
-      <br></br> 
+      <img src="../logo-text.svg" width={200}></img>
+      <br></br>
       <Typography variant="body">
         Major usability concerns in Hospital Management Systems in the areas of
         user control and flexibility, error prevention and flexibility and
@@ -43,11 +73,24 @@ function Landing() {
         prototype which addresses many of these concerns.
       </Typography>
 
+      <br></br>
+      <br></br>
+
       <div>
-        <h2>My Schedule and Tasks</h2>
-        <hr></hr>
+        {(canShow('Personal Schedule') || canShow('My Tasks')) && (
+          <div>
+            <h2>My Schedule and Tasks</h2>
+            <hr></hr>
+          </div>
+        )}
         <Grid container spacing={2}>
           {Object.keys(ScheduleTaskPages).map(function (key) {
+            console.log(key)
+
+            if (!canShow(key)) {
+              return null
+            }
+
             return (
               <Grid item>
                 <Card
@@ -70,10 +113,21 @@ function Landing() {
       </div>
 
       <div>
-        <h2>Hospital Items</h2>
-        <hr></hr>
+        {(canShow('Hospital Admin') ||
+          canShow('Patients') ||
+          canShow('Staff')) && (
+            <div>
+              <h2>Hospital Items</h2>
+              <hr></hr>
+            </div>
+          )}
+
         <Grid container spacing={2}>
           {Object.keys(HospitalItemPages).map(function (key) {
+            if (!canShow(key)) {
+              return null
+            }
+
             return (
               <Grid item>
                 <Card
