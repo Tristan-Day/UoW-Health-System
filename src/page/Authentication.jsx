@@ -15,10 +15,6 @@ const Authentication = () => {
       })
   }, [])
 
-  if (user) {
-    console.log(user.username)
-  }
-
   return (
     <Stack
       sx={{
