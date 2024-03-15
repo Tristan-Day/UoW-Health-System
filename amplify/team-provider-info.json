@@ -58,7 +58,7 @@
         },
         "TreatmentFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/TreatmentFunction-304d5356376136395130-build.zip"
+          "s3Key": "amplify-builds/TreatmentFunction-4d7a754f54595664737a-build.zip"
         },
         "WardFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
