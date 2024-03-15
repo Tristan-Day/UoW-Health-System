@@ -13,6 +13,7 @@ import { getAuthorisation } from './logic/authentication'
 import { StaffRoutes, PatientRoutes, AssetRoutes, ScheduleRoutes } from './page'
 
 import awsExports from './aws-exports'
+import Landing from './page/Landing'
 Amplify.configure(awsExports)
 
 // Autodetect Theme Preference
@@ -66,7 +67,8 @@ function App() {
             {authorisation.authorised ? (
               <Routes>
                 <Route path="*" element={<Home />}>
-                  {ScheduleRoutes} {PatientRoutes}
+                  <Route index path="*" element={<Landing />} />
+                  {ScheduleRoutes(authorisation.permissions)} {PatientRoutes}
                   {AssetRoutes(authorisation.permissions)}
                   {StaffRoutes(authorisation.permissions)}
                 </Route>
