@@ -39,7 +39,7 @@ const ScheduleRoutes = permissions => (
     <Route index path="*" element={<Links />} />
 
     {permissions.includes('personal.view') ? (
-      <Route path="personal" element={<h1>My Schedule</h1>} />
+      <Route path="personal" element={<h1>Schedules</h1>} />
     ) : null}
 
     {permissions.includes('tasks.view') ? (
