@@ -7,13 +7,12 @@ import { createContext, useEffect, useState } from 'react'
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
 
-import { Home, Authentication } from './page'
+import { Navigation, Authentication, Landing } from './page'
 import { getAuthorisation } from './logic/authentication'
 
 import { StaffRoutes, PatientRoutes, AssetRoutes, ScheduleRoutes } from './page'
 
 import awsExports from './aws-exports'
-import Landing from './page/Landing'
 Amplify.configure(awsExports)
 
 // Autodetect Theme Preference
@@ -66,7 +65,7 @@ function App() {
             <CssBaseline />
             {authorisation.authorised ? (
               <Routes>
-                <Route path="*" element={<Home />}>
+                <Route path="*" element={<Navigation />}>
                   <Route index path="*" element={<Landing />} />
                   {ScheduleRoutes(authorisation.permissions)} {PatientRoutes}
                   {AssetRoutes(authorisation.permissions)}

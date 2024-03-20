@@ -1,6 +1,15 @@
-import { Card, CardContent, Grid, Typography } from '@mui/material'
+import {
+  Card,
+  CardContent,
+  Grid,
+  Typography,
+  Divider,
+  Box
+} from '@mui/material'
+
 import { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+
 import { AuthenticationContext } from '../App'
 
 function Landing() {
@@ -62,93 +71,107 @@ function Landing() {
   }
 
   return (
-    <div style={{ margin: '1rem' }}>
-      <img src="../logo-text.svg" width={200}></img>
-      <br></br>
-      <Typography variant="body">
-        Major usability concerns in Hospital Management Systems in the areas of
-        user control and flexibility, error prevention and flexibility and
-        efficiency of use have been identified. The purpose of this application
-        is to present a small slice of a hospital management system to present a
-        prototype which addresses many of these concerns.
-      </Typography>
+    <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          margin: '2rem'
+        }}
+      >
+        <img src='../Usability Graphic.png' width='55%'></img>
+      </Box>
 
-      <br></br>
-      <br></br>
+      <br />
 
-      <div>
-        {(canShow('Personal Schedule') || canShow('My Tasks')) && (
-          <div>
-            <h2>My Schedule and Tasks</h2>
-            <hr></hr>
-          </div>
-        )}
-        <Grid container spacing={2}>
-          {Object.keys(ScheduleTaskPages).map(function (key) {
-            console.log(key)
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '3rem',
+          marginLeft: '7%',
+          marginRight: '7%'
+        }}
+      >
+        {/* <Typography variant='body' textAlign='center' alignSelf='center' maxWidth='70%'>
+          Usability is a significant concern in Hospital Management Systems,
+          where user control, flexibility and error prevention have not been
+          adequately addressed. This application seeks to present a slice of a
+          usable management system that addresses these concerns.
+        </Typography> */}
 
-            if (!canShow(key)) {
-              return null
-            }
+        <Box>
+          {(canShow('Personal Schedule') || canShow('My Tasks')) && (
+            <Box>
+              <Typography variant='h5'>My Schedule and Tasks</Typography>
+              <Divider sx={{ marginBottom: '1.2rem', marginTop: '0.75rem' }} />
+            </Box>
+          )}
+          <Grid container spacing={2}>
+            {Object.keys(ScheduleTaskPages).map(function (key) {
+              if (!canShow(key)) {
+                return null
+              }
 
-            return (
-              <Grid item>
-                <Card
-                  sx={{ width: '20rem', minHeight: '7rem' }}
-                  onClick={() => navigate(ScheduleTaskPages[key].site)}
-                >
-                  <CardContent>
-                    <Typography variant="h5" component="div">
-                      {key}
-                    </Typography>
-                    <Typography variant="body2">
-                      {ScheduleTaskPages[key].description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )
-          })}
-        </Grid>
-      </div>
+              return (
+                <Grid item>
+                  <Card
+                    sx={{ width: '20rem', minHeight: '7rem' }}
+                    onClick={() => navigate(ScheduleTaskPages[key].site)}
+                  >
+                    <CardContent>
+                      <Typography variant='h5' component='Box'>
+                        {key}
+                      </Typography>
+                      <Typography variant='body2'>
+                        {ScheduleTaskPages[key].description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )
+            })}
+          </Grid>
+        </Box>
 
-      <div>
-        {(canShow('Hospital Admin') ||
-          canShow('Patients') ||
-          canShow('Staff')) && (
-            <div>
-              <h2>Hospital Items</h2>
-              <hr></hr>
-            </div>
+        <Box>
+          {(canShow('Hospital Admin') ||
+            canShow('Patients') ||
+            canShow('Staff')) && (
+            <Box>
+              <Typography variant='h5'>Hospital Items</Typography>
+              <Divider sx={{ marginBottom: '1.2rem', marginTop: '0.75rem' }} />
+            </Box>
           )}
 
-        <Grid container spacing={2}>
-          {Object.keys(HospitalItemPages).map(function (key) {
-            if (!canShow(key)) {
-              return null
-            }
+          <Grid container spacing={2}>
+            {Object.keys(HospitalItemPages).map(function (key) {
+              if (!canShow(key)) {
+                return null
+              }
 
-            return (
-              <Grid item>
-                <Card
-                  sx={{ width: '20rem', minHeight: '7rem' }}
-                  onClick={() => navigate(HospitalItemPages[key].site)}
-                >
-                  <CardContent>
-                    <Typography variant="h5" component="div">
-                      {key}
-                    </Typography>
-                    <Typography variant="body2">
-                      {HospitalItemPages[key].description}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )
-          })}
-        </Grid>
-      </div>
-    </div>
+              return (
+                <Grid item>
+                  <Card
+                    sx={{ width: '20rem', minHeight: '7rem' }}
+                    onClick={() => navigate(HospitalItemPages[key].site)}
+                  >
+                    <CardContent>
+                      <Typography variant='h5' component='Box'>
+                        {key}
+                      </Typography>
+                      <Typography variant='body2'>
+                        {HospitalItemPages[key].description}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              )
+            })}
+          </Grid>
+        </Box>
+      </Box>
+    </Box>
   )
 }
 
