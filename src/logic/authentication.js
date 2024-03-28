@@ -4,7 +4,12 @@ import { get } from 'aws-amplify/api'
 export const getAuthorisation = async () => {
   const user = await getCurrentUser()
 
-  const operation = get({
+  await get({
+    apiName: 'StaffHandler',
+    path: `/v1/resources/staff/${user.username}`
+  }).response
+  
+  let operation = get({
     apiName: 'PermissionHandler',
     path: `/v1/permissions/staff/${user.username}`
   })

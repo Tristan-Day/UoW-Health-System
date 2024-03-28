@@ -57,23 +57,21 @@ function App() {
 
   return (
     <AuthenticationContext.Provider value={authorisation}>
-      {/* AWS Cognito Authentication */}
       <Authenticator>
         <BrowserRouter>
-          {/* Handles Darkmode */}
           <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
             <CssBaseline />
             {authorisation.authorised ? (
               <Routes>
                 <Route path="*" element={<Navigation />}>
                   <Route index path="*" element={<Landing />} />
-                  {ScheduleRoutes(authorisation.permissions)} {PatientRoutes}
+                  {ScheduleRoutes(authorisation.permissions)}
+                  {PatientRoutes(authorisation.permissions)}
                   {AssetRoutes(authorisation.permissions)}
                   {StaffRoutes(authorisation.permissions)}
                 </Route>
               </Routes>
             ) : (
-              // The Placeholder Screen
               <Authentication />
             )}
           </ThemeProvider>

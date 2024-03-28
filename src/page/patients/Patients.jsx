@@ -34,21 +34,37 @@ const Patients = () => {
   )
 }
 
-const PatientRoutes = (
-  <Route path="patients" element={<Patients />}>
-    <Route index path="*" element={<Links />} />
+const PatientRoutes = permissions => {
+  return (
+    <Route path="patients" element={<Patients />}>
+      <Route index path="*" element={<Links />} />
 
-    <Route
-      path="treatment-appointments"
-      element={<h1>Treatment Appointments</h1>}
-    />
-    <Route
-      path="treatment-prescriptions"
-      element={<h1>Prescription Management</h1>}
-    />
-    <Route path="care-instructions" element={<h1>Care Instructions</h1>} />
-    <Route path="care-orders" element={<h1>Care Orders</h1>} />
-  </Route>
-)
+      {permissions.includes('treatments.view') ? (
+        <Route path="treatments">
+          <Route index element={<h1>Treatment Appointments</h1>} />
+        </Route>
+      ) : null}
+
+      {permissions.includes('prescriptions.view') ? (
+        <Route path="prescriptions">
+          <Route index element={<h1>Prescription Management</h1>} />
+        </Route>
+      ) : null}
+
+      {permissions.includes('care-instructions.view') ? (
+        <Route path="care-instructions">
+          <Route index element={<h1>Care Instructions</h1>} />
+        </Route>
+      ) : null}
+
+      {permissions.includes('care-orders.view') ? (
+        <Route path="care-orders">
+          <Route index element={<h1>Care Orders</h1>} />
+        </Route>
+      ) : null}
+
+    </Route>
+  )
+}
 
 export { PatientRoutes }
