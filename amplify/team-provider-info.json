@@ -35,7 +35,7 @@
         },
         "PermissionFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
-          "s3Key": "amplify-builds/PermissionFunction-394851625a6d6c355134-build.zip"
+          "s3Key": "amplify-builds/PermissionFunction-35706d72594f59324d33-build.zip"
         },
         "RoomFunction": {
           "deploymentBucketName": "amplify-healthsystem-dev-212451-deployment",
