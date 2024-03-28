@@ -9,7 +9,12 @@ const ALL_ORDERS = `
   LEFT JOIN
     system.buildings building ON room.building_id = building.building_id
   LEFT JOIN 
-    system.staff staff ON ord.staff_id = staff.staff_id
+    system.staff staff ON ord.staff_id = staff.staff_id 
+`
+
+const SEARCH_ORDERS =
+  ALL_ORDERS +
+  `
   WHERE
     room.room_id = $1 
 `
@@ -31,9 +36,13 @@ const ORDER_CANCEL = `
 `
 
 const orders = {
+  // Retreoval
   all: ALL_ORDERS,
+  search: SEARCH_ORDERS,
+
+  // Actions
   cancel: ORDER_CANCEL,
-  fulfill: ORDER_FULFIL,
+  fulfill: ORDER_FULFIL
 }
 
 module.exports = { orders }

@@ -65,6 +65,20 @@ async function setup() {
   console.log('Established database connection')
 }
 
+app.get('/v1/orders/cleaning/all', async function (req, res) {
+  const fulfilled = req.query.fulfilled && req.query.fulfilled === 'true'
+  const filter = fulfilled ? '' : 'WHERE ord.fulfilled IS NULL'
+
+  const query = require('./queries').orders.all + filter
+  const result = await client.query(query)
+
+  if (result.rows.length > 0) {
+    res.status(200).json({ result: result.rows })
+  } else {
+    res.status(404).json({ error: 'No orders found' })
+  }
+})
+
 app.get('/v1/orders/cleaning/room/:identifier', async function (req, res) {
   await setup()
 
@@ -89,7 +103,7 @@ app.get('/v1/orders/cleaning/room/:identifier', async function (req, res) {
   const filter = fulfilled ? '' : 'AND ord.fulfilled IS NULL'
 
   // Import the SQL statement from order queries
-  const query = require('./queries').orders.all + filter
+  const query = require('./queries').orders.search + filter
   const result = await client.query(query, [req.params.identifier])
 
   if (result.rows.length > 0) {
@@ -128,7 +142,7 @@ app.put(
     const filter = 'AND ord.fulfilled IS NULL'
 
     // Check if there are any outstanding orders for the given room
-    const query = require('./queries').orders.all + filter
+    const query = require('./queries').orders.search + filter
     const result = await client.query(query, [identifier])
 
     if (result.rows.length > 0) {
@@ -185,7 +199,7 @@ app.put(
       return
     }
 
-    if (!(req.body.cleaner)) {
+    if (!req.body.cleaner) {
       res.status(400).json({ error: 'A cleaner must be specified' })
       return
     }
@@ -194,7 +208,7 @@ app.put(
     const filter = 'AND ord.fulfilled IS NULL'
 
     // Check if there are any outstanding orders for the given room
-    const query = require('./queries').orders.all + filter
+    const query = require('./queries').orders.search + filter
     const result = await client.query(query, [identifier])
 
     if (result.rows.length === 0) {

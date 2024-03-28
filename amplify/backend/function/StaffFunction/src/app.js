@@ -91,7 +91,7 @@ app.get('/v1/resources/staff/:identifier', async function (req, res) {
 app.post('/v1/resources/staff/search', async function (req, res) {
   await setup()
 
-  // #swagger.description = 'Search for a staff member by a given field'
+  // #swagger.description = 'Search for a staff member'
 
   /* #swagger.parameters['query'] = {
         in: 'body',                            
