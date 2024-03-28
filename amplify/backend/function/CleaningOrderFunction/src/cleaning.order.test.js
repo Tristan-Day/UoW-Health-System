@@ -76,6 +76,33 @@ test('Collect active cleaning orders', async () => {
   expect(JSON.parse(res.body).result.length).toBe(1)
 })
 
+test('Collect all cleaning orders', async () => {
+  const payload = {
+    httpMethod: 'GET',
+    path: `/v1/orders/cleaning/all`,
+    queryStringParameters: {
+      fulfilled: true
+    },
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: ''
+  }
+
+  const res = await lambdaLocal.execute({
+    event: payload,
+    lambdaPath: './index.js',
+    profileName: PROFILE,
+    verboseLevel: 0
+  })
+
+  // Assert the response code
+  expect(res.statusCode).toBe(200)
+
+  // Assert there is more than one order
+  expect(JSON.parse(res.body).result.length).toBeGreaterThanOrEqual(1)
+})
+
 test('Fulfill a cleaning order', async () => {
   const payload = {
     httpMethod: 'PUT',
@@ -124,7 +151,7 @@ test('Attempt to fulfill a completed order', async () => {
   expect(res.statusCode).toBe(409)
 })
 
-test('Collect all cleaning orders', async () => {
+test('Collect all cleaning orders for a room', async () => {
   const payload = {
     httpMethod: 'GET',
     path: `/v1/orders/cleaning/room/${ROOM_ID}`,
