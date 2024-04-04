@@ -212,7 +212,7 @@ const TreatmentCreationForm = props => {
         label="Enter a treatment category name"
         onChange={(event, newVal) => {
           // console.log(event.target)
-          if (newVal) {
+          if (event.target.value) {
             setForm({ ...form, treatment_category_id: parseInt(newVal.id) })
           }
         }}
@@ -291,7 +291,6 @@ const TreatmentCreationForm = props => {
         <Autocomplete
           //TODO: switch over ward so it uses ID instead of name
           disablePortal
-          disableClearable
           label="Ward name..."
           renderInput={renderWardName}
           getOptionLabel={option => option.label}
@@ -311,13 +310,11 @@ const TreatmentCreationForm = props => {
         />
         <Autocomplete
           disablePortal
-          disableClearable
           label="treatment category name..."
           renderInput={renderTreatmentCategorySearch}
           getOptionLabel={option => option.label}
           onChange={(e, newVal) => {
-            // console.log(newVal)
-            setForm({ ...form, treatment_category_id: parseInt(newVal.id) })
+            setForm({...form, treatment_category_id: newVal.id})
           }}
           options={
             treatmentCategories
