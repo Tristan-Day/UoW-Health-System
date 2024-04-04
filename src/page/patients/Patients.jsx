@@ -26,7 +26,7 @@ const Links = () => {
   return <IndexGenerator title="Patient Management" contents={Pages} />
 }
 
-const Patients = () => {
+const Template = () => {
   return (
     <Box style={{ padding: '1rem' }}>
       <Outlet />
@@ -34,18 +34,24 @@ const Patients = () => {
   )
 }
 
-const PatientRoutes = (
-  <Route path="patients" element={<Patients />}>
+const PatientRoutes = permissions => (
+  <Route path="patients" element={<Template />}>
     <Route index path="*" element={<Links />} />
 
-    <Route
-      path="treatment-appointments"
-      element={<h1>Treatment Appointments</h1>}
-    />
-    <Route
-      path="treatment-prescriptions"
-      element={<h1>Prescription Management</h1>}
-    />
+    {permissions.includes('appointments.view') ? (
+      <Route
+        path="treatment-appointments"
+        element={<h1>Treatment Appointments</h1>}
+      />
+    ) : null}
+
+    {permissions.includes('prescriptions.view') ? (
+      <Route
+        path="treatment-prescriptions"
+        element={<h1>Prescription Management</h1>}
+      />
+    ) : null}
+
     <Route path="care-instructions" element={<h1>Care Instructions</h1>} />
     <Route path="care-orders" element={<h1>Care Orders</h1>} />
   </Route>
