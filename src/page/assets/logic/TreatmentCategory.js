@@ -26,7 +26,11 @@ class TreatmentCategoriesAPI {
       })
 
       const response = await operation.response
-      return (await response.body.json()).success
+      let body = await response.body.json();
+
+      console.log(body);
+
+      return body.success
     }
 
     const operation = post({
@@ -42,7 +46,11 @@ class TreatmentCategoriesAPI {
     })
 
     const response = await operation.response
-    return (await response.body.json()).success
+    let body = await response.body.json();
+
+    console.log(body);
+
+    return body.success
   }
 
   static deleteTreatment = async function (categoryId) {
