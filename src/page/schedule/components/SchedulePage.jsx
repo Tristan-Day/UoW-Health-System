@@ -1,8 +1,10 @@
 import { Box, Divider, Grid, Typography } from '@mui/material'
 import { BreadcrumbGenerator } from '../../../components'
 import { useEffect, useRef, useState } from 'react'
+import Calendar from './calendar/Calendar'
 
 function getWindowWidth() {
+  //cannot be contained in a component
   return window.innerWidth
 }
 
@@ -25,11 +27,10 @@ function SchedulePage() {
   }
 
   function canShowEditPage(size) {
-    return (
-      editPageOpen
-    )
+    return editPageOpen
   }
 
+  //conditional rendering based on mobile and desktop screen sizes
   function canShowCalendarPage(size) {
     return isLargeScreen(size) || (!isLargeScreen(size) && !canShowEditPage())
   }
@@ -53,7 +54,7 @@ function SchedulePage() {
           {canShowCalendarPage(windowWidth) ? (
             <Grid item xs={12} md={12} lg={5}>
               {/* Calender */}
-              <h1>This is a test</h1>
+              <Calendar openCreatePage={() => setEditPageOpen(!editPageOpen)} />
             </Grid>
           ) : null}
         </Grid>
