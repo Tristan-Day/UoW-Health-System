@@ -4,6 +4,7 @@ import { Outlet, Route } from 'react-router-dom'
 import { IndexGenerator } from '../../components'
 import { useContext } from 'react'
 import { AuthenticationContext } from '../../App'
+import SchedulePage from './components/SchedulePage'
 
 const Links = () => {
   const permissions = useContext(AuthenticationContext).permissions
@@ -36,16 +37,7 @@ const Template = () => {
 
 const ScheduleRoutes = permissions => (
   <Route path="schedule" element={<Template />}>
-    <Route index path="*" element={<Links />} />
-
-    {permissions.includes('personal.view') ? (
-      <Route path="personal" element={<h1>Schedules</h1>} />
-    ) : null}
-
-    {permissions.includes('tasks.view') ? (
-      <Route path="tasks" element={<h1>Task Management</h1>} />
-    ) : null}
-
+    <Route index path="*" element={<SchedulePage />} />
   </Route>
 )
 
