@@ -15,7 +15,12 @@ import {
 } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import PatientSearch from './PatientSearch'
+import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
+import { Check } from '@mui/icons-material'
+import Alert from '@mui/material/Alert';
+
 
 function EditTask(props) {
   const [edit, setEdit] = useState(props.isEdit && false)
@@ -26,6 +31,21 @@ function EditTask(props) {
   const [patientId, setPatientId] = useState(0)
   const [durationQuarterHour, setDurationQuarterHour] = useState(1)
 
+  const [message, setMessage] = useState('')
+  const [messageIcon, setMessageIcon] = useState('CHECK');
+  const [severity, setSeverity] = useState('success');
+
+  useEffect(() => {
+    ScheduleItemAPI.getPatient()
+      .then(res => {
+        console.log(res.success.rows)
+        // setPatients(res.success.rows)
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }, [])
+
   function formatStartTime() {
     const time = new Date()
     time.setHours(Math.floor(startTime / 4))
@@ -35,8 +55,39 @@ function EditTask(props) {
     return dayjs(time)
   }
 
+  function createTask() {
+    let startTimeStamp = new Date(startDate)
+    startTimeStamp.setHours(Math.floor(startTime / 4))
+    startTimeStamp.setMinutes((startTime % 4) * 15)
+
+    ScheduleItemAPI.upsertPatient(
+      'INSERT',
+      startTimeStamp.toISOString(),
+      durationQuarterHour,
+      patientId,
+      name,
+      description,
+      'TASK',
+      null
+    ).then(res => {
+      console.log(res)
+      setMessage('Task successfully created')
+      setMessageIcon('CHECK');
+      setSeverity('success');
+    }).catch(error => {
+      setMessage('There was an error and the task was not successfully created - please try again later')
+      setMessageIcon('CROSS');
+      setSeverity('error');
+    });
+  }
+
   return (
     <Box sx={{ padding: 1 }}>
+      {message.length == 0 ? null : (
+        <Alert icon={<Check fontSize="inherit" />} sx={{marginBottom: 2}} severity="success">
+          {message}
+        </Alert>
+      )}
       <Typography variant="h4">Task</Typography>
       {/* Form */}
       <Typography sx={{ marginTop: 1 }}>Task name</Typography>
@@ -84,7 +135,7 @@ function EditTask(props) {
         </Grid>
 
         <Typography sx={{ marginTop: 1 }}>Patient</Typography>
-        <TextField size="small" placeholder="Patient name"></TextField>
+        <PatientSearch setPatient={setPatientId} />
         {/* time textfield that only goes up in increments of 15 */}
 
         <InputLabel
@@ -111,7 +162,11 @@ function EditTask(props) {
           <MenuItem value={8}>2 hours</MenuItem>
         </Select>
 
-        <Button variant="contained" sx={{ display: 'block', marginTop: 2 }}>
+        <Button
+          variant="contained"
+          sx={{ display: 'block', marginTop: 2 }}
+          onClick={createTask}
+        >
           Submit
         </Button>
       </LocalizationProvider>

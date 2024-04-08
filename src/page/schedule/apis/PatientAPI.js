@@ -1,65 +1,89 @@
 import { get, del, post, put } from 'aws-amplify/api'
 
 class PatientAPI {
-  static getTreatment = async function (query) {
-    const operation = get({
-      apiName: 'TreatmentCategoryHandler',
-      path: `/v1/resources/treatments/category`,
-      options: {}
-    })
+  static getPatient = async function () {
+    try {
+      const operation = get({
+        apiName: 'PatientHandler',
+        path: `/v1/resources/treatments/patient`
+      })
 
-    const response = await operation.response
-    return (await response.body.json()).success
+      const response = await operation.response
+      let body = await response.body.json()
+
+      console.log(body)
+
+      return body
+    } catch (error) {
+      return error
+    }
   }
 
-  static upsertTreatment = async function (actionType, name, categoryId) {
-    if (categoryId != null && actionType == 'INSERT') {
+  static upsertPatient = async function (
+    actionType,
+    fName,
+    lName,
+    phoneNumber,
+    describedSymptoms,
+    email,
+    NHSNumber,
+    patientId
+  ) {
+    if (patientId != null && actionType == 'INSERT') {
       const operation = post({
-        apiName: 'TreatmentCategoryHandler',
-        path: `/v1/resources/treatments/category`,
+        apiName: 'PatientHandler',
+        path: `/v1/resources/treatments/patient`,
         options: {
           body: {
-            ACTION_TYPE: actionType,
-            CATEGORY_NAME: name
+            FIRST_NAME: fName,
+            LAST_NAME: lName,
+            PHONE_NUMBER: phoneNumber,
+            DESCRIBED_SYMPTOMS: describedSymptoms,
+            EMAIL: email,
+            NHS_NUMBER: NHSNumber
           }
         }
       })
 
       const response = await operation.response
-      let body = await response.body.json();
+      let body = await response.body.json()
 
-      console.log(body);
+      console.log(body)
 
       return body.success
     }
 
     const operation = post({
-      apiName: 'TreatmentCategoryHandler',
-      path: `/v1/resources/treatments/category`,
+      apiName: 'PatientHandler',
+      path: `/v1/resources/treatments/patient`,
       options: {
         body: {
           ACTION_TYPE: actionType,
-          CATEGORY_NAME: name,
-          TREATMENT_CATEGORY_ID: categoryId
+          FIRST_NAME: fName,
+          LAST_NAME: lName,
+          PHONE_NUMBER: phoneNumber,
+          DESCRIBED_SYMPTOMS: describedSymptoms,
+          EMAIL: email,
+          NHS_NUMBER: NHSNumber
         }
       }
     })
 
     const response = await operation.response
-    let body = await response.body.json();
+    let body = await response.body.json()
 
-    console.log(body);
+    console.log(body)
 
     return body.success
   }
 
-  static deleteTreatment = async function (categoryId) {
+  static deletePatient = async function (patientId) {
     const operation = del({
-      apiName: 'TreatmentCategoryHandler',
-      path: `/v1/resources/treatments/category`,
+      apiName: 'PatientHandler',
+      path: `/v1/resources/treatments/patient`,
       options: {
         queryParams: {
-          TREATMENT_CATEGORY_ID: categoryId
+          PATIENT_ID: patientId
         }
       }
     })
@@ -69,4 +93,4 @@ class PatientAPI {
   }
 }
 
-export default PatientAPI;
+export default PatientAPI

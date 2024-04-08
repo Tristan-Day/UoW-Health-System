@@ -7,6 +7,8 @@ import {
   Typography
 } from '@mui/material'
 import { toTwoDigits } from '../Util'
+import { useEffect, useState } from 'react'
+import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
 
 function getHour(quarterHours) {
   let hours = Math.floor(quarterHours / 4)
@@ -16,26 +18,65 @@ function getHour(quarterHours) {
 }
 
 function CalendarItemCard(props) {
-    let topOffset = 35 + (props.quartersStart * 94);
-    let duration = 85 + ((props.quartersDuration - 1) * 94);
-    let isEvent = props.isEvent && true;
+  let topOffset = 35 + props.quartersStart * 94
+  let duration = 85 + (props.quartersDuration - 1) * 94
+  let isEvent = props.isEvent && true
 
-    let backgroundColour = isEvent ? { backgroundColor: '#0D47A1'} : null;
+  let backgroundColour = isEvent ? { backgroundColor: '#0D47A1' } : null
 
-    return <Box style={{ position: 'absolute', left: '25%', right:80, top: topOffset}}>
-    <Card style={{height: duration,  ...backgroundColour  }}>
-      <CardContent sx={{ padding: 1 }}>
-        <Typography variant="h6">Meeting</Typography>
-        <Typography variant="p">{getHour(props.quartersStart)} - {getHour(props.quartersDuration + props.quartersStart)}</Typography>
-      </CardContent>
-    </Card>
-  </Box>;
+  return (
+    <Box
+      style={{ position: 'absolute', left: '25%', right: 80, top: topOffset }}
+    >
+      <Card style={{ height: duration, ...backgroundColour }}>
+        <CardContent sx={{ padding: 1 }}>
+          <Typography variant="h6">{props.name}</Typography>
+          <Typography variant="p">
+            {getHour(props.quartersStart)} -{' '}
+            {getHour(
+              parseInt(props.quartersDuration) + parseInt(props.quartersStart)
+            )}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  )
 }
 
-function DayDisplay() {
-  function renderItems() {}
+function DayDisplay(props) {
+  const [items, setItems] = useState([])
+  const [lastDate, setLastDate] = useState('')
 
-  function renderBackground() {
+  useEffect(() => {
+    if (lastDate != props.date) {
+      refresh()
+    }
+  })
+
+  function refresh() {
+    if (lastDate != props.date) {
+      setLastDate(props.date)
+      ScheduleItemAPI.getPatient().then(scheduleItems => {
+        console.log(scheduleItems)
+        let filteredScheduleItems = scheduleItems.success.rows.filter(item => {
+          let selectedDate = new Date(props.date)
+          let queryDate = new Date(item.start_timestamp)
+
+          let daysEqual = selectedDate.getDate() === queryDate.getDate()
+          let monthsEqual = selectedDate.getMonth() === queryDate.getMonth()
+          let yearsEqual =
+            selectedDate.getFullYear() === queryDate.getFullYear()
+
+          return daysEqual && yearsEqual && monthsEqual
+        })
+
+        console.log(filteredScheduleItems)
+        setItems(filteredScheduleItems)
+      })
+    }
+  }
+
+  function renderBackground(date) {
     let items = [<Box height={20}></Box>]
 
     let quarterHours = 24 * 4
@@ -46,7 +87,7 @@ function DayDisplay() {
           {getHour(i)}
         </Divider>
       )
-      items.push(<Box style={{height: 70}}></Box>)
+      items.push(<Box style={{ height: 70 }}></Box>)
     }
 
     return items
@@ -64,11 +105,24 @@ function DayDisplay() {
         }}
       >
         <Box style={{ position: 'absolute', left: 0, right: 0, top: 0 }}>
-          {renderBackground()}
+          {renderBackground(props.dateStr)}
         </Box>
 
-        <CalendarItemCard quartersStart={4} quartersDuration={4} isEvent={false} />
-        <CalendarItemCard quartersStart={1} quartersDuration={2} isEvent={true} />
+        {items.map(e => {
+          const itemTimestamp = new Date(e.start_timestamp)
+          let quartersStart =
+            itemTimestamp.getHours() * 4 +
+            Math.floor(itemTimestamp.getMinutes() / 15)
+          let quartersDuration = e.estimated_duration_minutes
+          return (
+            <CalendarItemCard
+              quartersStart={quartersStart}
+              quartersDuration={quartersDuration}
+              name={e.task}
+              isEvent={e.item_type === 'EVENT'}
+            />
+          )
+        })}
       </Box>
     </Box>
   )
