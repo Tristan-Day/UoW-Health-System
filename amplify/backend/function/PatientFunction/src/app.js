@@ -112,7 +112,7 @@ app.get('/v1/resources/treatments/patient', (req, res) => {
         type: 'string'                  
   } */
 
-  return PatientAPI.upsert(req, res, setup);
+  return PatientAPI.query(req, res, setup);
 
 });
 
