@@ -1,316 +1,290 @@
-
 class Validator {
+  static fields = {
+    ACTION_TYPE: String,
+    SCHEDULE_ITEM_ID: Number,
+    START_TIMESTAMP: String,
+    ESTIMATED_DURATION_MINUTES: Number,
+    PATIENT_ID: Number,
+    TASK: String,
+    DESCRIPTION: String,
+    ITEM_TYPE: String
+  }
 
-    static fields = {
-        ACTION_TYPE: String,
-        SCHEDULE_ITEM_ID: Number,
-        START_TIMESTAMP: String,
-        ESTIMATED_DURATION_MINUTES: Number,
-        PATIENT_ID: Number,
-        TASK: String,
-        DESCRIPTION: String,
-    };
+  static searchIsValid = function (searchObj) {
+    let search = Object.keys(searchObj)
 
-    static searchIsValid = function (searchObj) {
+    //ID
+    if (search.hasOwnProperty('SCHEDULE_ITEM_ID')) {
+      return true
+    }
 
-        let search = Object.keys(searchObj);
+    if (search.length === 0) {
+      return true
+    }
 
-        //ID
-        if (search.hasOwnProperty("SCHEDULE_ITEM_ID")) {
-            return true;
-        }
+    //check that all fields in the query statement are correct
+    let falseElementCount = 0
+    search.forEach(element => {
+      if (!Object.keys(this.fields).includes(element)) {
+        falseElementCount++
+      }
+    })
 
-        if (search.length === 0) {
-            return true;
-        }
+    if (falseElementCount == 0) {
+      return true
+    }
 
-        //check that all fields in the query statement are correct
-        let falseElementCount = 0;
-        search.forEach(element => {
+    return false
+  }
 
-            if (!Object.keys(this.fields).includes(element)) {
-                falseElementCount++;
-            }
+  static upsertIsValid = function (searchBody) {
+    let search = Object.keys(searchBody)
 
-        });
+    console.log(search)
 
-        if (falseElementCount == 0) {
-            return true;
-        }
+    //ID
+    if (search.hasOwnProperty('SCHEDULE_ITEM_ID')) {
+      return true
+    }
 
-        return false;
+    if (search.length === 0) {
+      return false
+    }
 
-    };
+    //check that all fields in the query statement are correct
+    let falseElementCount = 0
+    search.forEach(element => {
+      if (!Object.keys(this.fields).includes(element)) {
+        falseElementCount++
+      }
+    })
 
-    static upsertIsValid = function (searchBody) {
+    if (falseElementCount == 0) {
+      return true
+    }
 
-        let search = Object.keys(searchBody);
+    return false
+  }
 
-        console.log(search);
+  static deleteIsValid = function (deleteBody) {
+    let search = Object.keys(deleteBody)
 
-        //ID
-        if (search.hasOwnProperty("SCHEDULE_ITEM_ID")) {
-            return true;
-        }
+    //ID
+    if (search.hasOwnProperty('SCHEDULE_ITEM_ID')) {
+      return true
+    }
 
-        if (search.length === 0) {
-            return false;
-        }
+    if (search.length === 0) {
+      return false
+    }
 
-        //check that all fields in the query statement are correct
-        let falseElementCount = 0;
-        search.forEach(element => {
+    const deleteFields = ['SCHEDULE_ITEM_ID']
 
-            if (!Object.keys(this.fields).includes(element)) {
-                falseElementCount++;
-            }
+    //check that all fields in the query statement are correct
+    let falseElementCount = 0
+    search.forEach(element => {
+      if (!deleteFields.includes(element)) {
+        falseElementCount++
+      }
+    })
 
-        });
+    if (falseElementCount == 0) {
+      return true
+    }
 
-        if (falseElementCount == 0) {
-            return true;
-        }
-
-        return false;
-
-    };
-
-    static deleteIsValid = function (deleteBody) {
-
-        let search = Object.keys(deleteBody);
-
-        //ID
-        if (search.hasOwnProperty("SCHEDULE_ITEM_ID")) {
-            return true;
-        }
-
-        if (search.length === 0) {
-            return false;
-        }
-
-        const deleteFields = ["SCHEDULE_ITEM_ID"];
-
-        //check that all fields in the query statement are correct
-        let falseElementCount = 0;
-        search.forEach(element => {
-
-            if (!deleteFields.includes(element)) {
-                falseElementCount++;
-            }
-
-        });
-
-        if (falseElementCount == 0) {
-            return true;
-        }
-
-        return false;
-
-    };
-
+    return false
+  }
 }
 
 class ScheduleItemAPI {
+  static hasCorrectPermissions = async function () {
+    return true
+  }
 
-    static hasCorrectPermissions = async function () {
-        return true;
+  static getValueForKey = function (query, key) {
+    return Object.values(query)[Object.keys(query).indexOf(key)]
+  }
+
+  static query = async function (req, res, setup) {
+    let client = await setup()
+
+    if (!this.hasCorrectPermissions()) {
+      res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
+      return
     }
 
-    static getValueForKey = function (query, key) {
-        return Object.values(query)[Object.keys(query).indexOf(key)];
+    if (!Validator.searchIsValid(req.query)) {
+      res.status(400).json({ failure: 'INCORRECT_QUERY' })
+      return
     }
 
-    static query = async function (req, res, setup) {
-        let client = await setup();
+    let result = {}
 
-        if (!this.hasCorrectPermissions()) {
-            res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
-            return;
-        }
+    try {
+      console.log('starting query')
 
-        if (!Validator.searchIsValid(req.query)) {
-            res.status(400).json({ failure: "INCORRECT_QUERY" });
-            return;
-        }
+      let paramLength = Object.keys(req.query).length
 
+      let query
 
-        let result = {};
+      console.log(req.query)
+      console.log(typeof req.query['SCHEDULE_ITEM_ID'])
 
-        try {
-            console.log("starting query");
+      if (Object.keys(req.query).includes('SCHEDULE_ITEM_ID')) {
+        console.log('selecting one by ID')
 
-            let paramLength = Object.keys(req.query).length;
+        console.log(Number(req.query['SCHEDULE_ITEM_ID']))
+        console.log(typeof Number(req.query['SCHEDULE_ITEM_ID']))
 
-            let query;
+        query = await client.query(
+          'SELECT * FROM "system".schedule_items WHERE SCHEDULE_ITEM_ID = ' +
+            Number(req.query['SCHEDULE_ITEM_ID']) +
+            ';'
+        )
 
-            console.log(req.query);
-            console.log(typeof req.query["SCHEDULE_ITEM_ID"]);
+        result = { success: query }
+      }
 
-            if (Object.keys(req.query).includes("SCHEDULE_ITEM_ID")) {
-                console.log("selecting one by ID");
+      if (paramLength == 0) {
+        console.log('selecting all')
+        query = await client.query('SELECT * FROM "system".schedule_items;')
 
-                console.log(Number(req.query["SCHEDULE_ITEM_ID"]));
-                console.log(typeof Number(req.query["SCHEDULE_ITEM_ID"]));
+        result = { success: query }
+      }
 
-                query = await client.query('SELECT * FROM "system".schedule_items WHERE SCHEDULE_ITEM_ID = ' + Number(req.query["SCHEDULE_ITEM_ID"]) + ';');
+      //compound query
+      if (
+        paramLength > 0 &&
+        !Object.keys(req.query).includes('SCHEDULE_ITEM_ID')
+      ) {
+        console.log('running multiple iterations')
 
-                result = { success: query };
+        let queryString = 'SELECT * FROM "system".schedule_items WHERE '
+        let columnsArray = Object.keys(req.query)
+        let values = Object.values(req.query)
 
-            }
+        values.forEach((value, index) => {
+          console.log(value)
+          console.log(typeof value)
 
-            if (paramLength == 0) {
-                console.log("selecting all");
-                query = await client.query('SELECT * FROM "system".schedule_items;');
+          if (typeof value == 'string') {
+            queryString += columnsArray[index] + " LIKE '" + value + "%' "
+          } else {
+            queryString += columnsArray[index] + ' = ' + value + ' '
+          }
 
-                result = { success: query };
+          if (index < values.length - 1) {
+            queryString += 'OR '
+          }
+        })
 
-            }
+        queryString += ';'
 
-            //compound query
-            if (paramLength > 0 && !Object.keys(req.query).includes("SCHEDULE_ITEM_ID")) {
-                console.log("running multiple iterations");
+        console.log(queryString)
 
-                let queryString = "SELECT * FROM \"system\".schedule_items WHERE ";
-                let columnsArray = Object.keys(req.query);
-                let values = Object.values(req.query);
+        query = await client.query(queryString)
 
-                values.forEach((value, index) => {
-                    console.log(value);
-                    console.log(typeof value);
+        result = { success: query }
+      }
+    } catch (error) {
+      console.log(error)
 
-                    if (typeof value == "string") {
-                        queryString += columnsArray[index] + " LIKE '" + value + "%' ";
-                    } else {
-                        queryString += columnsArray[index] + " = " + value + " ";
-                    }
-
-                    if (index < values.length - 1) {
-                        queryString += "OR ";
-                    }
-                });
-
-                queryString += ";";
-
-                console.log(queryString);
-
-                query = await client.query(queryString);
-
-                result = { success: query };
-
-            }
-
-        } catch (error) {
-
-            console.log(error);
-
-            result = { failure: error };
-
-        }
-
-        res.json(result);
-
+      result = { failure: error }
     }
 
-    static upsert = async function (req, res, setup) {
-        let client = await setup();
+    res.json(result)
+  }
 
-        if (!this.hasCorrectPermissions()) {
-            res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
-            return;
-        }
+  static upsert = async function (req, res, setup) {
+    let client = await setup()
 
-        if (!Validator.upsertIsValid(req.body)) {
-            res.status(400).json({ failure: "INCORRECT_QUERY" });
-            return;
-        }
-
-        console.log(req.body);
-
-
-        let result = {};
-        try {
-            if (req.body["ACTION_TYPE"] === "INSERT") {
-
-                const queryString = `
-                    INSERT INTO "system".schedule_items (START_TIMESTAMP, ESTIMATED_DURATION_MINUTES, TASK, DESCRIPTION)
-                    VALUES ($1, $2, $3, $4)
-                    `;
-                const values = [
-                    req.body["START_TIMESTAMP"], 
-                    req.body["ESTIMATED_DURATION_MINUTES"], 
-                    req.body["TASK"], 
-                    req.body["DESCRIPTION"], 
-                ];
-
-                let query = await client.query(queryString, values);
-                result = { success: query };
-
-            }
-
-            if (req.body["ACTION_TYPE"] === "UPDATE") {
-
-                const queryString = `
-                UPDATE "system".schedule_items SET START_TIMESTAMP = $1, ESTIMATED_DURATION_MINUTES = $2, TASK = $3, DESCRIPTION = $4 WHERE SCHEDULE_ITEM_ID = $5;
-                `;
-                const values = [
-                    req.body["START_TIMESTAMP"],
-                    req.body["ESTIMATED_DURATION_MINUTES"],
-                    req.body["TASK"],
-                    req.body["DESCRIPTION"],
-                    //where
-                    req.body["SCHEDULE_ITEM_ID"]
-                ];
-
-                let query = await client.query(queryString, values);
-                result = { success: query };
-
-            }
-
-        } catch (error) {
-            console.log(error);
-            result = { failure: error };
-        }
-
-        res.json(result);
-
+    if (!this.hasCorrectPermissions()) {
+      res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
+      return
     }
 
-    static delete = async function (req, res, setup) {
-        let client = await setup();
+    if (!Validator.upsertIsValid(req.body)) {
+      res.status(400).json({ failure: 'INCORRECT_QUERY' })
+      return
+    }
 
-        if (!this.hasCorrectPermissions()) {
-            res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
-            return;
-        }
+    console.log(req.body)
 
-        if (!Validator.deleteIsValid(req.body)) {
-            res.status(400).json({ failure: "INCORRECT_QUERY" });
-            return;
-        }
+    let result = {}
+    try {
+      if (req.body['ACTION_TYPE'] === 'INSERT') {
+        const queryString = `
+                    INSERT INTO "system".schedule_items (START_TIMESTAMP, ESTIMATED_DURATION_MINUTES, TASK, DESCRIPTION, ITEM_TYPE)
+                    VALUES ($1, $2, $3, $4, $5)
+                    `
+        const values = [
+          req.body['START_TIMESTAMP'],
+          req.body['ESTIMATED_DURATION_MINUTES'],
+          req.body['TASK'],
+          req.body['DESCRIPTION'],
+          req.body['ITEM_TYPE']
+        ]
 
-        console.log(req.body);
+        let query = await client.query(queryString, values)
+        result = { success: query }
+      }
 
+      if (req.body['ACTION_TYPE'] === 'UPDATE') {
+        const queryString = `
+                UPDATE "system".schedule_items SET START_TIMESTAMP = $1, ESTIMATED_DURATION_MINUTES = $2, TASK = $3, DESCRIPTION = $4, ITEM_TYPE = $5 WHERE SCHEDULE_ITEM_ID = $6;
+                `
+        const values = [
+          req.body['START_TIMESTAMP'],
+          req.body['ESTIMATED_DURATION_MINUTES'],
+          req.body['TASK'],
+          req.body['DESCRIPTION'],
+          req.body['ITEM_TYPE'],
+          //where
+          req.body['SCHEDULE_ITEM_ID']
+        ]
 
-        let result = {};
-        try {
+        let query = await client.query(queryString, values)
+        result = { success: query }
+      }
+    } catch (error) {
+      console.log(error)
+      result = { failure: error }
+    }
 
-            const queryString = `
+    res.json(result)
+  }
+
+  static delete = async function (req, res, setup) {
+    let client = await setup()
+
+    if (!this.hasCorrectPermissions()) {
+      res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
+      return
+    }
+
+    if (!Validator.deleteIsValid(req.body)) {
+      res.status(400).json({ failure: 'INCORRECT_QUERY' })
+      return
+    }
+
+    console.log(req.body)
+
+    let result = {}
+    try {
+      const queryString = `
                     DELETE FROM "system".schedule_items WHERE SCHEDULE_ITEM_ID = $1;
-                    `;
-            const values = [req.body["SCHEDULE_ITEM_ID"]];
+                    `
+      const values = [req.body['SCHEDULE_ITEM_ID']]
 
-            let query = await client.query(queryString, values);
-            result = { success: query };
-
-        } catch (error) {
-            console.log(error);
-            result = { failure: error };
-        }
-
-        res.json(result);
-
+      let query = await client.query(queryString, values)
+      result = { success: query }
+    } catch (error) {
+      console.log(error)
+      result = { failure: error }
     }
 
+    res.json(result)
+  }
 }
 
-module.exports = ScheduleItemAPI;
+module.exports = ScheduleItemAPI
