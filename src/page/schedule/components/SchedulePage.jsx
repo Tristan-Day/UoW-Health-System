@@ -2,11 +2,8 @@ import { Box, Divider, Grid, Typography } from '@mui/material'
 import { BreadcrumbGenerator } from '../../../components'
 import { useEffect, useRef, useState } from 'react'
 import Calendar from './calendar/Calendar'
-
-function getWindowWidth() {
-  //cannot be contained in a component
-  return window.innerWidth
-}
+import EditPage from './calendar/EditPage'
+import { getWindowWidth } from './Util'
 
 function SchedulePage() {
   const [editPageOpen, setEditPageOpen] = useState(true)
@@ -46,15 +43,15 @@ function SchedulePage() {
       <Box>
         <Grid container spacing={0}>
           {canShowEditPage(windowWidth) ? (
-            <Grid item xs={12} md={12} lg={5}>
+            <Grid item xs>
               {/* EditPage */}
-              <h1>This is a test</h1>
+              <EditPage closePage={() => setEditPageOpen(false)} />
             </Grid>
           ) : null}
           {canShowCalendarPage(windowWidth) ? (
-            <Grid item xs={12} md={12} lg={5}>
+            <Grid item xs>
               {/* Calender */}
-              <Calendar openCreatePage={() => setEditPageOpen(!editPageOpen)} />
+              <Calendar editPageOpen={editPageOpen} openCreatePage={() => setEditPageOpen(!editPageOpen)} />
             </Grid>
           ) : null}
         </Grid>

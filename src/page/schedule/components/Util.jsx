@@ -21,4 +21,9 @@ class DIRECTION {
   static NEXT = '+'
 }
 
-export { toTwoDigits, incrementDate, decrementDate, DIRECTION }
+function getWindowWidth() {
+  //cannot be contained in a component
+  return window.innerWidth
+}
+
+export { toTwoDigits, incrementDate, decrementDate, getWindowWidth, DIRECTION }
