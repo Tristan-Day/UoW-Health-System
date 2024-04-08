@@ -45,7 +45,7 @@ function Calendar(props) {
           />
         </LocalizationProvider>
       ) : null}
-      {page === CALENDAR ? <DayDisplay /> : null}
+      {page === CALENDAR ? <DayDisplay date={dateStr} /> : null}
     </Box>
   )
 }

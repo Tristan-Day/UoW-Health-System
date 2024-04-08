@@ -1,53 +1,98 @@
-import { Autocomplete } from '@mui/material'
+import { Autocomplete, Box } from '@mui/material'
+import { useEffect, useState } from 'react'
+import PatientAPI from '../../apis/PatientAPI'
+import { TextField } from '@mui/material'
 
-function PatientSearch() {
+function PatientSearch(props) {
+  const [patients, setPatients] = useState([])
+  const [selectedPatient, setSelectedPatient] = useState(0)
+
+  useEffect(() => {
+    PatientAPI.getPatient()
+      .then(res => {
+        console.log(res.success.rows)
+        setPatients(res.success.rows)
+      })
+      .catch(e => {
+        console.log(e)
+      })
+  }, [])
+
+  function setSelectedPatientInForm(patientId) {
+    setSelectedPatient(patientId);
+    props.setPatient(patientId);
+  }
+
   const renderWardName = params => {
     return (
       <TextField
         {...params}
-        label="Enter a ward name"
+        value={getWardValue()}
+        placeholder="Enter a patient name"
         onChange={(event, newVal) => {
           // console.log(event.target.value)
-          // console.log(newVal)
+          console.log(newVal.id)
           if (event.target.value) {
-            setForm({ ...form, ward_id: parseInt(newVal.id) })
+            setSelectedPatientInForm(parseInt(newVal.id))
           }
         }}
         InputProps={{ ...params.InputProps, type: 'search' }}
-        error={errors.ward_id}
+        // error={errors.ward_id}
       />
     )
   }
 
   const getWardValue = () => {
-    if (!form.ward_id) {
+    if (selectedPatient == 0) {
+      console.log('selected patient is default')
       return null
     }
 
-    let filteredWards = wards.filter(ward => ward.ward_id === form.ward_id)
+    let filteredPatients = patients.filter(
+      patient => patient.patient_id == selectedPatient
+    )
 
-    if (filteredWards.length === 0) {
+    if (filteredPatients.size === 0) {
+      console.log('filteredPatients is empty')
       return null
     }
 
-    return { label: filteredWards[0].ward_name, id: filteredWards[0].ward_id }
+    console.log('displaying patient in textfield')
+
+    return {
+      label:
+        filteredPatients[0].first_name +
+        ' ' +
+        filteredPatients[0].last_name +
+        ' : ' +
+        filteredPatients[0].nhs_number,
+      id: filteredPatients[0].patient_id
+    }
   }
 
   return (
     <Autocomplete
       disablePortal
-      label="Ward name..."
+      label="Patient name..."
       renderInput={renderWardName}
       getOptionLabel={option => option.label}
       onChange={(e, newVal) => {
-        // console.log(newVal)
-        setForm({ ...form, ward_id: newVal.id })
+        console.log(newVal.id)
+        setSelectedPatientInForm(parseInt(newVal.id))
       }}
       options={
-        wards
-          ? wards.map(ward => {
+        patients
+          ? patients.map(patient => {
               // console.log(ward)
-              return { label: ward.ward_name, id: ward.ward_id }
+              return {
+                label:
+                  patient.first_name +
+                  ' ' +
+                  patient.last_name +
+                  ' : ' +
+                  patient.nhs_number,
+                id: patient.patient_id
+              }
             })
           : []
       }
