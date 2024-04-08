@@ -97,7 +97,7 @@ class Validator {
 }
 
 class ScheduleItemAPI {
-  static hasCorrectPermissions = async function () {
+  static hasCorrectPermissions = function () {
     return true
   }
 
@@ -227,6 +227,10 @@ class ScheduleItemAPI {
 
         let query = await client.query(queryString, values)
         result = { success: query }
+        console.log('insert body')
+        console.log(result)
+        res.json(result)
+        return
       }
 
       if (req.body['ACTION_TYPE'] === 'UPDATE') {
@@ -245,12 +249,17 @@ class ScheduleItemAPI {
 
         let query = await client.query(queryString, values)
         result = { success: query }
+        res.json(result)
+        return
       }
     } catch (error) {
+      console.log('error triggered: ' + error)
       console.log(error)
       result = { failure: error }
     }
 
+    console.log('final result')
+    console.log(result)
     res.json(result)
   }
 
