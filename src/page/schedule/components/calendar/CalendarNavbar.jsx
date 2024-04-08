@@ -1,7 +1,8 @@
-import { ArrowBack, ChevronLeft, ChevronRight } from '@mui/icons-material'
+import { ArrowBack, ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material'
 import {
   Box,
   Button,
+  Divider,
   Grid,
   IconButton,
   TextField,
@@ -43,19 +44,26 @@ function CalendarNavbar(props) {
   }
 
   function toggleDatePicker() {
-    props.toggleDatePicker(props.date);
+    props.toggleDatePicker(props.date)
   }
 
   return (
     <Box>
       <Grid container>
-        <Grid item xs>
+        <Grid item>
           <IconButton aria-label="open edit page" onClick={openCreatePage}>
-            <ArrowBack />
+          { props.editPageOpen ? <ArrowBack /> : <ArrowForward />}
           </IconButton>
         </Grid>
         <Grid item>
+          <Divider
+            orientation="vertical"
+            sx={{ paddingLeft: 1}}
+          />
+        </Grid>
+        <Grid item>
           <TextField
+            sx={{ paddingLeft: 1, paddingRight: 1 }}
             size="small"
             value={searchValue}
             onChange={e => onSearchBarChange(e)}

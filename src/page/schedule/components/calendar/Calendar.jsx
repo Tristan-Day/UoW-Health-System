@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
+import DayDisplay from './DayDisplay'
 
 const CALENDAR = 'CALENDAR'
 const DATE_PICKER = 'DATE_PICKER'
@@ -31,6 +32,7 @@ function Calendar(props) {
     <Box>
       <CalendarNavbar
         openCreatePage={props.openCreatePage}
+        editPageOpen={props.editPageOpen}
         toggleDatePicker={toggleDatePicker}
         date={dateStr}
         setDate={setDateStr}
@@ -43,6 +45,7 @@ function Calendar(props) {
           />
         </LocalizationProvider>
       ) : null}
+      {page === CALENDAR ? <DayDisplay /> : null}
     </Box>
   )
 }
