@@ -4,7 +4,8 @@ import { Outlet, Route } from 'react-router-dom'
 import { IndexGenerator } from '../../components'
 import { useContext } from 'react'
 import { AuthenticationContext } from '../../App'
-
+import Events from './Events'
+import ScheduleItemForm from './page/ScheduleItemForm'
 const Links = () => {
   const permissions = useContext(AuthenticationContext).permissions
   const pages = {}
@@ -22,7 +23,12 @@ const Links = () => {
       site: 'tasks'
     }
   }
-
+  if (permissions.includes('events.view')) {
+    pages['Events Management'] = {
+      description: 'Assign and amend patient prescriptions.',
+      site: 'events'
+    }
+  }
   return <IndexGenerator title="Schedule Management" contents={pages} />
 }
 
@@ -45,7 +51,13 @@ const ScheduleRoutes = permissions => (
     {permissions.includes('tasks.view') ? (
       <Route path="tasks" element={<h1>Task Management</h1>} />
     ) : null}
-
+     {permissions.includes('events.view') ? (
+      <Route path="Events">
+      <Route index element={<Events />} />
+      <Route path="create" element={<ScheduleItemForm />} />
+    </Route>
+    ) : null}
+ 
   </Route>
 )
 
