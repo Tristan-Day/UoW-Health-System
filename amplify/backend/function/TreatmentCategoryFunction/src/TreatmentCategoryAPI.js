@@ -241,7 +241,7 @@ class TreatmentCategoryAPI {
             if (req.body["ACTION_TYPE"] === "UPDATE") {
 
                 const queryString = `
-                UPDATE "system".treatment_categories SET NAME = $1 WHERE TREATMENT_CATEGORY_ID = $4;
+                UPDATE "system".treatment_categories SET CATEGORY_NAME = $1 WHERE TREATMENT_ID = $2;
                 `;
                 const values = [
                     req.body["CATEGORY_NAME"],
@@ -271,21 +271,21 @@ class TreatmentCategoryAPI {
             return;
         }
 
-        if (!Validator.deleteIsValid(req.body)) {
+        if (!Validator.deleteIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
 
-        console.log(req.body);
+        console.log(req.query);
 
 
         let result = {};
         try {
 
             const queryString = `
-                    DELETE FROM "system".treatment_categories WHERE TREATMENT_CATEGORY_ID = $1;
+                    DELETE FROM "system".treatment_categories WHERE TREATMENT_ID = $1;
                     `;
-            const values = [req.body["TREATMENT_CATEGORY_ID"]];
+            const values = [req.query["TREATMENT_CATEGORY_ID"]];
 
             let query = await client.query(queryString, values);
             result = { success: query };
