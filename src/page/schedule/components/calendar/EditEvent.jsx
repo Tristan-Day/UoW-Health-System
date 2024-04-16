@@ -6,7 +6,8 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
+  duration
 } from '@mui/material'
 import {
   DatePicker,
@@ -18,13 +19,12 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
-import { Check, Clear, ClearAll, Close, Delete } from '@mui/icons-material'
+import { Check, ClearAll, Delete } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
 
-function EditTask(props) {
-  const [edit, setEdit] = useState(props.isEdit && false)
+function EditEvent(props) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -39,10 +39,11 @@ function EditTask(props) {
   const [lastIdSelected, setLastIdSelected] = useState(0)
 
   useEffect(() => {
-    console.log('editTask reloaded')
-    console.log(props.cardSelected + ' : ' + lastIdSelected)
+    console.log('editEvent reloaded')
+    console.log(props.cardSelected + ':' + lastIdSelected)
 
     if (props.cardSelected === 0 && lastIdSelected > 0) {
+      console.log('resetting')
       setLastIdSelected(0)
       setName('')
       setDescription('')
@@ -56,49 +57,43 @@ function EditTask(props) {
       console.log('loading card on editPage')
       setLastIdSelected(props.cardSelected)
 
-      ScheduleItemAPI.getPatient()
-        .then(scheduleItems => {
-          //TODO: switch this to an API call for the individual ID
-          console.log('getting items on editpage')
+      //TODO: switch this to an API call for the individual ID
+      console.log('getting items on editpage')
 
-          console.log(scheduleItems)
-          let filteredScheduleItems = scheduleItems.success.rows.filter(
-            item => {
-              // console.log(item)
-              console.log('check iteration')
-              console.log(item.schedule_item_id)
-              console.log(props.cardSelected)
-              return parseInt(item.schedule_item_id) == props.cardSelected
-            }
-          )
+      console.log(props.scheduleItems)
+      let filteredScheduleItems = props.scheduleItems.success.rows.filter(
+        item => {
+          console.log('check iteration')
+          console.log(item.schedule_item_id)
+          console.log(props.cardSelected)
 
-          const content = filteredScheduleItems[0]
+          return parseInt(item.schedule_item_id) == props.cardSelected
+        }
+      )
 
-          console.log('matching cards')
-          console.log(content)
+      const content = filteredScheduleItems[0]
 
-          setName(content.task)
-          setDescription(content.description)
+      console.log('matching cards')
+      console.log(content)
 
-          let contentDate = new Date(content.start_timestamp)
-          setStartDate(contentDate)
+      setName(content.task)
+      setDescription(content.description)
 
-          let quarterHours =
-            Math.floor(contentDate.getHours() * 4) +
-            Math.floor(contentDate.getMinutes() / 15)
+      let contentDate = new Date(content.start_timestamp)
+      setStartDate(contentDate)
 
-          setStartTime(quarterHours)
+      let quarterHours =
+        Math.floor(contentDate.getHours() * 4) +
+        Math.floor(contentDate.getMinutes() / 15)
 
-          console.log('patient id')
-          console.log(content.patient_id)
-          console.log(parseInt(content.patient_id))
+      setStartTime(quarterHours)
 
-          setPatientId(parseInt(content.patient_id))
-          setDurationQuarterHour(content.estimated_duration_minutes)
-        })
-        .catch(e => {
-          console.log(e)
-        })
+      console.log('patient id')
+      console.log(content.patient_id)
+      console.log(parseInt(content.patient_id))
+
+      setPatientId(parseInt(content.patient_id))
+      setDurationQuarterHour(content.estimated_duration_minutes)
     }
   })
 
@@ -111,18 +106,24 @@ function EditTask(props) {
     return dayjs(time)
   }
 
-  async function createTask() {
+  async function createEvent() {
     let startTimeStamp = new Date(startDate)
     startTimeStamp.setHours(Math.floor(startTime / 4))
     startTimeStamp.setMinutes((startTime % 4) * 15)
 
-    if (!(await ScheduleValidator.scheduleIsClear(startTimeStamp, durationQuarterHour, lastIdSelected))) {
+    if (
+      !(await ScheduleValidator.scheduleIsClear(
+        startTimeStamp,
+        duration,
+        lastIdSelected
+      ))
+    ) {
       setMessage(
         'This overlaps with another item in your schedule. Please alter the date of this item or another.'
       )
       setMessageIcon('CROSS')
       setSeverity('error')
-      return;
+      return
     }
 
     if (props.cardSelected != 0) {
@@ -133,12 +134,15 @@ function EditTask(props) {
         patientId,
         name,
         description,
-        'TASK',
+        'EVENT',
         props.cardSelected
       )
         .then(res => {
           console.log(res)
-          setMessage('Task successfully ' +  (props.cardSelected === 0 ? "created" : "updated") )
+          setMessage(
+            'Event successfully ' +
+              (props.cardSelected === 0 ? 'created' : 'updated')
+          )
           setMessageIcon('CHECK')
           setSeverity('success')
           props.refresh();
@@ -146,7 +150,9 @@ function EditTask(props) {
         .catch(error => {
           console.log(error)
           setMessage(
-            'There was an error and the task was not successfully ' +  (props.cardSelected === 0 ? "created" : "updated")  + ' - please try again later'
+            'There was an error and the event was not successfully ' +
+              (props.cardSelected === 0 ? 'created' : 'updated') +
+              ' - please try again later'
           )
           setMessageIcon('CROSS')
           setSeverity('error')
@@ -161,12 +167,15 @@ function EditTask(props) {
       patientId,
       name,
       description,
-      'TASK',
+      'EVENT',
       null
     )
       .then(res => {
         console.log(res)
-        setMessage('Task successfully ' +  (props.cardSelected === 0 ? "created" : "updated") )
+        setMessage(
+          'Event successfully ' +
+            (props.cardSelected === 0 ? 'created' : 'updated')
+        )
         setMessageIcon('CHECK')
         setSeverity('success')
         props.refresh();
@@ -174,14 +183,16 @@ function EditTask(props) {
       .catch(error => {
         console.log(error)
         setMessage(
-          'There was an error and the task was not successfully ' +  (props.cardSelected === 0 ? "created" : "updated")  + ' - please try again later'
+          'There was an error and the event was not successfully ' +
+            (props.cardSelected === 0 ? 'created' : 'updated') +
+            ' - please try again later'
         )
         setMessageIcon('CROSS')
         setSeverity('error')
       })
   }
 
-  function deleteTask() {
+  function deleteEvent() {
     let startTimeStamp = new Date(startDate)
     startTimeStamp.setHours(Math.floor(startTime / 4))
     startTimeStamp.setMinutes((startTime % 4) * 15)
@@ -204,34 +215,28 @@ function EditTask(props) {
       })
   }
 
-  function clearTask() {
+  function clearEvent() {
     //clear the task number
     props.clearSelectedCard()
-    
+
     //remove any banners
-    setMessage('');
+    setMessage('')
   }
 
   return (
     <Box sx={{ padding: 1 }}>
       {message.length == 0 ? null : (
         <Alert
-          icon={
-            messageIcon === 'CHECK' ? (
-              <Check fontSize="inherit" />
-            ) : (
-              <Close fontSize="inherit" />
-            )
-          }
+          icon={<Check fontSize="inherit" />}
           sx={{ marginBottom: 2 }}
           severity={severity}
         >
           {message}
         </Alert>
       )}
-      <Typography variant="h4">Task</Typography>
+      <Typography variant="h4">Event</Typography>
       {/* Form */}
-      <Typography sx={{ marginTop: 1 }}>Task name</Typography>
+      <Typography sx={{ marginTop: 1 }}>Event name</Typography>
       <TextField
         size="small"
         placeholder="Task name"
@@ -239,7 +244,7 @@ function EditTask(props) {
         onChange={e => setName(e.target.value)}
       ></TextField>
 
-      <Typography sx={{ marginTop: 1 }}>Task description</Typography>
+      <Typography sx={{ marginTop: 1 }}>Event description</Typography>
       <TextField
         size="small"
         placeholder="Task description"
@@ -247,7 +252,7 @@ function EditTask(props) {
         onChange={e => setDescription(e.target.value)}
       ></TextField>
 
-      <Typography sx={{ marginTop: 1 }}>Task start time</Typography>
+      <Typography sx={{ marginTop: 1 }}>Event start time</Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <Grid container>
           <Grid item sx>
@@ -305,8 +310,8 @@ function EditTask(props) {
 
         <Grid container sx={{ marginTop: 2 }}>
           <Grid item xs>
-            <Button variant="contained" onClick={createTask}>
-              { lastIdSelected === 0 ? "Create" : "Update" }
+            <Button variant="contained" onClick={createEvent}>
+              {lastIdSelected === 0 ? 'Create' : 'Update'}
             </Button>
           </Grid>
           {props.cardSelected ? (
@@ -314,7 +319,7 @@ function EditTask(props) {
               <Button
                 variant="outlined"
                 sx={{ marginRight: 1 }}
-                onClick={clearTask}
+                onClick={clearEvent}
                 startIcon={<ClearAll />}
               >
                 Empty Page
@@ -322,7 +327,7 @@ function EditTask(props) {
               <Button
                 variant="outlined"
                 // sx={{ display: 'block', marginTop: 2 }}
-                onClick={deleteTask}
+                onClick={deleteEvent}
                 startIcon={<Delete />}
               >
                 Delete
@@ -335,4 +340,4 @@ function EditTask(props) {
   )
 }
 
-export default EditTask
+export default EditEvent

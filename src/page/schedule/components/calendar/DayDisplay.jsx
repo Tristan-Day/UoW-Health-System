@@ -28,7 +28,10 @@ function CalendarItemCard(props) {
     <Box
       style={{ position: 'absolute', left: '25%', right: 80, top: topOffset }}
     >
-      <Card style={{ height: duration, ...backgroundColour }}>
+      <Card
+        style={{ height: duration, ...backgroundColour }}
+        onClick={() => props.onClick(props.item)}
+      >
         <CardContent sx={{ padding: 1 }}>
           <Typography variant="h6">{props.name}</Typography>
           <Typography variant="p">
@@ -48,32 +51,56 @@ function DayDisplay(props) {
   const [lastDate, setLastDate] = useState('')
 
   useEffect(() => {
+    let equal = true
+    // props.scheduleItems.forEach((item, index) => {
+    //   console.log(JSON.stringify(item) + ' : ' + JSON.stringify(items))
+
+    //   if (
+    //     !(
+    //       index < items.length &&
+    //       JSON.stringify(item) === JSON.stringify(items[index])
+    //     )
+    //   ) {
+    //     equal = false
+    //   }
+    // })
+
+    if (props.scheduleItems.length != items.length) {
+      equal = false
+    }
+
+    if (!equal) {
+      refresh()
+    }
+
+    if (items.length === 0) {
+      refresh()
+    }
+
     if (lastDate != props.date) {
       refresh()
     }
   })
 
   function refresh() {
-    if (lastDate != props.date) {
-      setLastDate(props.date)
-      ScheduleItemAPI.getPatient().then(scheduleItems => {
-        console.log(scheduleItems)
-        let filteredScheduleItems = scheduleItems.success.rows.filter(item => {
-          let selectedDate = new Date(props.date)
-          let queryDate = new Date(item.start_timestamp)
+    // if (lastDate != props.date) {
+    setLastDate(props.date)
 
-          let daysEqual = selectedDate.getDate() === queryDate.getDate()
-          let monthsEqual = selectedDate.getMonth() === queryDate.getMonth()
-          let yearsEqual =
-            selectedDate.getFullYear() === queryDate.getFullYear()
+    console.log(props.scheduleItems)
+    let filteredScheduleItems = props.scheduleItems.filter(item => {
+      let selectedDate = new Date(props.date)
+      let queryDate = new Date(item.start_timestamp)
 
-          return daysEqual && yearsEqual && monthsEqual
-        })
+      let daysEqual = selectedDate.getDate() === queryDate.getDate()
+      let monthsEqual = selectedDate.getMonth() === queryDate.getMonth()
+      let yearsEqual = selectedDate.getFullYear() === queryDate.getFullYear()
 
-        console.log(filteredScheduleItems)
-        setItems(filteredScheduleItems)
-      })
-    }
+      return daysEqual && yearsEqual && monthsEqual
+    })
+
+    console.log(filteredScheduleItems)
+    setItems(filteredScheduleItems)
+    // }
   }
 
   function renderBackground(date) {
@@ -116,10 +143,15 @@ function DayDisplay(props) {
           let quartersDuration = e.estimated_duration_minutes
           return (
             <CalendarItemCard
+              id={e.schedule_item_id}
+              onClick={event =>
+                props.cardClicked(e.schedule_item_id, e.item_type)
+              }
               quartersStart={quartersStart}
               quartersDuration={quartersDuration}
               name={e.task}
               isEvent={e.item_type === 'EVENT'}
+              item={e}
             />
           )
         })}

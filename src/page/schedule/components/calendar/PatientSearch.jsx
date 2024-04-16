@@ -5,7 +5,7 @@ import { TextField } from '@mui/material'
 
 function PatientSearch(props) {
   const [patients, setPatients] = useState([])
-  const [selectedPatient, setSelectedPatient] = useState(0)
+  const [selectedPatient, setSelectedPatient] = useState(props.overWriteValue)
 
   useEffect(() => {
     PatientAPI.getPatient()
@@ -43,21 +43,28 @@ function PatientSearch(props) {
   }
 
   const getWardValue = () => {
-    if (selectedPatient == 0) {
-      console.log('selected patient is default')
+    // console.log(selectedPatient);
+    if (props.overWriteValue == 0) {
+      // console.log('selected patient is default')
       return null
     }
 
     let filteredPatients = patients.filter(
-      patient => patient.patient_id == selectedPatient
+      patient => {
+        // console.log(props.overWriteValue);
+        // console.log(patient)
+        return parseInt(patient.patient_id) == props.overWriteValue
+      }
     )
 
-    if (filteredPatients.size === 0) {
-      console.log('filteredPatients is empty')
+    // console.log(filteredPatients);
+
+    if (filteredPatients.length < 1) {
+      // console.log('filteredPatients is empty')
       return null
     }
 
-    console.log('displaying patient in textfield')
+    // console.log('displaying patient in textfield')
 
     return {
       label:

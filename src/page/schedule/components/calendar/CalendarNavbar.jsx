@@ -1,4 +1,4 @@
-import { ArrowBack, ArrowForward, ChevronLeft, ChevronRight } from '@mui/icons-material'
+import { ArrowBack, ArrowForward, ChevronLeft, ChevronRight, Refresh } from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -51,30 +51,24 @@ function CalendarNavbar(props) {
     <Box>
       <Grid container>
         <Grid item>
-          <IconButton aria-label="open edit page" onClick={openCreatePage}>
+          <IconButton aria-label="toggle edit page open" onClick={openCreatePage} sx={{marginLeft: 1}}>
           { props.editPageOpen ? <ArrowBack /> : <ArrowForward />}
           </IconButton>
         </Grid>
-        <Grid item>
+        <Grid item xs>
           <Divider
             orientation="vertical"
             sx={{ paddingLeft: 1}}
           />
         </Grid>
         <Grid item>
-          <TextField
-            sx={{ paddingLeft: 1, paddingRight: 1 }}
-            size="small"
-            value={searchValue}
-            onChange={e => onSearchBarChange(e)}
-          />
-        </Grid>
-        <Grid item xs>
-          <Button>Search</Button>
+          <IconButton aria-label="refresh" onClick={props.refresh} sx={{marginLeft: 1}}>
+           <Refresh />
+          </IconButton>
         </Grid>
         <Grid item>
           <IconButton
-            aria-label="open edit page"
+            aria-label="previous date"
             onClick={() => moveToPeripheralDate(DIRECTION.PREVIOUS)}
           >
             <ChevronLeft />
@@ -85,7 +79,7 @@ function CalendarNavbar(props) {
         </Grid>
         <Grid item>
           <IconButton
-            aria-label="open edit page"
+            aria-label="next date"
             onClick={() => moveToPeripheralDate(DIRECTION.NEXT)}
           >
             <ChevronRight />

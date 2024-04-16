@@ -36,6 +36,7 @@ function Calendar(props) {
         toggleDatePicker={toggleDatePicker}
         date={dateStr}
         setDate={setDateStr}
+        refresh={props.refresh}
       />
       {page === DATE_PICKER ? (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -45,7 +46,7 @@ function Calendar(props) {
           />
         </LocalizationProvider>
       ) : null}
-      {page === CALENDAR ? <DayDisplay date={dateStr} /> : null}
+      {page === CALENDAR ? <DayDisplay date={dateStr} cardClicked={props.cardClicked} scheduleItems={props.scheduleItems} refresh={props.refresh} /> : null}
     </Box>
   )
 }
