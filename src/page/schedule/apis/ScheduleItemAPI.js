@@ -1,12 +1,21 @@
 import { get, del, post, put } from 'aws-amplify/api'
+import { fetchAuthSession } from 'aws-amplify/auth'
+import { getCurrentUser, currentSession } from 'aws-amplify/auth';
+// import {Signer} from 'aws-amplify';
+
+
 
 class ScheduleItemAPI {
   static getPatient = async function () {
     try {
+
       const operation = get({
         apiName: 'ScheduleItemHandler',
-        path: `/v1/resources/appointments/scheduleitem`
+        path: `/v1/resources/appointments/scheduleitem`,
+        // options: { headers: {Authorization: token}}
       })
+
+      //uses cookies to get specific user Id
 
       const response = await operation.response
       let body = await response.body.json()
@@ -15,6 +24,7 @@ class ScheduleItemAPI {
 
       return body
     } catch (error) {
+      console.log(error);
       return error
     }
   }
@@ -27,8 +37,9 @@ class ScheduleItemAPI {
     task,
     description,
     itemType,
-    scheduleItemId
+    scheduleItemId,
   ) {
+
     if (patientId != null && actionType == 'INSERT') {
       const operation = post({
         apiName: 'ScheduleItemHandler',
@@ -42,7 +53,8 @@ class ScheduleItemAPI {
             TASK: task,
             DESCRIPTION: description,
             ITEM_TYPE: itemType
-          }
+          },
+          // headers: {Authorization: `Bearer ${token}`}
         }
       })
 
@@ -70,7 +82,8 @@ class ScheduleItemAPI {
           TASK: task,
           DESCRIPTION: description,
           ITEM_TYPE: itemType
-        }
+        },
+        // headers: {Authorization: `Bearer ${token}`}
       }
     })
 
@@ -85,19 +98,24 @@ class ScheduleItemAPI {
     return body.success
   }
 
-  static deletePatient = async function (scheduleItemId) {
+  static delete = async function (scheduleItemId) {  
+    
     const operation = del({
       apiName: 'ScheduleItemHandler',
       path: `/v1/resources/appointments/scheduleitem`,
       options: {
         queryParams: {
-          SCHEDULE_ITEM_ID: scheduleItemId
-        }
+          SCHEDULE_ITEM_ID: parseInt(scheduleItemId)
+        },
+        // headers: {Authorization: `Bearer ${token}`}
       }
     })
 
     const response = await operation.response
-    return await response.body.json()
+    const body = await response.body.json();
+    console.log(body);
+
+    return body;
   }
 }
 
