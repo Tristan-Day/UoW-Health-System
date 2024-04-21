@@ -1,5 +1,4 @@
 import { Alert, Box, InputLabel } from '@mui/material'
-import CalendarNavbar from '../../../schedule/components/calendar/CalendarNavbar'
 import SimpleDatePicker from './SimpleDatePicker'
 import { useState } from 'react'
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers'
@@ -12,6 +11,9 @@ function StaffAssignment() {
 
   const [datePickerOpen, setDatePickerOpen] = useState(false)
 
+  const [alertOpen, setAlertOpen] = useState(false)
+  const [alertMessage, setAlertMessage] = useState('')
+
   function toggleDatePicker() {
     setDatePickerOpen(!datePickerOpen)
   }
@@ -21,10 +23,15 @@ function StaffAssignment() {
     toggleDatePicker()
   }
 
+  function showAlertMessage(message) {
+    setAlertMessage(message);
+    setAlertOpen(true);
+  }
+
   return (
     <Box>
-      <Box sx={{display: 'flex'}}>
-        <Box sx={{width: 'fit-content'}}>
+      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ width: 'fit-content' }}>
           <InputLabel>Shift date</InputLabel>
           <SimpleDatePicker
             date={selectedDate}
@@ -32,9 +39,18 @@ function StaffAssignment() {
             toggleDatePicker={toggleDatePicker}
           />
         </Box>
-        <Alert sx={{width: '60%', height: 'fit-content', marginTop: 2.5, marginLeft: 2}}>
-          This is a test
-        </Alert>
+        {alertOpen ? (
+          <Alert
+            sx={{
+              width: '60%',
+              height: 'fit-content',
+              marginTop: 2.5,
+              marginLeft: 2
+            }}
+          >
+            {alertMessage}
+          </Alert>
+        ) : null}
       </Box>
 
       {/* Body */}
@@ -64,7 +80,7 @@ function StaffAssignment() {
             : { visibility: 'hidden', height: 0, overflow: 'hidden' }
         }
       >
-        <StaffSwitchBoard />
+        <StaffSwitchBoard showAlertMessage={showAlertMessage} date={selectedDate} />
       </Box>
     </Box>
   )
