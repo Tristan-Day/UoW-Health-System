@@ -2,52 +2,171 @@ import {
   Box,
   Button,
   FormControlLabel,
+  IconButton,
   InputLabel,
   Typography
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
 import { getStaff } from '../../../staff/logic/Personel'
-import { CheckBox } from '@mui/icons-material'
+import { CheckBox, Refresh } from '@mui/icons-material'
+import ShiftAPI from '../../logic/Shifts'
 
 function StaffSwitchBoard(props) {
   const [staff, setStaff] = useState([])
   const [checkedList, setCheckedList] = useState([])
+  const [shiftIdList, setShiftIdList] = useState(new Map([]))
+
+  const [count, setCount] = useState(0)
+
+  const [lastDate, setLastDate] = useState(new Date())
 
   useEffect(() => {
-    getStaffFromDB()
-  }, [])
+    if (count === 0) {
+      getStaffFromDB()
+      setCount(1)
+    }
 
-  async function addStaffToList(staffId, staffName) {
-    let selectedDate = new Date(props.date)
-    props.showAlertMessage(
-      staffName +
-        ' has been added to the shift on ' +
-        selectedDate.getDate() +
-        '/' +
-        (selectedDate.getMonth() + 1) +
-        '/' +
-        selectedDate.getFullYear()
-    )
+    if ('date' in props) {
+      console.log(props.date)
+      let propsDate = new Date(props.date)
+      if (
+        lastDate !=
+        propsDate.getDate() +
+          '/' +
+          (propsDate.getMonth() + 1) +
+          '/' +
+          propsDate.getFullYear()
+      ) {
+        getShiftsByDate()
+        setLastDate(
+          propsDate.getDate() +
+            '/' +
+            (propsDate.getMonth() + 1) +
+            '/' +
+            propsDate.getFullYear()
+        )
+      }
+    }
+  }, [props])
 
-    setCheckedList([...checkedList, staffId])
+  async function getShiftsByDate() {
+    props.showAlertMessage('')
+    if (props.ward === '') {
+      props.showAlertMessage('Please select a ward', 'error')
+      return
+    }
+
+    try {
+      let propsDate = new Date(props.date)
+      const res = await ShiftAPI.getShift(
+        propsDate.getDate() +
+          '/' +
+          (propsDate.getMonth() + 1) +
+          '/' +
+          propsDate.getFullYear()
+      )
+
+      if (res.success) {
+        setCheckedList(
+          res.success.rows.map(item => {
+            return item.staff_id
+          })
+        )
+
+        setShiftIdList(
+          new Map(
+            res.success.rows.map(item => {
+              return [item.staff_id, item.shift_id]
+            })
+          )
+        )
+      }
+
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+      setCheckedList([])
+      props.showAlertMessage('Error loading shift information')
+    }
   }
 
-  async function removeStaffFromList(staffId, staffName) {
-    let selectedDate = new Date(props.date)
-    props.showAlertMessage(
-      staffName +
-        ' has been removed from the shift on ' +
-        selectedDate.getDate() +
-        '/' +
-        (selectedDate.getMonth() + 1) +
-        '/' +
-        selectedDate.getFullYear()
-    )
+  async function addStaffToList(staffId, staffName) {
+    try {
+      let propsDate = new Date(props.date)
+      const res = await ShiftAPI.upsertShift(
+        'INSERT',
+        props.ward,
+        staffId,
+        propsDate.getDate() +
+          '/' +
+          (propsDate.getMonth() + 1) +
+          '/' +
+          propsDate.getFullYear(),
+        null
+      )
 
-    let alteredCheckList = [...checkedList]
-    alteredCheckList.splice(checkedList.indexOf(staffId), 1)
-    setCheckedList(alteredCheckList)
+      console.log(res)
+
+      if (res.success) {
+        let selectedDate = new Date(props.date)
+        props.showAlertMessage(
+          staffName +
+            ' has been added to the shift on ' +
+            selectedDate.getDate() +
+            '/' +
+            (selectedDate.getMonth() + 1) +
+            '/' +
+            selectedDate.getFullYear()
+        )
+
+        setCheckedList([...checkedList, staffId])
+      }
+
+      if (res.failure) {
+        props.showAlertMessage('there was an error, please try again')
+        return
+      }
+    } catch (error) {
+      props.showAlertMessage('there was an error, please try again')
+      return
+    }
+  }
+
+  async function removeStaffFromList(staffId, staffName, shiftId) {
+    try {
+      console.log('shift id')
+      console.log(shiftIdList.get(staffId))
+
+      const res = await ShiftAPI.deleteShift(shiftIdList.get(staffId))
+
+      console.log(res)
+
+      if ('success' in res) {
+        let selectedDate = new Date(props.date)
+        props.showAlertMessage(
+          staffName +
+            ' has been removed from the shift on ' +
+            selectedDate.getDate() +
+            '/' +
+            (selectedDate.getMonth() + 1) +
+            '/' +
+            selectedDate.getFullYear()
+        )
+
+        let alteredCheckList = [...checkedList]
+        alteredCheckList.splice(checkedList.indexOf(staffId), 1)
+        setCheckedList(alteredCheckList)
+      }
+
+      if (res.failure) {
+        props.showAlertMessage('there was an error, please try again')
+        return
+      }
+    } catch (error) {
+      props.showAlertMessage('there was an error, please try again')
+      return
+    }
   }
 
   const columns = [
@@ -57,7 +176,6 @@ function StaffSwitchBoard(props) {
       disableColumnMenu: true,
       sortable: false,
       renderCell: params => {
-        console.log(params.row)
         if (checkedList.indexOf(params.row.staff_id) === -1) {
           return (
             <Button
@@ -139,14 +257,23 @@ function StaffSwitchBoard(props) {
 
   return (
     <Box>
-      <InputLabel sx={{ marginBotton: 2, marginTop: 2 }}>
-        Staff on shift on this ward today
-      </InputLabel>
+      <Box sx={{ display: 'flex' }}>
+        <InputLabel sx={{ marginBotton: 2, marginTop: 2 }}>
+          Staff on shift on this ward today
+        </InputLabel>
+        <Button
+          startIcon={<Refresh />}
+          sx={{ marginLeft: 'auto' }}
+          onClick={getShiftsByDate}
+        >
+          Refresh page
+        </Button>
+      </Box>
+
       <DataGrid
         rows={staff}
         columns={columns}
         disableRowSelectionOnClick
-        checkboxSelection
       ></DataGrid>
     </Box>
   )

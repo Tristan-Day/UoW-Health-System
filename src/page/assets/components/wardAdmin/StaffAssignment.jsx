@@ -6,13 +6,14 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import StaffSwitchBoard from './StaffSwitchBoard'
 
-function StaffAssignment() {
+function StaffAssignment(props) {
   const [selectedDate, setSelectedDate] = useState(new Date())
 
   const [datePickerOpen, setDatePickerOpen] = useState(false)
 
   const [alertOpen, setAlertOpen] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
+  const [alertSeverity, setAlertSeverity] = useState('success')
 
   function toggleDatePicker() {
     setDatePickerOpen(!datePickerOpen)
@@ -23,9 +24,14 @@ function StaffAssignment() {
     toggleDatePicker()
   }
 
-  function showAlertMessage(message) {
-    setAlertMessage(message);
-    setAlertOpen(true);
+  function showAlertMessage(message, severity = 'success') {
+    if (message === '') {
+      setAlertOpen(false)
+      return
+    }
+    setAlertMessage(message)
+    setAlertOpen(true)
+    setAlertSeverity(severity)
   }
 
   return (
@@ -47,6 +53,7 @@ function StaffAssignment() {
               marginTop: 2.5,
               marginLeft: 2
             }}
+            severity={alertSeverity}
           >
             {alertMessage}
           </Alert>
@@ -80,7 +87,11 @@ function StaffAssignment() {
             : { visibility: 'hidden', height: 0, overflow: 'hidden' }
         }
       >
-        <StaffSwitchBoard showAlertMessage={showAlertMessage} date={selectedDate} />
+        <StaffSwitchBoard
+          showAlertMessage={showAlertMessage}
+          date={selectedDate}
+          ward={props.ward}
+        />
       </Box>
     </Box>
   )
