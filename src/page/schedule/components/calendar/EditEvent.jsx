@@ -61,39 +61,41 @@ function EditEvent(props) {
       console.log('getting items on editpage')
 
       console.log(props.scheduleItems)
-      let filteredScheduleItems = props.scheduleItems.success.rows.filter(
-        item => {
-          console.log('check iteration')
-          console.log(item.schedule_item_id)
-          console.log(props.cardSelected)
+      if (props.scheduleItems != null && props.scheduleItems.hasOwnProperty('success')) {
+        let filteredScheduleItems = props.scheduleItems.success.rows.filter(
+          item => {
+            console.log('check iteration')
+            console.log(item.schedule_item_id)
+            console.log(props.cardSelected)
 
-          return parseInt(item.schedule_item_id) == props.cardSelected
-        }
-      )
+            return parseInt(item.schedule_item_id) == props.cardSelected
+          }
+        )
 
-      const content = filteredScheduleItems[0]
+        const content = filteredScheduleItems[0]
 
-      console.log('matching cards')
-      console.log(content)
+        console.log('matching cards')
+        console.log(content)
 
-      setName(content.task)
-      setDescription(content.description)
+        setName(content.task)
+        setDescription(content.description)
 
-      let contentDate = new Date(content.start_timestamp)
-      setStartDate(contentDate)
+        let contentDate = new Date(content.start_timestamp)
+        setStartDate(contentDate)
 
-      let quarterHours =
-        Math.floor(contentDate.getHours() * 4) +
-        Math.floor(contentDate.getMinutes() / 15)
+        let quarterHours =
+          Math.floor(contentDate.getHours() * 4) +
+          Math.floor(contentDate.getMinutes() / 15)
 
-      setStartTime(quarterHours)
+        setStartTime(quarterHours)
 
-      console.log('patient id')
-      console.log(content.patient_id)
-      console.log(parseInt(content.patient_id))
+        console.log('patient id')
+        console.log(content.patient_id)
+        console.log(parseInt(content.patient_id))
 
-      setPatientId(parseInt(content.patient_id))
-      setDurationQuarterHour(content.estimated_duration_minutes)
+        setPatientId(parseInt(content.patient_id))
+        setDurationQuarterHour(content.estimated_duration_minutes)
+      }
     }
   })
 
@@ -145,7 +147,7 @@ function EditEvent(props) {
           )
           setMessageIcon('CHECK')
           setSeverity('success')
-          props.refresh();
+          props.refresh()
         })
         .catch(error => {
           console.log(error)
@@ -178,7 +180,7 @@ function EditEvent(props) {
         )
         setMessageIcon('CHECK')
         setSeverity('success')
-        props.refresh();
+        props.refresh()
       })
       .catch(error => {
         console.log(error)
@@ -203,7 +205,7 @@ function EditEvent(props) {
         setMessage('Task successfully deleted')
         setMessageIcon('CHECK')
         setSeverity('success')
-        props.refresh();
+        props.refresh()
       })
       .catch(error => {
         console.log(error)
