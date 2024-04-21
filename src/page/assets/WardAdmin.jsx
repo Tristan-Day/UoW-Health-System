@@ -92,7 +92,7 @@ function WardAdmin() {
 
       {/* Staff assignment page */}
       <Box sx={page === STAFF_ASSIGNMENT ? {} : {visibility: 'hidden', height: 0, overflow: 'hidden'}}>
-        <StaffAssignment />
+        <StaffAssignment ward={selectedWard} />
       </Box>
 
       {/* Order and Notes page */}
