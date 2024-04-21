@@ -1,310 +1,283 @@
-
 class Validator {
+  static fields = {
+    ACTION_TYPE: String,
+    SHIFT_ID: Number,
+    WARD_ID: String,
+    STAFF_ID: Number,
+    START_TIMESTAMP: String,
+    END_TIMESTAMP: String
+  }
 
-    static fields = {
-        ACTION_TYPE: String,
-        SHIFT_ID: Number,
-        WARD_ID: String,
-        STAFF_ID: Number,
-        START_TIMESTAMP: String,
-        END_TIMESTAMP: String,
-    };
+  static searchIsValid = function (searchObj) {
+    let search = Object.keys(searchObj)
 
-    static searchIsValid = function (searchObj) {
+    //ID
+    if (search.hasOwnProperty('SHIFT_ID')) {
+      return true
+    }
 
-        let search = Object.keys(searchObj);
+    if (search.length === 0) {
+      return true
+    }
 
-        //ID
-        if (search.hasOwnProperty("SHIFT_ID")) {
-            return true;
-        }
+    //check that all fields in the query statement are correct
+    let falseElementCount = 0
+    search.forEach(element => {
+      if (!Object.keys(this.fields).includes(element)) {
+        falseElementCount++
+      }
+    })
 
-        if (search.length === 0) {
-            return true;
-        }
+    if (falseElementCount == 0) {
+      return true
+    }
 
-        //check that all fields in the query statement are correct
-        let falseElementCount = 0;
-        search.forEach(element => {
+    return false
+  }
 
-            if (!Object.keys(this.fields).includes(element)) {
-                falseElementCount++;
-            }
+  static upsertIsValid = function (searchBody) {
+    let search = Object.keys(searchBody)
 
-        });
+    console.log(search)
 
-        if (falseElementCount == 0) {
-            return true;
-        }
+    //ID
+    if (search.hasOwnProperty('SHIFT_ID')) {
+      return true
+    }
 
-        return false;
+    if (search.length === 0) {
+      return false
+    }
 
-    };
+    //check that all fields in the query statement are correct
+    let falseElementCount = 0
+    search.forEach(element => {
+      if (!Object.keys(this.fields).includes(element)) {
+        falseElementCount++
+      }
+    })
 
-    static upsertIsValid = function (searchBody) {
+    if (falseElementCount == 0) {
+      return true
+    }
 
-        let search = Object.keys(searchBody);
+    return false
+  }
 
-        console.log(search);
+  static deleteIsValid = function (deleteBody) {
+    let search = Object.keys(deleteBody)
 
-        //ID
-        if (search.hasOwnProperty("SHIFT_ID")) {
-            return true;
-        }
+    //ID
+    if (search.hasOwnProperty('SHIFT_ID')) {
+      return true
+    }
 
-        if (search.length === 0) {
-            return false;
-        }
+    if (search.length === 0) {
+      return false
+    }
 
-        //check that all fields in the query statement are correct
-        let falseElementCount = 0;
-        search.forEach(element => {
+    const deleteFields = ['SHIFT_ID']
 
-            if (!Object.keys(this.fields).includes(element)) {
-                falseElementCount++;
-            }
+    //check that all fields in the query statement are correct
+    let falseElementCount = 0
+    search.forEach(element => {
+      if (!deleteFields.includes(element)) {
+        falseElementCount++
+      }
+    })
 
-        });
+    if (falseElementCount == 0) {
+      return true
+    }
 
-        if (falseElementCount == 0) {
-            return true;
-        }
-
-        return false;
-
-    };
-
-    static deleteIsValid = function (deleteBody) {
-
-        let search = Object.keys(deleteBody);
-
-        //ID
-        if (search.hasOwnProperty("SHIFT_ID")) {
-            return true;
-        }
-
-        if (search.length === 0) {
-            return false;
-        }
-
-        const deleteFields = ["SHIFT_ID"];
-
-        //check that all fields in the query statement are correct
-        let falseElementCount = 0;
-        search.forEach(element => {
-
-            if (!deleteFields.includes(element)) {
-                falseElementCount++;
-            }
-
-        });
-
-        if (falseElementCount == 0) {
-            return true;
-        }
-
-        return false;
-
-    };
-
+    return false
+  }
 }
 
 class ShiftAPI {
+  static hasCorrectPermissions = async function () {
+    return true
+  }
 
-    static hasCorrectPermissions = async function () {
-        return true;
+  static getValueForKey = function (query, key) {
+    return Object.values(query)[Object.keys(query).indexOf(key)]
+  }
+
+  static query = async function (req, res, setup) {
+    let client = await setup()
+
+    if (!this.hasCorrectPermissions()) {
+      res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
+      return
     }
 
-    static getValueForKey = function (query, key) {
-        return Object.values(query)[Object.keys(query).indexOf(key)];
+    if (!Validator.searchIsValid(req.query)) {
+      res.status(400).json({ failure: 'INCORRECT_QUERY' })
+      return
     }
 
-    static query = async function (req, res, setup) {
-        let client = await setup();
+    let result = {}
 
-        if (!this.hasCorrectPermissions()) {
-            res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
-            return;
-        }
+    try {
+      console.log('starting query')
 
-        if (!Validator.searchIsValid(req.query)) {
-            res.status(400).json({ failure: "INCORRECT_QUERY" });
-            return;
-        }
+      let paramLength = Object.keys(req.query).length
 
+      let query
 
-        let result = {};
+      console.log(req.query)
+      console.log(typeof req.query['SHIFT_ID'])
 
-        try {
-            console.log("starting query");
+      if (Object.keys(req.query).includes('SHIFT_ID')) {
+        console.log('selecting one by ID')
 
-            let paramLength = Object.keys(req.query).length;
+        console.log(Number(req.query['SHIFT_ID']))
+        console.log(typeof Number(req.query['SHIFT_ID']))
 
-            let query;
+        query = await client.query(
+          'SELECT * FROM "system".shifts WHERE SHIFT_ID = ' +
+            Number(req.query['SHIFT_ID']) +
+            ';'
+        )
 
-            console.log(req.query);
-            console.log(typeof req.query["SHIFT_ID"]);
+        result = { success: query }
+      }
 
-            if (Object.keys(req.query).includes("SHIFT_ID")) {
-                console.log("selecting one by ID");
+      if (paramLength == 0) {
+        console.log('selecting all')
+        query = await client.query('SELECT * FROM "system".shifts;')
 
-                console.log(Number(req.query["SHIFT_ID"]));
-                console.log(typeof Number(req.query["SHIFT_ID"]));
+        result = { success: query }
+      }
 
-                query = await client.query('SELECT * FROM "system".shifts WHERE SHIFT_ID = ' + Number(req.query["SHIFT_ID"]) + ';');
+      //compound query
+      if (paramLength > 0 && !Object.keys(req.query).includes('SHIFT_ID')) {
+        console.log('running multiple iterations')
 
-                result = { success: query };
+        let queryString = 'SELECT * FROM "system".shifts WHERE '
+        let columnsArray = Object.keys(req.query)
+        let values = Object.values(req.query)
 
-            }
+        values.forEach((value, index) => {
+          console.log(value)
+          console.log(typeof value)
 
-            if (paramLength == 0) {
-                console.log("selecting all");
-                query = await client.query('SELECT * FROM "system".shifts;');
+          if (typeof value == 'string') {
+            queryString += columnsArray[index] + " LIKE '" + value + "%' "
+          } else {
+            queryString += columnsArray[index] + ' = ' + value + ' '
+          }
 
-                result = { success: query };
+          if (index < values.length - 1) {
+            queryString += 'OR '
+          }
+        })
 
-            }
+        queryString += ';'
 
-            //compound query
-            if (paramLength > 0 && !Object.keys(req.query).includes("SHIFT_ID")) {
-                console.log("running multiple iterations");
+        console.log(queryString)
 
-                let queryString = "SELECT * FROM \"system\".shifts WHERE ";
-                let columnsArray = Object.keys(req.query);
-                let values = Object.values(req.query);
+        query = await client.query(queryString)
 
-                values.forEach((value, index) => {
-                    console.log(value);
-                    console.log(typeof value);
+        result = { success: query }
+      }
+    } catch (error) {
+      console.log(error)
 
-                    if (typeof value == "string") {
-                        queryString += columnsArray[index] + " LIKE '" + value + "%' ";
-                    } else {
-                        queryString += columnsArray[index] + " = " + value + " ";
-                    }
-
-                    if (index < values.length - 1) {
-                        queryString += "OR ";
-                    }
-                });
-
-                queryString += ";";
-
-                console.log(queryString);
-
-                query = await client.query(queryString);
-
-                result = { success: query };
-
-            }
-
-        } catch (error) {
-
-            console.log(error);
-
-            result = { failure: error };
-
-        }
-
-        res.json(result);
-
+      result = { failure: error }
     }
 
-    static upsert = async function (req, res, setup) {
-        let client = await setup();
+    res.json(result)
+  }
 
-        if (!this.hasCorrectPermissions()) {
-            res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
-            return;
-        }
+  static upsert = async function (req, res, setup) {
+    let client = await setup()
 
-        if (!Validator.upsertIsValid(req.body)) {
-            res.status(400).json({ failure: "INCORRECT_QUERY" });
-            return;
-        }
+    if (!this.hasCorrectPermissions()) {
+      res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
+      return
+    }
 
-        console.log(req.body);
+    if (!Validator.upsertIsValid(req.body)) {
+      res.status(400).json({ failure: 'INCORRECT_QUERY' })
+      return
+    }
 
+    console.log(req.body)
 
-        let result = {};
-        try {
-            if (req.body["ACTION_TYPE"] === "INSERT") {
-
-                const queryString = `
+    let result = {}
+    try {
+      if (req.body['ACTION_TYPE'] === 'INSERT') {
+        const queryString = `
                     INSERT INTO "system".shifts (WARD_ID, STAFF_ID, START_TIMESTAMP, END_TIMESTAMP)
                     VALUES ($1, $2, $3, $4)
-                    `;
-                const values = [req.body["WARD_ID"], req.body["STAFF_ID"], req.body["START_TIMESTAMP"], req.body["END_TIMESTAMP"]];
+                    `
+        const values = [
+          req.body['WARD_ID'],
+          req.body['STAFF_ID'],
+          req.body['START_TIMESTAMP'],
+          req.body['END_TIMESTAMP']
+        ]
 
-                let query = await client.query(queryString, values);
-                result = { success: query };
+        let query = await client.query(queryString, values)
+        result = { success: query }
+      }
 
-            }
-
-            if (req.body["ACTION_TYPE"] === "UPDATE") {
-
-                const queryString = `
+      if (req.body['ACTION_TYPE'] === 'UPDATE') {
+        const queryString = `
                 UPDATE "system".shifts SET WARD_ID = $1, STAFF_ID = $2, START_TIMESTAMP = $3, END_TIMESTAMP = $4, WHERE SHIFT_ID = $5;
-                `;
-                const values = [
-                    req.body["WARD_ID"],
-                    req.body["STAFF_ID"],
-                    req.body["START_TIMESTAMP"],
-                    req.body["END_TIMESTAMP"],
-                    //where
-                    req.body["SHIFT_ID"]
-                ];
+                `
+        const values = [
+          req.body['WARD_ID'],
+          req.body['STAFF_ID'],
+          req.body['START_TIMESTAMP'],
+          req.body['END_TIMESTAMP'],
+          //where
+          req.body['SHIFT_ID']
+        ]
 
-                let query = await client.query(queryString, values);
-                result = { success: query };
-
-            }
-
-        } catch (error) {
-            console.log(error);
-            result = { failure: error };
-        }
-
-        res.json(result);
-
+        let query = await client.query(queryString, values)
+        result = { success: query }
+      }
+    } catch (error) {
+      console.log(error)
+      result = { failure: error }
     }
 
-    static delete = async function (req, res, setup) {
-        let client = await setup();
+    res.json(result)
+  }
 
-        if (!this.hasCorrectPermissions()) {
-            res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
-            return;
-        }
+  static delete = async function (req, res, setup) {
+    let client = await setup()
 
-        if (!Validator.deleteIsValid(req.body)) {
-            res.status(400).json({ failure: "INCORRECT_QUERY" });
-            return;
-        }
+    if (!this.hasCorrectPermissions()) {
+      res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
+      return
+    }
 
-        console.log(req.body);
+    if (!Validator.deleteIsValid(req.query)) {
+      res.status(400).json({ failure: 'INCORRECT_QUERY' })
+      return
+    }
 
+    console.log(req.body)
 
-        let result = {};
-        try {
-
-            const queryString = `
+    let result = {}
+    try {
+      const queryString = `
                     DELETE FROM "system".shifts WHERE SHIFT_ID = $1;
-                    `;
-            const values = [req.body["SHIFT_ID"]];
+                    `
+      const values = [req.query['SHIFT_ID']]
 
-            let query = await client.query(queryString, values);
-            result = { success: query };
-
-        } catch (error) {
-            console.log(error);
-            result = { failure: error };
-        }
-
-        res.json(result);
-
+      let query = await client.query(queryString, values)
+      result = { success: query }
+    } catch (error) {
+      console.log(error)
+      result = { failure: error }
     }
 
+    res.json(result)
+  }
 }
 
-module.exports = ShiftAPI;
+module.exports = ShiftAPI
