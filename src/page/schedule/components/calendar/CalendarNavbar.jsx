@@ -27,7 +27,7 @@ function CalendarNavbar(props) {
     return (
       toTwoDigits(dateObj.getDate()) +
       '/' +
-      toTwoDigits(dateObj.getMonth()) +
+      toTwoDigits(dateObj.getMonth() + 1) +
       '/' +
       dateObj.getFullYear()
     )
