@@ -26,6 +26,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import { ArrowDropDown } from '@mui/icons-material'
 import WardsAPI from '../logic/Wards'
 
+//TODO1: switch all references to old model to your current model
 const WardCreationForm = props => {
   const [message, setMessage] = useState({})
   const [errors, setErrors] = useState({})
@@ -52,6 +53,7 @@ const WardCreationForm = props => {
   useEffect(() => {
     let props = location.state;
     if (props && props.action && props.action === 'UPDATE') {
+      //update here
       setForm({
         ward: location.state.ward_name,
         specialisation: location.state.specialisation,
@@ -71,6 +73,7 @@ const WardCreationForm = props => {
     setMessage(undefined)
     const errors = {}
 
+    //ensure validation matches model
     if (!(form.id && form.id.trim())) {
       setMessage({
         severity: 'error',
@@ -102,6 +105,7 @@ const WardCreationForm = props => {
 
       setMessage({ text: 'Updating ward...', severity: 'info' })
 
+      //ensure correct API is used
       WardsAPI.upsertWard(
         'UPDATE',
         form.ward,

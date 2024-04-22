@@ -12,6 +12,7 @@ import { BreadcrumbGenerator } from '../../components'
 import { useEffect, useState } from 'react'
 import WardsAPI from './logic/Wards'
 import StaffAssignment from './components/wardAdmin/StaffAssignment'
+import OrderNotesAdmin from './components/wardAdmin/OrderNotesAdmin'
 
 const STAFF_ASSIGNMENT = 'STAFF_ASSIGNMENT'
 const ORDERS_NOTES = 'ORDERS_NOTES'
@@ -97,7 +98,7 @@ function WardAdmin() {
 
       {/* Order and Notes page */}
       <Box sx={page === ORDERS_NOTES ? {} : {visibility: 'hidden', height: 0, overflow: 'hidden'}}>
-      Order and Notes
+        <OrderNotesAdmin />
       </Box>
 
     </Box>
