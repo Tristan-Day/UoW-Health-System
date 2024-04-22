@@ -13,6 +13,7 @@ import Treatments from './Treatments'
 import TreatmentCreationForm from './page/TreatmentCreationForm'
 import TreatmentCategories from './TreatmentCategories'
 import TreatmentCategoriesCreationForm from './page/TreatmentCategoriesCreationForm'
+import WardAdmin from './WardAdmin'
 
 const Links = () => {
   const permissions = useContext(AuthenticationContext).permissions
@@ -36,6 +37,13 @@ const Links = () => {
     pages['Ward Management'] = {
       description: 'Create, view, update and delete wards.',
       site: 'wards'
+    }
+  }
+
+  if (permissions.includes('ward.admin')) {
+    pages['Ward Admin'] = {
+      description: 'Manage ward notes, orders and staff assignment for a shift',
+      site: 'ward-admin'
     }
   }
 
@@ -101,6 +109,12 @@ const AssetRoutes = permissions => {
         <Route path="treatment-categories">
           <Route index element={<TreatmentCategories />} />
           <Route path="create" element={<TreatmentCategoriesCreationForm />} />
+        </Route>
+      ) : null}
+
+      {permissions.includes('ward.admin') ? (
+        <Route path="ward-admin">
+          <Route index element={<WardAdmin />} />
         </Route>
       ) : null}
 

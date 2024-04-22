@@ -26,4 +26,9 @@ function getWindowWidth() {
   return window.innerWidth
 }
 
-export { toTwoDigits, incrementDate, decrementDate, getWindowWidth, DIRECTION }
+function getWindowHeight() {
+  //cannot be contained in a component
+  return window.innerHeight
+}
+
+export { toTwoDigits, incrementDate, decrementDate, getWindowWidth, getWindowHeight, DIRECTION }

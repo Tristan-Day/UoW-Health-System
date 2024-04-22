@@ -12,9 +12,9 @@ function Landing() {
       description: 'View and manage your personal schedule.',
       site: 'schedule/personal'
     },
-    'My Tasks': {
+    'My Tasks and Ward': {
       description: 'View and manage your tasks.',
-      site: 'schedule/tasks'
+      site: 'assignment'
     }
   }
 
@@ -31,6 +31,11 @@ function Landing() {
       description:
         'Manage administrative information about staff, including schedules and roles.',
       site: 'staff'
+    },
+    'Ward Admin': {
+      description:
+        'Manage ward orders and notes.',
+      site: 'assets/ward-admin'
     }
   }
 
@@ -42,7 +47,7 @@ function Landing() {
       return true
     }
 
-    if (permissions.includes('tasks.view') && keyName === 'My Tasks') {
+    if (permissions.includes('tasks.view') && keyName === 'My Tasks and Ward') {
       return true
     }
 
@@ -55,6 +60,10 @@ function Landing() {
     }
 
     if (permissions.includes('staff.view') && keyName === 'Staff') {
+      return true
+    }
+
+    if (permissions.includes('ward.admin') && keyName === 'Ward Admin') {
       return true
     }
 
@@ -77,7 +86,7 @@ function Landing() {
       <br></br>
 
       <div>
-        {(canShow('Personal Schedule') || canShow('My Tasks')) && (
+        {(canShow('Personal Schedule') || canShow('My Tasks and Ward')) && (
           <div>
             <h2>My Schedule and Tasks</h2>
             <hr></hr>

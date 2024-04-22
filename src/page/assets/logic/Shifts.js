@@ -7,7 +7,7 @@ class ShiftAPI {
       path: `/v1/resources/shift`,
       options: {
         queryParams: {
-            START_TIMESTAMP: date
+          START_TIMESTAMP: date
         }
       }
     })
@@ -73,8 +73,7 @@ class ShiftAPI {
       path: `/v1/resources/shift`,
       options: {
         queryParams: {
-          SHIFT_ID: shiftId,
-          
+          SHIFT_ID: shiftId
         }
       }
     })
