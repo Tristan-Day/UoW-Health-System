@@ -54,37 +54,41 @@ function OrderNoteCard(props) {
     <Card sx={{ marginTop: 2 }}>
       <CardContent>
         <Box sx={{ display: 'flex' }}>
-          <Person sx={{ height: 1, alignSelf: 'center' }} />
-          <Typography variant="p" sx={{ alignSelf: 'center', marginLeft: 1 }}>
+          <Person sx={{ height: 1, alignSelf: 'center', paddingBottom: 1 }} />
+          <Typography variant="p" sx={{ alignSelf: 'center', marginLeft: 1, paddingBottom: 1 }}>
             {props.author}
           </Typography>
+          {props.admin === true ? (
+            !editMode ? (
+              <IconButton
+                onClick={toggleEditMode}
+                children={<Edit />}
+                sx={{
+                  marginLeft: 'auto',
+                  height: 1,
+                  alignSelf: 'center'
+                }}
+              ></IconButton>
+            ) : (
+              <IconButton
+                onClick={saveChanges}
+                children={<Save />}
+                sx={{
+                  marginLeft: 'auto',
+                  height: 1,
+                  alignSelf: 'center'
+                }}
+              ></IconButton>
+            )
+          ) : null}
 
-          {!editMode ? (
+          {props.admin === true ? (
             <IconButton
-              onClick={toggleEditMode}
-              children={<Edit />}
-              sx={{
-                marginLeft: 'auto',
-                height: 1,
-                alignSelf: 'center'
-              }}
+              onClick={() => props.onDelete(props.id)}
+              children={<Delete />}
+              sx={{ height: 1, alignSelf: 'center' }}
             ></IconButton>
-          ) : (
-            <IconButton
-              onClick={saveChanges}
-              children={<Save />}
-              sx={{
-                marginLeft: 'auto',
-                height: 1,
-                alignSelf: 'center'
-              }}
-            ></IconButton>
-          )}
-          <IconButton
-            onClick={() => props.onDelete(props.id)}
-            children={<Delete />}
-            sx={{ height: 1, alignSelf: 'center' }}
-          ></IconButton>
+          ) : null}
         </Box>
         <Divider></Divider>
         {!editMode ? (
@@ -222,8 +226,15 @@ function OrderNotesAdmin(props) {
     }
   }
 
-  if(!props.ward) {
-    return <Typography variant='h6' sx={{margin: 'auto', textAlign: 'center', marginTop: 10}}>Please select a ward to continue</Typography>
+  if (!props.ward) {
+    return (
+      <Typography
+        variant="h6"
+        sx={{ margin: 'auto', textAlign: 'center', marginTop: 10 }}
+      >
+        Please select a ward to continue
+      </Typography>
+    )
   }
 
   return (
@@ -235,14 +246,16 @@ function OrderNotesAdmin(props) {
             <Box sx={{ height: (windowHeight * 2) / 3, overflow: 'auto' }}>
               <Box sx={{ display: 'flex' }}>
                 <Typography variant="h6">Orders</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Add />}
-                  sx={{ borderRadius: 10, marginLeft: 'auto' }}
-                  onClick={addOrder}
-                >
-                  Add Order
-                </Button>
+                {props.admin === true ? (
+                  <Button
+                    variant="contained"
+                    startIcon={<Add />}
+                    sx={{ borderRadius: 10, marginLeft: 'auto' }}
+                    onClick={addOrder}
+                  >
+                    Add Order
+                  </Button>
+                ) : null}
               </Box>
               {orders.map((note, index) => {
                 return (
@@ -254,6 +267,7 @@ function OrderNotesAdmin(props) {
                     onDelete={removeCard}
                     ward={props.ward}
                     type={note.type}
+                    admin={props.admin}
                   />
                 )
               })}
@@ -270,14 +284,16 @@ function OrderNotesAdmin(props) {
             <Box sx={{ height: (windowHeight * 2) / 3, overflow: 'auto' }}>
               <Box sx={{ display: 'flex' }}>
                 <Typography variant="h6">Notes</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Add />}
-                  sx={{ borderRadius: 10, marginLeft: 'auto' }}
-                  onClick={addNote}
-                >
-                  Add Note
-                </Button>
+                {props.admin === true ? (
+                  <Button
+                    variant="contained"
+                    startIcon={<Add />}
+                    sx={{ borderRadius: 10, marginLeft: 'auto' }}
+                    onClick={addNote}
+                  >
+                    Add Note
+                  </Button>
+                ) : null}
               </Box>
               {notes.map((note, index) => {
                 return (
@@ -289,6 +305,7 @@ function OrderNotesAdmin(props) {
                     onDelete={removeCard}
                     ward={props.ward}
                     type={note.type}
+                    admin={props.admin}
                   />
                 )
               })}
@@ -301,14 +318,16 @@ function OrderNotesAdmin(props) {
           <Box sx={{ height: windowHeight / 3, overflow: 'auto' }}>
             <Box sx={{ display: 'flex' }}>
               <Typography variant="h6">Orders</Typography>
-              <Button
-                variant="contained"
-                startIcon={<Add />}
-                sx={{ borderRadius: 10, marginLeft: 'auto' }}
-                onClick={addOrder}
-              >
-                Add Order
-              </Button>
+              {props.admin === true ? (
+                <Button
+                  variant="contained"
+                  startIcon={<Add />}
+                  sx={{ borderRadius: 10, marginLeft: 'auto' }}
+                  onClick={addOrder}
+                >
+                  Add Order
+                </Button>
+              ) : null}
             </Box>
             {orders.map((note, index) => {
               return (
@@ -320,6 +339,7 @@ function OrderNotesAdmin(props) {
                   onDelete={removeCard}
                   ward={props.ward}
                   type={note.type}
+                  admin={props.admin}
                 />
               )
             })}
@@ -330,14 +350,16 @@ function OrderNotesAdmin(props) {
             <Box sx={{ height: windowHeight / 3, overflow: 'auto' }}>
               <Box sx={{ display: 'flex' }}>
                 <Typography variant="h6">Notes</Typography>
-                <Button
-                  variant="contained"
-                  startIcon={<Add />}
-                  sx={{ borderRadius: 10, marginLeft: 'auto' }}
-                  onClick={addNote}
-                >
-                  Add Note
-                </Button>
+                {props.admin === true ? (
+                  <Button
+                    variant="contained"
+                    startIcon={<Add />}
+                    sx={{ borderRadius: 10, marginLeft: 'auto' }}
+                    onClick={addNote}
+                  >
+                    Add Note
+                  </Button>
+                ) : null}
               </Box>
               {notes.map((note, index) => {
                 return (
@@ -349,6 +371,7 @@ function OrderNotesAdmin(props) {
                     onDelete={removeCard}
                     ward={props.ward}
                     type={note.type}
+                    admin={props.admin}
                   />
                 )
               })}

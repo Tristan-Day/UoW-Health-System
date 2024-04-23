@@ -14,6 +14,10 @@ import { StaffRoutes, PatientRoutes, AssetRoutes, ScheduleRoutes } from './page'
 
 import awsExports from './aws-exports'
 import Landing from './page/Landing'
+import { fetchAuthSession } from 'aws-amplify/auth'
+import { TokenProvider, decodeJWT } from 'aws-amplify/auth';
+
+
 Amplify.configure(awsExports)
 
 // Autodetect Theme Preference

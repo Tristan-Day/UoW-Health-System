@@ -49,14 +49,16 @@ const Links = () => {
 
   if (permissions.includes('treatments.view')) {
     pages['Treatments'] = {
-      description: 'Create, view, update and delete treatment services provided by the hopsital.',
+      description:
+        'Create, view, update and delete treatment services provided by the hopsital.',
       site: 'treatments'
     }
   }
 
   if (permissions.includes('treatment.categories.view')) {
     pages['Treatment Categories'] = {
-      description: 'Create, view, update and delete treatment categories within the hopsital.',
+      description:
+        'Create, view, update and delete treatment categories within the hopsital.',
       site: 'treatment-categories'
     }
   }
@@ -117,7 +119,6 @@ const AssetRoutes = permissions => {
           <Route index element={<WardAdmin />} />
         </Route>
       ) : null}
-
     </Route>
   )
 }

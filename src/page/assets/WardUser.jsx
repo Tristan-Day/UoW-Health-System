@@ -17,7 +17,7 @@ import OrderNotesAdmin from './components/wardAdmin/OrderNotesAdmin'
 const STAFF_ASSIGNMENT = 'STAFF_ASSIGNMENT'
 const ORDERS_NOTES = 'ORDERS_NOTES'
 
-function WardAdmin() {
+function WardUser() {
   const [page, setPage] = useState(ORDERS_NOTES)
   const [wards, setWards] = useState([])
 
@@ -48,28 +48,10 @@ function WardAdmin() {
     <Box>
       {/* Header */}
       <BreadcrumbGenerator />
-      <Typography variant="h4">Ward Administration</Typography>
+      <Typography variant="h4">Ward Orders and Notes</Typography>
 
       {/* Page navigation bar */}
       <Box sx={{ display: 'flex', marginTop: 1 }}>
-        <Box sx={{ marginRight: 2 }}>
-          <InputLabel id="button-label">Page</InputLabel>
-          <ButtonGroup labelId="button-label" sx={{ marginTop: 0.25 }}>
-            <Button
-              variant={getButtonStyling(STAFF_ASSIGNMENT)}
-              onClick={() => setPage(STAFF_ASSIGNMENT)}
-            >
-              Staff assignment
-            </Button>
-            <Button
-              variant={getButtonStyling(ORDERS_NOTES)}
-              onClick={() => setPage(ORDERS_NOTES)}
-            >
-              Orders / Notes
-            </Button>
-          </ButtonGroup>
-        </Box>
-
         <Box>
           <InputLabel id="select-label">Ward</InputLabel>
           <Select
@@ -95,29 +77,9 @@ function WardAdmin() {
 
       {/* Body */}
 
-      {/* Staff assignment page */}
-      <Box
-        sx={
-          page === STAFF_ASSIGNMENT
-            ? {}
-            : { visibility: 'hidden', height: 0, overflow: 'hidden' }
-        }
-      >
-        <StaffAssignment ward={selectedWard} />
-      </Box>
-
-      {/* Order and Notes page */}
-      <Box
-        sx={
-          page === ORDERS_NOTES
-            ? {}
-            : { visibility: 'hidden', height: 0, overflow: 'hidden' }
-        }
-      >
-        <OrderNotesAdmin ward={selectedWard} admin={true} />
-      </Box>
+      <OrderNotesAdmin ward={selectedWard} admin={false} />
     </Box>
   )
 }
 
-export default WardAdmin
+export default WardUser

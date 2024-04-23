@@ -14,7 +14,7 @@ function Landing() {
     },
     'My Tasks and Ward': {
       description: 'View and manage your tasks.',
-      site: 'assignment'
+      site: 'schedule/assignment'
     }
   }
 
