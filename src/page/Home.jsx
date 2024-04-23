@@ -77,7 +77,11 @@ const Home = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6">Health System</Typography>
+          <Typography variant="h6">
+            <a href="../" style={{ all: 'inherit', cursor: 'pointer' }}>
+              Health System
+            </a>
+          </Typography>
         </Toolbar>
       </AppBar>
       <Drawer
