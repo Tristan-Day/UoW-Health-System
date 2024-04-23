@@ -5,6 +5,8 @@ import { IndexGenerator } from '../../components'
 import { useContext } from 'react'
 import { AuthenticationContext } from '../../App'
 import SchedulePage from './components/SchedulePage'
+import WardAdmin from '../assets/WardAdmin'
+import WardUser from '../assets/WardUser'
 
 const Links = () => {
   const permissions = useContext(AuthenticationContext).permissions
@@ -38,6 +40,10 @@ const Template = () => {
 const ScheduleRoutes = permissions => (
   <Route path="schedule" element={<Template />}>
     <Route index path="*" element={<SchedulePage />} />
+
+    <Route path="assignment">
+      <Route index element={<WardUser />} />
+    </Route>
   </Route>
 )
 
