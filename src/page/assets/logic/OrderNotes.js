@@ -72,12 +72,15 @@ class OrderNotesAPI {
   }
 
   static deleteOrderNotes = async function (id) {
+    console.log('id to delete')
+    console.log(id)
+
     const operation = await del({
       apiName: 'OrderNoteHandler',
       path: `/v1/resources/order-note`,
       options: {
         queryParams: {
-          ID: id
+          ID: parseInt(id)
         }
       }
     })

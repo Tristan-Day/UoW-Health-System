@@ -21,7 +21,7 @@ function WardAdmin() {
   const [page, setPage] = useState(ORDERS_NOTES)
   const [wards, setWards] = useState([])
 
-  const [selectedWard, setSelectedWard] = useState("");
+  const [selectedWard, setSelectedWard] = useState('')
 
   useEffect(() => {
     getWards()
@@ -75,12 +75,16 @@ function WardAdmin() {
           <Select
             id="ward-select"
             labelId="select-label"
-            value={(wards.length > 0) && (selectedWard.length === "") ? wards[0].ward_id : selectedWard}
+            value={
+              wards.length > 0 && selectedWard.length === ''
+                ? wards[0].ward_id
+                : selectedWard
+            }
             size="small"
-            placeholder='Select ward'
-            onChange={(e) => setSelectedWard(e.target.value)}
+            placeholder="Select ward"
+            onChange={e => setSelectedWard(e.target.value)}
           >
-            {wards.map((ward) => {
+            {wards.map(ward => {
               return <MenuItem value={ward.ward_id}>{ward.ward_name}</MenuItem>
             })}
           </Select>
@@ -92,15 +96,26 @@ function WardAdmin() {
       {/* Body */}
 
       {/* Staff assignment page */}
-      <Box sx={page === STAFF_ASSIGNMENT ? {} : {visibility: 'hidden', height: 0, overflow: 'hidden'}}>
+      <Box
+        sx={
+          page === STAFF_ASSIGNMENT
+            ? {}
+            : { visibility: 'hidden', height: 0, overflow: 'hidden' }
+        }
+      >
         <StaffAssignment ward={selectedWard} />
       </Box>
 
       {/* Order and Notes page */}
-      <Box sx={page === ORDERS_NOTES ? {} : {visibility: 'hidden', height: 0, overflow: 'hidden'}}>
-        <OrderNotesAdmin />
+      <Box
+        sx={
+          page === ORDERS_NOTES
+            ? {}
+            : { visibility: 'hidden', height: 0, overflow: 'hidden' }
+        }
+      >
+        <OrderNotesAdmin ward={selectedWard} />
       </Box>
-
     </Box>
   )
 }
