@@ -1,10 +1,11 @@
 import { Alert, Box, InputLabel, Typography } from '@mui/material'
 import SimpleDatePicker from './SimpleDatePicker'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import dayjs from 'dayjs'
 import StaffSwitchBoard from './StaffSwitchBoard'
+import { getWindowHeight } from '../../../schedule/components/Util'
 
 function StaffAssignment(props) {
   const [selectedDate, setSelectedDate] = useState(new Date())
@@ -14,6 +15,19 @@ function StaffAssignment(props) {
   const [alertOpen, setAlertOpen] = useState(false)
   const [alertMessage, setAlertMessage] = useState('')
   const [alertSeverity, setAlertSeverity] = useState('success')
+
+  const [windowHeight, setWindowHeight] = useState(getWindowHeight())
+
+  useEffect(() => {
+    function handleHeightResize() {
+      setWindowHeight(getWindowHeight())
+    }
+
+    window.addEventListener('resize', handleHeightResize)
+    return () => {
+      window.removeEventListener('resize', handleHeightResize)
+    }
+  }, [props.ward])
 
   function toggleDatePicker() {
     setDatePickerOpen(!datePickerOpen)
@@ -34,8 +48,15 @@ function StaffAssignment(props) {
     setAlertSeverity(severity)
   }
 
-  if(!props.ward) {
-    return <Typography variant='h6' sx={{margin: 'auto', textAlign: 'center', marginTop: 10}}>Please select a ward to continue</Typography>
+  if (!props.ward) {
+    return (
+      <Typography
+        variant="h6"
+        sx={{ margin: 'auto', textAlign: 'center', marginTop: 10 }}
+      >
+        Please select a ward to continue
+      </Typography>
+    )
   }
 
   return (
@@ -87,8 +108,13 @@ function StaffAssignment(props) {
       <Box
         sx={
           !datePickerOpen
-            ? {}
-            : { visibility: 'hidden', height: 0, overflow: 'hidden' }
+            ? { height: windowHeight / 1.5 }
+            : {
+                visibility: 'hidden',
+                height: 0,
+                overflow: 'hidden',
+                height: windowHeight / 1.5
+              }
         }
       >
         <StaffSwitchBoard
