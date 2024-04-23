@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import { getStaff } from '../../../staff/logic/Personel'
 import { CheckBox, Refresh } from '@mui/icons-material'
 import ShiftAPI from '../../logic/Shifts'
+import { getWindowHeight } from '../../../schedule/components/Util'
 
 function StaffSwitchBoard(props) {
   const [staff, setStaff] = useState([])
@@ -20,6 +21,8 @@ function StaffSwitchBoard(props) {
   const [count, setCount] = useState(0)
 
   const [lastDate, setLastDate] = useState(new Date())
+
+  const [windowHeight, setWindowHeight] = useState(getWindowHeight())
 
   useEffect(() => {
     if (count === 0) {
@@ -47,6 +50,14 @@ function StaffSwitchBoard(props) {
             propsDate.getFullYear()
         )
       }
+    }
+    function handleHeightResize() {
+      setWindowHeight(getWindowHeight())
+    }
+
+    window.addEventListener('resize', handleHeightResize)
+    return () => {
+      window.removeEventListener('resize', handleHeightResize)
     }
   }, [props])
 
@@ -271,6 +282,7 @@ function StaffSwitchBoard(props) {
       </Box>
 
       <DataGrid
+        sx={{ height: windowHeight / 2 }}
         rows={staff}
         columns={columns}
         disableRowSelectionOnClick
