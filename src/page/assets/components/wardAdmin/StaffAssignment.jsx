@@ -1,4 +1,4 @@
-import { Alert, Box, InputLabel } from '@mui/material'
+import { Alert, Box, InputLabel, Typography } from '@mui/material'
 import SimpleDatePicker from './SimpleDatePicker'
 import { useState } from 'react'
 import { LocalizationProvider, StaticDatePicker } from '@mui/x-date-pickers'
@@ -32,6 +32,10 @@ function StaffAssignment(props) {
     setAlertMessage(message)
     setAlertOpen(true)
     setAlertSeverity(severity)
+  }
+
+  if(!props.ward) {
+    return <Typography variant='h6' sx={{margin: 'auto', textAlign: 'center', marginTop: 10}}>Please select a ward to continue</Typography>
   }
 
   return (

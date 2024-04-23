@@ -6,6 +6,7 @@ import {
   Divider,
   Grid,
   IconButton,
+  TextField,
   Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -13,11 +14,42 @@ import {
   getWindowHeight,
   getWindowWidth
 } from '../../../schedule/components/Util'
-import { Add, Delete, Edit, Person } from '@mui/icons-material'
+import { Add, Delete, Edit, Person, Save } from '@mui/icons-material'
 import { getCurrentUser } from '@aws-amplify/auth'
-import { getStaff } from '../../../staff/logic/Personel'
+import { getStaff, getUser } from '../../../staff/logic/Personel'
+import OrderNotesAPI from '../../logic/OrderNotes'
 
 function OrderNoteCard(props) {
+  const [editMode, setEditMode] = useState(false)
+
+  const [title, setTitle] = useState(props.title)
+  const [content, setContent] = useState(props.content)
+
+  function toggleEditMode() {
+    setEditMode(!editMode)
+  }
+
+  async function saveChanges() {
+    //use ID to update data object
+    let userId = (await getCurrentUser()).userId
+
+    let staffInfo = await getUser(userId)
+
+    console.log(staffInfo)
+
+    let res = await OrderNotesAPI.upsertOrderNotes(
+      'UPDATE',
+      props.ward,
+      content,
+      title,
+      staffInfo.first_name + ' ' + staffInfo.last_name,
+      props.type,
+      props.id
+    )
+
+    toggleEditMode()
+  }
+
   return (
     <Card sx={{ marginTop: 2 }}>
       <CardContent>
@@ -26,43 +58,79 @@ function OrderNoteCard(props) {
           <Typography variant="p" sx={{ alignSelf: 'center', marginLeft: 1 }}>
             {props.author}
           </Typography>
+
+          {!editMode ? (
+            <IconButton
+              onClick={toggleEditMode}
+              children={<Edit />}
+              sx={{
+                marginLeft: 'auto',
+                height: 1,
+                alignSelf: 'center'
+              }}
+            ></IconButton>
+          ) : (
+            <IconButton
+              onClick={saveChanges}
+              children={<Save />}
+              sx={{
+                marginLeft: 'auto',
+                height: 1,
+                alignSelf: 'center'
+              }}
+            ></IconButton>
+          )}
           <IconButton
-            children={<Edit />}
-            sx={{
-              marginLeft: 'auto',
-              height: 1,
-              alignSelf: 'center'
-            }}
-          ></IconButton>
-          <IconButton
+            onClick={() => props.onDelete(props.id)}
             children={<Delete />}
             sx={{ height: 1, alignSelf: 'center' }}
           ></IconButton>
         </Box>
         <Divider></Divider>
-        <Typography variant="h6">{props.title}</Typography>
-        <Typography variant="p">{props.content}</Typography>
+        {!editMode ? (
+          <Typography variant="h6" sx={{ marginTop: 2 }}>
+            {title}
+          </Typography>
+        ) : (
+          <Box>
+            <TextField
+              size="small"
+              label="Title"
+              sx={{ marginTop: 2 }}
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              fullWidth
+            ></TextField>
+          </Box>
+        )}
+        {!editMode ? (
+          <Typography variant="p" sx={{ marginTop: 2 }} multiline>
+            {content}
+          </Typography>
+        ) : (
+          <Box>
+            <TextField
+              size="small"
+              label="Content"
+              sx={{ marginTop: 2 }}
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              rows={3}
+              fullWidth
+              multiline
+            ></TextField>
+          </Box>
+        )}
       </CardContent>
     </Card>
   )
 }
 
-function OrderNotesAdmin() {
+function OrderNotesAdmin(props) {
   const [windowWidth, setWindowWidth] = useState(getWindowWidth())
   const [windowHeight, setWindowHeight] = useState(getWindowHeight())
 
-  const [notes, setNotes] = useState([
-    {
-      author: 'Ben Wright',
-      title: 'This is the title',
-      content: 'This is the content'
-    },
-    {
-      author: 'Boris Johnson',
-      title: 'Latin phrase',
-      content: 'Linking latin phrase to answer to a question'
-    }
-  ])
+  const [notes, setNotes] = useState([])
   const [orders, setOrders] = useState([])
 
   useEffect(() => {
@@ -76,12 +144,30 @@ function OrderNotesAdmin() {
       setWindowHeight(getWindowHeight())
     }
 
+    getItems()
+
     window.addEventListener('resize', handleHeightResize)
     return () => {
       window.removeEventListener('resize', handleWidthResize)
       window.removeEventListener('resize', handleHeightResize)
     }
-  }, [])
+  }, [props.ward])
+
+  async function getItems() {
+    let res = await OrderNotesAPI.getOrderNotes(props.ward)
+
+    let filteredNotes = res.success.rows.filter(item => {
+      return item.type === 'NOTE'
+    })
+
+    setNotes(filteredNotes)
+
+    let filteredOrders = res.success.rows.filter(item => {
+      return item.type === 'ORDER'
+    })
+
+    setOrders(filteredOrders)
+  }
 
   function isLargeScreen(size) {
     console.log(size)
@@ -91,17 +177,53 @@ function OrderNotesAdmin() {
   async function addNote() {
     let userId = (await getCurrentUser()).userId
 
-    // let staffInfo = await getStaff({identifier: userId});
+    let staffInfo = await getUser(userId)
 
-    // console.log(staffInfo)
-    setNotes([
-      {
-        author: 'Ben Wright',
-        title: 'Example title',
-        content: 'Example content'
-      },
-      ...notes
-    ])
+    let res = await OrderNotesAPI.upsertOrderNotes(
+      'INSERT',
+      props.ward,
+      'TITLE',
+      'CONTENT',
+      staffInfo.first_name + ' ' + staffInfo.last_name,
+      'NOTE',
+      null
+    )
+
+    console.log(res)
+
+    getItems()
+  }
+
+  async function addOrder() {
+    let userId = (await getCurrentUser()).userId
+
+    let staffInfo = await getUser(userId)
+
+    let res = await OrderNotesAPI.upsertOrderNotes(
+      'INSERT',
+      props.ward,
+      'TITLE',
+      'CONTENT',
+      staffInfo.first_name + ' ' + staffInfo.last_name,
+      'ORDER',
+      null
+    )
+
+    console.log(res)
+
+    getItems()
+  }
+
+  async function removeCard(id) {
+    let res = await OrderNotesAPI.deleteOrderNotes(parseInt(id))
+
+    if ('success' in res) {
+      getItems()
+    }
+  }
+
+  if(!props.ward) {
+    return <Typography variant='h6' sx={{margin: 'auto', textAlign: 'center', marginTop: 10}}>Please select a ward to continue</Typography>
   }
 
   return (
@@ -117,12 +239,23 @@ function OrderNotesAdmin() {
                   variant="contained"
                   startIcon={<Add />}
                   sx={{ borderRadius: 10, marginLeft: 'auto' }}
+                  onClick={addOrder}
                 >
                   Add Order
                 </Button>
               </Box>
-              {orders.map(note => {
-                return <OrderNoteCard />
+              {orders.map((note, index) => {
+                return (
+                  <OrderNoteCard
+                    id={note.id}
+                    title={note.title}
+                    content={note.description}
+                    author={note.author_name}
+                    onDelete={removeCard}
+                    ward={props.ward}
+                    type={note.type}
+                  />
+                )
               })}
             </Box>
           </Grid>
@@ -146,12 +279,16 @@ function OrderNotesAdmin() {
                   Add Note
                 </Button>
               </Box>
-              {notes.map(note => {
+              {notes.map((note, index) => {
                 return (
                   <OrderNoteCard
+                    id={note.id}
                     title={note.title}
-                    content={note.content}
-                    author={note.author}
+                    content={note.description}
+                    author={note.author_name}
+                    onDelete={removeCard}
+                    ward={props.ward}
+                    type={note.type}
                   />
                 )
               })}
@@ -168,12 +305,23 @@ function OrderNotesAdmin() {
                 variant="contained"
                 startIcon={<Add />}
                 sx={{ borderRadius: 10, marginLeft: 'auto' }}
+                onClick={addOrder}
               >
                 Add Order
               </Button>
             </Box>
-            {orders.map(note => {
-              return <OrderNoteCard />
+            {orders.map((note, index) => {
+              return (
+                <OrderNoteCard
+                  id={note.id}
+                  title={note.title}
+                  content={note.description}
+                  author={note.author_name}
+                  onDelete={removeCard}
+                  ward={props.ward}
+                  type={note.type}
+                />
+              )
             })}
           </Box>
           <Divider></Divider>
@@ -191,12 +339,16 @@ function OrderNotesAdmin() {
                   Add Note
                 </Button>
               </Box>
-              {notes.map(note => {
+              {notes.map((note, index) => {
                 return (
                   <OrderNoteCard
+                    id={note.id}
                     title={note.title}
-                    content={note.content}
-                    author={note.author}
+                    content={note.description}
+                    author={note.author_name}
+                    onDelete={removeCard}
+                    ward={props.ward}
+                    type={note.type}
                   />
                 )
               })}
