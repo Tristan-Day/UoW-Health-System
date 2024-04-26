@@ -172,7 +172,8 @@ test('Attempt to grant an existing permission', async () => {
   })
 
   // Assert the error response code
-  expect(res.statusCode).toBe(409)
+  expect(res.statusCode).toBe(200)
+  expect(JSON.parse(res.body).warning).toBe("Some permissions where already granted")
 })
 
 test('Assign a role', async () => {
@@ -192,8 +193,6 @@ test('Assign a role', async () => {
     profileName: PROFILE,
     verboseLevel: 0
   })
-
-  console.log(JSON.parse(res.body))
 
   // Assert the response code
   expect(res.statusCode).toBe(200)

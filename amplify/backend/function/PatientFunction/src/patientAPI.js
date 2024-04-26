@@ -125,11 +125,13 @@ class PatientAPI {
         let client = await setup();
 
         if (!this.hasCorrectPermissions()) {
+            console.log('incorrect permissions');
             res.status(400).json({ failure: "INCORRECT_PERMISSIONS" });
             return;
         }
 
         if (!Validator.searchIsValid(req.query)) {
+            console.log('incorrect query');
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }

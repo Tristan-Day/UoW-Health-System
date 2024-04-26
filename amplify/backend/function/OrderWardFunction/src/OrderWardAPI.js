@@ -253,24 +253,27 @@ class OrderWardAPI {
   static delete = async function (req, res, setup) {
     let client = await setup()
 
+    console.log('running delete')
+
     if (!this.hasCorrectPermissions()) {
       res.status(400).json({ failure: 'INCORRECT_PERMISSIONS' })
       return
     }
 
-    if (!Validator.deleteIsValid(req.params)) {
+    if (!Validator.deleteIsValid(req.query)) {
       res.status(400).json({ failure: 'INCORRECT_QUERY' })
       return
     }
 
-    console.log(req.body)
+    console.log('passed tests')
+    console.log(req.query)
 
     let result = {}
     try {
       const queryString = `
                     DELETE FROM "system".ward_order_notes WHERE ID = $1;
                     `
-      const values = [req.params['ID']]
+      const values = [req.query['ID']]
 
       let query = await client.query(queryString, values)
       result = { success: query }
