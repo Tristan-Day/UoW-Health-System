@@ -42,6 +42,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "OrderNoteHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "OrderWardFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "PatientHandler": {
       "dependsOn": [
         {
@@ -227,6 +241,11 @@
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
+    "OrderWardFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
     "PatientFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
@@ -244,6 +263,7 @@
     },
     "ScheduleItemFunction": {
       "build": true,
+      "dependsOn": [],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
@@ -324,6 +344,22 @@
         {
           "category": "function",
           "resourceName": "CleaningOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_OrderWardFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "OrderWardFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_OrderWardFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "OrderWardFunction"
         }
       ]
     },

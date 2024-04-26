@@ -6,10 +6,13 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@aws-sdk/client-secrets-manager": "^3.485.0",
+    "aws-amplify": "^6.0.28",
+    "aws-jwt-verify": "^4.0.1",
     "aws-sdk": "^2.1534.0",
     "aws-serverless-express": "^3.3.5",
     "body-parser": "^1.17.1",
     "express": "^4.15.2",
+    "jsonwebtoken": "^9.0.2",
     "pg": "^8.11.3",
     "swagger-autogen": "^2.23.7",
     "swagger-markdown": "^2.3.1"

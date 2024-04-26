@@ -289,7 +289,6 @@ const TreatmentCreationForm = props => {
           error={errors.treatment_name}
         />
         <Autocomplete
-          //TODO: switch over ward so it uses ID instead of name
           disablePortal
           label="Ward name..."
           renderInput={renderWardName}
