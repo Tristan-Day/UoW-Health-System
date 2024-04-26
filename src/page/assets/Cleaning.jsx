@@ -18,7 +18,7 @@ import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
 import { AuthenticationContext } from '../../App'
 import { Searchbox } from '../../components'
 
-import { cancelOrder, getOrders } from './logic/Cleaning'
+import { cancelOrder, fulfilOrder, getOrders } from './logic/Cleaning'
 
 const Columns = [
   {
@@ -45,18 +45,18 @@ const Columns = [
 
 const Cleaning = () => {
   const permissions = useContext(AuthenticationContext).permissions
-  const [filter, setFilter] = useState()
 
-  const [message, setMessage] = useState({
-    text: 'Please enter a room name',
-    severity: 'info',
-    loading: false
-  })
+  const [message, setMessage] = useState()
+  const [filter, setFilter] = useState()
 
   const [selection, setSelection] = useState()
   const [contents, setContents] = useState([])
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    handleSearch()
+  }, [])
 
   useEffect(() => {
     if (message && !message.loading) {
@@ -67,15 +67,6 @@ const Cleaning = () => {
   }, [message])
 
   async function handleSearch(query) {
-    if (!query) {
-      setMessage({
-        text: 'Please enter a room name',
-        severity: 'error',
-        loading: false
-      })
-      return
-    }
-
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
     getOrders(query, filter)
@@ -139,7 +130,27 @@ const Cleaning = () => {
       })
   }
 
-  async function handleFulfil(selection) {}
+  async function handleFulfil(selection) {
+    setMessage({ text: 'Fulfilling order...', severity: 'info', loading: true })
+
+    fulfilOrder(contents[selection].identifier)
+      .then(() => {
+        setMessage({
+          text: 'Order sucessfully fulfilled',
+          severity: 'success',
+          loading: false
+        })
+
+        setContents(contents.filter(order => order.id !== selection))
+      })
+      .catch(() => {
+        setMessage({
+          text: 'Failed to cancel order - Please try again later',
+          severity: 'error',
+          loading: false
+        })
+      })
+  }
 
   return (
     <Box>
@@ -155,7 +166,7 @@ const Cleaning = () => {
             control={
               <Checkbox onChange={event => setFilter(event.target.checked)} />
             }
-            label="Fulfilled"
+            label="Include Fulfilled"
             sx={{ alignItems: 'center' }}
           />
         </Box>

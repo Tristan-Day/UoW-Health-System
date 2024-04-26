@@ -7,9 +7,10 @@ const ALL_STAFF = `
 
 const SEARCH_STAFF =
   ALL_STAFF +
-  ` WHERE 
-      staff.first_name ILIKE '%' || $1 || '%' OR
-      staff.last_name ILIKE '%' || $1 || '%'
+  ` WHERE
+      (staff.first_name || ' ' || staff.last_name) ILIKE '%' || $1 || '%' OR
+      staff.first_name ILIKE '%' || $1 || '%' OR staff.last_name ILIKE '%' || $1 || '%' OR
+      staff.email_address = $1 OR staff.phone_number = $1
   `
 
 const CREATE_STAFF = `

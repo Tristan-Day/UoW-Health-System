@@ -155,7 +155,7 @@ app.put('/v1/resources/rooms/:name/create', async function (req, res) {
     return
   }
 
-  if (!(req.body.floor)) {
+  if (req.body.floor === undefined) {
     res.status(400).json({ error: 'A floor number is required' })
     return
   }
