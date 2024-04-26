@@ -2,6 +2,19 @@ import { getCurrentUser } from 'aws-amplify/auth'
 import { get, del, post, put } from 'aws-amplify/api'
 
 export const getOrders = async (query, includeFulfiled) => {
+  if (!query) {
+    const operation = get({
+      apiName: 'CleaningOrderHandler',
+      path: '/v1/orders/cleaning/all',
+      options: {
+        queryParams: { fulfilled: Boolean(includeFulfiled) }
+      }
+    })
+
+    const response = await operation.response
+    return (await response.body.json()).result
+  }
+
   // Lookup matching rooms
   var operation = post({
     apiName: 'RoomHandler',
@@ -22,49 +35,45 @@ export const getOrders = async (query, includeFulfiled) => {
       apiName: 'CleaningOrderHandler',
       path: `/v1/orders/cleaning/room/${record.room_id}`,
       options: {
-        queryParams: { "fulfilled": Boolean(includeFulfiled) }
+        queryParams: { fulfilled: Boolean(includeFulfiled) }
       }
     })
 
     try {
       response = await operation.response
       orders = orders.concat((await response.body.json()).result)
-    }
-    catch (error) {
+    } catch (error) {
       continue
     }
   }
 
   if (orders.length > 0) {
     return orders
-  }
-  else {
-    throw new Error("No records found.")
+  } else {
+    throw new Error('No records found.')
   }
 }
 
-export const cancelOrder = async (room) => {
+export const cancelOrder = async room => {
   console.log(room)
-
 
   const operation = del({
     apiName: 'CleaningOrderHandler',
-    path: `/v1/orders/cleaning/room/${room}`,
+    path: `/v1/orders/cleaning/room/${room}`
   })
-
 
   const response = await operation.response
   return (await response.body.json()).result
 }
 
-export const fulfilOrder = async (room) => {
+export const fulfilOrder = async room => {
   const user = await getCurrentUser()
 
   const operation = put({
     apiName: 'CleaningOrderHandler',
     path: `/v1/orders/cleaning/room/${room}/fulfil`,
     options: {
-      body: { "cleaner": user.username }
+      body: { cleaner: user.username }
     }
   })
 
@@ -72,10 +81,10 @@ export const fulfilOrder = async (room) => {
   return (await response.body.json()).result
 }
 
-export const issueOrder = async (room) => {
+export const issueOrder = async room => {
   const operation = put({
     apiName: 'CleaningOrderHandler',
-    path: `/v1/orders/cleaning/room/${room}/issue`,
+    path: `/v1/orders/cleaning/room/${room}/issue`
   })
 
   const response = await operation.response

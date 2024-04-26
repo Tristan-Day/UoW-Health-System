@@ -52,8 +52,17 @@ const PatientRoutes = permissions => (
       />
     ) : null}
 
-    <Route path="care-instructions" element={<h1>Care Instructions</h1>} />
-    <Route path="care-orders" element={<h1>Care Orders</h1>} />
+    {permissions.includes('care-instructions.view') ? (
+      <Route path="care-instructions">
+        <Route index element={<h1>Care Instructions</h1>} />
+      </Route>
+    ) : null}
+
+    {permissions.includes('care-orders.view') ? (
+      <Route path="care-orders">
+        <Route index element={<h1>Care Orders</h1>} />
+      </Route>
+    ) : null}
   </Route>
 )
 
