@@ -46,7 +46,7 @@ export const getStaff = async query => {
     apiName: 'StaffHandler',
     path: `/v1/resources/staff/search`,
     options: {
-      body: { queryStringParams: query }
+      body: { query: query }
     }
   })
 
