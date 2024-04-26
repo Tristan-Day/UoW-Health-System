@@ -15,6 +15,11 @@ export type AmplifyDependentResourcesAttributes = {
       "ApiName": "string",
       "RootUrl": "string"
     },
+    "OrderNoteHandler": {
+      "ApiId": "string",
+      "ApiName": "string",
+      "RootUrl": "string"
+    },
     "PatientHandler": {
       "ApiId": "string",
       "ApiName": "string",
@@ -93,6 +98,13 @@ export type AmplifyDependentResourcesAttributes = {
       "Region": "string"
     },
     "CleaningOrderFunction": {
+      "Arn": "string",
+      "LambdaExecutionRole": "string",
+      "LambdaExecutionRoleArn": "string",
+      "Name": "string",
+      "Region": "string"
+    },
+    "OrderWardFunction": {
       "Arn": "string",
       "LambdaExecutionRole": "string",
       "LambdaExecutionRoleArn": "string",
