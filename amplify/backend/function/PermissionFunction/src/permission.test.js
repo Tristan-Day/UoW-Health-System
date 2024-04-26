@@ -194,8 +194,6 @@ test('Assign a role', async () => {
     verboseLevel: 0
   })
 
-  console.log(JSON.parse(res.body))
-
   // Assert the response code
   expect(res.statusCode).toBe(200)
 })
