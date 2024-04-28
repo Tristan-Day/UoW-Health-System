@@ -9,7 +9,8 @@ import WardAdmin from '../assets/WardAdmin'
 import WardUser from '../assets/WardUser'
 
 import Events from './Events'
-import ScheduleItemForm from './page/ScheduleItemForm'
+import EditPage from './components/calendar/EditPage'
+
 const Links = () => {
   const permissions = useContext(AuthenticationContext).permissions
   const pages = {}
@@ -46,21 +47,20 @@ const Template = () => {
 
 const ScheduleRoutes = permissions => (
   <Route path="schedule" element={<Template />}>
-    <Route index path="*" element={<SchedulePage />} />
+    <Route path="personal">
+      <Route index element={<SchedulePage />} />
+    </Route>
 
     <Route path="assignment">
       <Route index element={<WardUser />} />
     </Route>
-    <Route index path="*" element={<Links />} />
 
-    {permissions.includes('personal.view') ? (
-      <Route path="personal" element={<h1>Schedules</h1>} />
-    ) : null}
+    <Route index path="*" element={<Links />} />
 
     {permissions.includes('events.view') ? (
       <Route path="events">
         <Route index element={<Events />} />
-        <Route path="create" element={<ScheduleItemForm />} />
+        <Route path="create" element={<EditPage />} />
       </Route>
     ) : null}
   </Route>

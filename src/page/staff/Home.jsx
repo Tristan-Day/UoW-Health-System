@@ -33,11 +33,6 @@ const Links = () => {
     }
   }
 
-  pages['Schedule Management'] = {
-    description: 'View, create, update and delete staff schedules.',
-    site: 'schedules'
-  }
-
   return <IndexGenerator title="Staff Management" contents={pages} />
 }
 
@@ -69,8 +64,6 @@ const StaffRoutes = permissions => {
           <Route path=":identifier" element={<StaffDetails />} />
         </Route>
       ) : null}
-
-      <Route path="schedules" element={<h1>Staff Schedule Management</h1>} />
     </Route>
   )
 }
