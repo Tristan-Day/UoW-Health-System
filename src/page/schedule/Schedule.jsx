@@ -7,9 +7,9 @@ import { AuthenticationContext } from '../../App'
 import SchedulePage from './components/SchedulePage'
 import WardAdmin from '../assets/WardAdmin'
 import WardUser from '../assets/WardUser'
+import EditScheduleItem from './components/EditScheduleItem'
 
 import Events from './Events'
-import EditPage from './components/calendar/EditPage'
 
 const Links = () => {
   const permissions = useContext(AuthenticationContext).permissions
@@ -60,7 +60,7 @@ const ScheduleRoutes = permissions => (
     {permissions.includes('events.view') ? (
       <Route path="events">
         <Route index element={<Events />} />
-        <Route path="create" element={<EditPage />} />
+        <Route path="create" element={<EditScheduleItem />} />
       </Route>
     ) : null}
   </Route>

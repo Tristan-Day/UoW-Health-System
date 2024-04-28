@@ -111,7 +111,7 @@ const Events = () => {
                     <Button
                         variant="text"
                         onClick={() => {
-                            navigate('create', { state: { ...params.row, action: 'UPDATE' } })
+                            navigate('create', { state: { ...params.row, action: 'UPDATE', cardSelected: params.row.schedule_item_id } })
                         }}
                     >
                         <Edit /> Edit
