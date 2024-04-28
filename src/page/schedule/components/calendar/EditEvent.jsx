@@ -61,7 +61,10 @@ function EditEvent(props) {
       console.log('getting items on editpage')
 
       console.log(props.scheduleItems)
-      if (props.scheduleItems != null && props.scheduleItems.hasOwnProperty('success')) {
+      if (
+        props.scheduleItems != null &&
+        props.scheduleItems.hasOwnProperty('success')
+      ) {
         let filteredScheduleItems = props.scheduleItems.success.rows.filter(
           item => {
             console.log('check iteration')
