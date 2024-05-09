@@ -46,7 +46,7 @@ function EditPage(props) {
   }
 
   return (
-    <Card sx={{ outerHeight: 250 }}>
+    <Card>
       <CardContent>
         <Box sx={{ height: window.innerHeight / 1.5 }}>
           <Grid container sx={{ marginTop: 1 }}>
