@@ -6,9 +6,10 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
-import { AuthenticationContext } from '../../App'
+import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import { Searchbox } from '../../components'
 
+import { AuthenticationContext } from '../../App'
 import { getStaff, deleteUser } from './logic/Personel'
 
 const Columns = [
@@ -50,6 +51,7 @@ const Staff = () => {
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
+  const [showDeleteDialog, setDeleteDialog] = useState()
   const [contents, setContents] = useState([])
 
   const navigate = useNavigate()
@@ -99,10 +101,10 @@ const Staff = () => {
     })
   }
 
-  async function handleDelete(selection) {
+  async function handleDelete() {
     setMessage({ text: 'Deleting User...', severity: 'info', loading: true })
 
-    deleteUser(selection)
+    deleteUser(selection.identifier)
       .then(() => {
         setMessage({
           text: 'User sucessfully deleted',
@@ -110,7 +112,7 @@ const Staff = () => {
           loading: false
         })
 
-        setContents(contents.filter(user => user.identifier !== selection))
+        setContents(contents.filter(user => user.identifier !== selection.identifier))
       })
       .catch(() => {
         setMessage({
@@ -125,14 +127,24 @@ const Staff = () => {
 
   return (
     <Box>
+      {showDeleteDialog && (
+        <ConfirmationDialogue
+          message={`Are you sure you want to delete staff member '${selection.first_name} ${selection.last_name}'?`}
+          proceedResponse="Delete" denyResponse="Cancel"
+          onClose={() => {
+            setDeleteDialog(false)
+          }}
+          state={{ value: showDeleteDialog, handle: setDeleteDialog }}
+          onProceed={handleDelete}
+        />
+      )}
       <BreadcrumbGenerator />
-      <Typography variant="h4">Staff List</Typography>
 
+      <Typography variant="h4">Staff List</Typography>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
         <Searchbox label="Search Staff" onSubmit={handleSearch} />
-
         <Box sx={{ display: 'flex', gap: '1rem' }}>
           <Button
             variant={
@@ -159,7 +171,7 @@ const Staff = () => {
                 ? 'outlined'
                 : 'disabled'
             }
-            onClick={() => handleDelete(selection.identifier)}
+            onClick={() => setDeleteDialog(true)}
           >
             Delete User
           </Button>

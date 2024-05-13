@@ -7,9 +7,10 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
-import { AuthenticationContext } from '../../App'
+import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import { Searchbox } from '../../components'
 
+import { AuthenticationContext } from '../../App'
 import { searchRoles, deleteRole } from './logic/Permissions'
 
 const Columns = [
@@ -30,6 +31,7 @@ const Roles = () => {
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
+  const [showDeleteDialog, setDeleteDialog] = useState()
   const [contents, setContents] = useState([])
 
   const navigate = useNavigate()
@@ -78,10 +80,10 @@ const Roles = () => {
     })
   }
 
-  async function handleDelete(selection) {
+  async function handleDelete() {
     setMessage({ text: 'Deleting Role...', severity: 'info', loading: true })
 
-    deleteRole(selection)
+    deleteRole(selection.name)
       .then(() => {
         setMessage({
           text: 'Role sucessfully deleted',
@@ -89,7 +91,7 @@ const Roles = () => {
           loading: false
         })
 
-        setContents(contents.filter(role => role.id !== selection))
+        setContents(contents.filter(role => role.name !== selection.name))
       })
       .catch(() => {
         setMessage({
@@ -104,14 +106,24 @@ const Roles = () => {
 
   return (
     <Box>
+      {showDeleteDialog && (
+        <ConfirmationDialogue
+          message={`Are you sure you want to delete role '${selection.name}'?`}
+          proceedResponse="Delete" denyResponse="Cancel"
+          onClose={() => {
+            setDeleteDialog(false)
+          }}
+          state={{ value: showDeleteDialog, handle: setDeleteDialog }}
+          onProceed={handleDelete}
+        />
+      )}
       <BreadcrumbGenerator />
-      <Typography variant="h4">System Roles</Typography>
 
+      <Typography variant="h4">System Roles</Typography>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
         <Searchbox label="Search Roles" onSubmit={handleSearch} />
-
         <Box sx={{ display: 'flex', gap: '1rem' }}>
           <Button
             variant={
@@ -138,7 +150,7 @@ const Roles = () => {
                 ? 'outlined'
                 : 'disabled'
             }
-            onClick={() => handleDelete(selection.name)}
+            onClick={() => setDeleteDialog(true)}
           >
             Delete Role
           </Button>

@@ -7,9 +7,10 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
-import { AuthenticationContext } from '../../App'
+import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import { Searchbox } from '../../components'
 
+import { AuthenticationContext } from '../../App'
 import { deletePremises, getPremises } from './logic/Premises'
 
 const Columns = [
@@ -51,6 +52,7 @@ const Premises = () => {
   const [message, setMessage] = useState()
 
   const [selection, setSelection] = useState()
+  const [showDeleteDialog, setDeleteDialog] = useState()
   const [contents, setContents] = useState([])
 
   const navigate = useNavigate()
@@ -92,7 +94,7 @@ const Premises = () => {
       })
   }
 
-  async function handleDelete(selection) {
+  async function handleDelete() {
     setMessage({ text: 'Deleting room...', severity: 'info', loading: true })
 
     deletePremises(selection)
@@ -114,16 +116,28 @@ const Premises = () => {
       })
   }
 
+  console.log(contents[selection])
+
   return (
     <Box>
+      {showDeleteDialog && (
+        <ConfirmationDialogue
+          message={`Are you sure you want to delete '${contents.filter((item) => item.identifier === selection)[0].room}'?`}
+          proceedResponse="Delete" denyResponse="Cancel"
+          onClose={() => {
+            setDeleteDialog(false)
+          }}
+          state={{ value: showDeleteDialog, handle: setDeleteDialog }}
+          onProceed={handleDelete}
+        />
+      )}
       <BreadcrumbGenerator />
-      <Typography variant="h4">Physical Premises</Typography>
 
+      <Typography variant="h4">Physical Premises</Typography>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
         <Searchbox label="Search Premises" onSubmit={handleSearch} />
-
         <Box sx={{ display: 'flex', gap: '1rem' }}>
           <Button
             variant={
@@ -140,7 +154,7 @@ const Premises = () => {
                 ? 'outlined'
                 : 'disabled'
             }
-            onClick={() => handleDelete(selection)}
+            onClick={() => setDeleteDialog(true)}
           >
             Delete Room
           </Button>

@@ -1,43 +1,50 @@
-import Button from '@mui/material/Button'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogContentText from '@mui/material/DialogContentText'
-import DialogTitle from '@mui/material/DialogTitle'
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
+
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle
+} from '@mui/material'
 
 const ConfirmationDialogue = props => {
   //props = message, proceedResponse, denyResponse, onProceed
-  const [open, setOpen] = useState(false)
 
   const handleCloseSuccess = () => {
     props.onProceed()
-    setOpen(false)
+    props.state.handle(false)
   }
 
   const handleClose = () => {
-    setOpen(false)
+    props.onClose()
+    props.state.handle(false)
   }
 
   return (
     <Fragment>
-      <Dialog
-        open={props.open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"This will delete this resource"}
-        </DialogTitle>
+      <Dialog open={props.state.value} onClose={handleClose}>
+        <DialogTitle id="alert-dialog-title">{'Delete Resource?'}</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             {props.message}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>{props.denyResponse}</Button>
-          <Button onClick={handleCloseSuccess} autoFocus>
+        <DialogActions sx={{ justifyContent: 'space-between' }}>
+          <Button
+            onClick={handleClose}
+            sx={{ margin: '0 0 .8rem .75rem' }}
+            variant="outlined"
+          >
+            {props.denyResponse}
+          </Button>
+          <Button
+            onClick={handleCloseSuccess}
+            autoFocus
+            sx={{ margin: '0 .75rem .8rem 0' }}
+            variant="contained"
+          >
             {props.proceedResponse}
           </Button>
         </DialogActions>
