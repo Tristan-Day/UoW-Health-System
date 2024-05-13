@@ -1,6 +1,6 @@
 import { Breadcrumbs, Link } from '@mui/material'
 
-const BreadcrumbGenerator = () => {
+export default function BreadcrumbGenerator() {
   let location = window.location.pathname
 
   let paths = location.split('/')
@@ -46,5 +46,3 @@ const BreadcrumbGenerator = () => {
     </Breadcrumbs>
   )
 }
-
-export default BreadcrumbGenerator

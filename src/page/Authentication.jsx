@@ -15,6 +15,8 @@ const Authentication = () => {
       })
   }, [])
 
+  const isMobileView = /iPhone|iPod|Android/i.test(navigator.userAgent)
+
   return (
     <Stack
       sx={{
@@ -31,16 +33,17 @@ const Authentication = () => {
             alignItems: 'center',
             justifyContent: 'center',
             textAlign: 'center',
-            height: '100%'
+            height: '100%',
+            padding: '2rem'
           }}
         >
-          <Typography variant="h4">
-            You are not yet Authorized to Access this System
+          <Typography variant={isMobileView ? 'h5' : 'h4'}>
+            Authorisation Pending
           </Typography>
-          <Typography variant="h5">
-            Please send the following code to your system administrator
+          <Typography variant={isMobileView ? 'caption' : 'body'} sx={{ paddingTop: '1rem' }}>
+            Please send the following code to your system administrator if this page does not disapear
           </Typography>
-          <Typography variant="h2" sx={{ paddingTop: '2rem' }}>
+          <Typography variant={isMobileView ? 'overline' : 'h2'} sx={{ paddingTop: '2rem' }}>
             {user.username}
           </Typography>
         </Box>

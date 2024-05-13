@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom'
 
 import {
   Card,
-  CardContent,
-  Grid,
   Typography,
+  Button,
   Divider,
   Box
 } from '@mui/material'
@@ -42,8 +41,7 @@ function Landing() {
       site: 'staff'
     },
     'Ward Admin': {
-      description:
-        'Manage ward orders and notes.',
+      description: 'Manage ward orders and notes.',
       site: 'assets/ward-admin'
     }
   }
@@ -79,20 +77,22 @@ function Landing() {
     return false
   }
 
+  const isMobileView = /iPhone|iPod|Android/i.test(navigator.userAgent)
+
   return (
     <Box>
       <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          margin: '2rem'
-        }}
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        padding="1rem"
       >
-        <img src='../Usability Graphic.png' width='55%'></img>
+        <Typography variant={isMobileView ? 'h2' : 'h1'}>Welcome</Typography>
+        <Typography variant="overline">
+          Winchester Health Systems - A Usable HMS
+        </Typography>
       </Box>
-
-      <br />
-
+      <br/>
       <Box
         sx={{
           display: 'flex',
@@ -102,45 +102,52 @@ function Landing() {
           marginRight: '7%'
         }}
       >
-        {/* <Typography variant='body' textAlign='center' alignSelf='center' maxWidth='70%'>
-          Usability is a significant concern in Hospital Management Systems,
-          where user control, flexibility and error prevention have not been
-          adequately addressed. This application seeks to present a slice of a
-          usable management system that addresses these concerns.
-        </Typography> */}
-
         <Box>
           {(canShow('Personal Schedule') || canShow('My Tasks')) && (
             <Box>
-              <Typography variant='h5'>My Schedule and Tasks</Typography>
+              <Typography variant={isMobileView ? 'h5' : 'h4'}>My Schedule and Tasks</Typography>
               <Divider sx={{ marginBottom: '1.2rem', marginTop: '0.75rem' }} />
             </Box>
           )}
-          <Grid container spacing={2}>
+          <Box display="flex" flexGrow={1} flexWrap="wrap" gap="1.5rem">
             {Object.keys(ScheduleTaskPages).map(function (key) {
               if (!canShow(key)) {
                 return null
               }
 
               return (
-                <Grid item>
-                  <Card
-                    sx={{ width: '20rem', minHeight: '7rem' }}
-                    onClick={() => navigate(ScheduleTaskPages[key].site)}
-                  >
-                    <CardContent>
-                      <Typography variant='h5' component='Box'>
-                        {key}
-                      </Typography>
-                      <Typography variant='body2'>
-                        {ScheduleTaskPages[key].description}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                <Card
+                  sx={{
+                    flexGrow: 1,
+                    flexBasis: 0,
+                    minWidth: 'fit-content',
+                    padding: '1rem'
+                  }}
+                >
+                  <Typography variant="h6" component="div">
+                    {key}
+                  </Typography>
+
+                  <Box sx={{ height: '4rem', overflow: 'hidden' }}>
+                    <Typography variant="caption">
+                      {ScheduleTaskPages[key].description}
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" flexGrow={1} justifyContent="right">
+                    <Button
+                      onClick={() => {
+                        navigate(ScheduleTaskPages[key].site)
+                      }}
+                      variant="outlined"
+                    >
+                      View
+                    </Button>
+                  </Box>
+                </Card>
               )
             })}
-          </Grid>
+          </Box>
         </Box>
 
         <Box>
@@ -148,36 +155,51 @@ function Landing() {
             canShow('Patients') ||
             canShow('Staff')) && (
             <Box>
-              <Typography variant='h5'>Hospital Items</Typography>
+              <Typography variant={isMobileView ? 'h5' : 'h4'}>Hospital Items</Typography>
               <Divider sx={{ marginBottom: '1.2rem', marginTop: '0.75rem' }} />
             </Box>
           )}
 
-          <Grid container spacing={2}>
+          <Box display="flex" flexGrow={1} flexWrap="wrap" gap="1.5rem">
             {Object.keys(HospitalItemPages).map(function (key) {
               if (!canShow(key)) {
                 return null
               }
 
               return (
-                <Grid item>
-                  <Card
-                    sx={{ width: '20rem', minHeight: '7rem' }}
-                    onClick={() => navigate(HospitalItemPages[key].site)}
-                  >
-                    <CardContent>
-                      <Typography variant='h5' component='Box'>
-                        {key}
-                      </Typography>
-                      <Typography variant='body2'>
-                        {HospitalItemPages[key].description}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                <Card
+                  sx={{
+                    flexGrow: 1,
+                    flexBasis: 0,
+                    minWidth: 'fit-content',
+                    padding: '1rem'
+                  }}
+                >
+                  <Typography variant="h6" component="div">
+                    {key}
+                  </Typography>
+
+                  <Box sx={{ height: '4rem', overflow: 'hidden' }}>
+                    <Typography variant="caption">
+                      {HospitalItemPages[key].description}
+                    </Typography>
+                  </Box>
+
+                  <Box display="flex" flexGrow={1} justifyContent="right">
+                    <Button
+                      onClick={() => {
+                        navigate(HospitalItemPages[key].site)
+                      }}
+                      variant="outlined"
+                    >
+                      View
+                    </Button>
+                  </Box>
+                </Card>
               )
             })}
-          </Grid>
+          </Box>
+          <br/>
         </Box>
       </Box>
     </Box>

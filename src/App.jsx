@@ -52,7 +52,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    console.log(authorisation)
+    (authorisation)
   }, [authorisation])
 
   return (

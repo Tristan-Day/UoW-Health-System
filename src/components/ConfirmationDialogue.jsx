@@ -10,8 +10,6 @@ import {
 } from '@mui/material'
 
 const ConfirmationDialogue = props => {
-  //props = message, proceedResponse, denyResponse, onProceed
-
   const handleCloseSuccess = () => {
     props.onProceed()
     props.state.handle(false)
@@ -25,11 +23,9 @@ const ConfirmationDialogue = props => {
   return (
     <Fragment>
       <Dialog open={props.state.value} onClose={handleClose}>
-        <DialogTitle id="alert-dialog-title">{'Delete Resource?'}</DialogTitle>
+        <DialogTitle>Delete Resource?</DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {props.message}
-          </DialogContentText>
+          <DialogContentText>{props.message}</DialogContentText>
         </DialogContent>
         <DialogActions sx={{ justifyContent: 'space-between' }}>
           <Button
