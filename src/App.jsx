@@ -51,10 +51,6 @@ function App() {
       )
   }, [])
 
-  useEffect(() => {
-    (authorisation)
-  }, [authorisation])
-
   return (
     <AuthenticationContext.Provider value={authorisation}>
       <Authenticator>
