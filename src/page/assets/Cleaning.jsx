@@ -15,9 +15,10 @@ import { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import BreadcrumbGenerator from '../../components/generator/BreadcumbGenerator'
-import { AuthenticationContext } from '../../App'
+import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import { Searchbox } from '../../components'
 
+import { AuthenticationContext } from '../../App'
 import { cancelOrder, fulfilOrder, getOrders } from './logic/Cleaning'
 
 const Columns = [
@@ -50,6 +51,7 @@ const Cleaning = () => {
   const [filter, setFilter] = useState()
 
   const [selection, setSelection] = useState()
+  const [showDeleteDialog, setDeleteDialog] = useState()
   const [contents, setContents] = useState([])
 
   const navigate = useNavigate()
@@ -108,7 +110,7 @@ const Cleaning = () => {
     }
   }
 
-  async function handleCancel(selection) {
+  async function handleCancel() {
     setMessage({ text: 'Canceling order...', severity: 'info', loading: true })
 
     cancelOrder(contents[selection].identifier)
@@ -154,9 +156,20 @@ const Cleaning = () => {
 
   return (
     <Box>
+      {showDeleteDialog && (
+        <ConfirmationDialogue
+          message={`Are you sure you want to cancel this order?`}
+          proceedResponse="Yes" denyResponse="No"
+          onClose={() => {
+            setDeleteDialog(false)
+          }}
+          state={{ value: showDeleteDialog, handle: setDeleteDialog }}
+          onProceed={handleCancel}
+        />
+      )}
       <BreadcrumbGenerator />
-      <Typography variant="h4">Cleaning Orders</Typography>
 
+      <Typography variant="h4">Cleaning Orders</Typography>
       <Divider sx={{ marginTop: '1rem', marginBottom: '1rem' }} />
 
       <Box display="flex" justifyContent="space-between" flexWrap={'reverse'}>
@@ -187,7 +200,7 @@ const Cleaning = () => {
                 ? 'outlined'
                 : 'disabled'
             }
-            onClick={() => handleCancel(selection)}
+            onClick={() => setDeleteDialog(true)}
           >
             Cancel Order
           </Button>
