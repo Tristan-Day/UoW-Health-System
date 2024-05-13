@@ -9,7 +9,7 @@ The application is hosted on Amazon Web Services using Amplify, Lambda and, Post
 * Register New Staff
 * Define New Roles
 * Define Physical Premises
-* Createa and Manage Cleaning Orders
+* Create and Manage Cleaning Orders
 
 ## Colaborators
 
