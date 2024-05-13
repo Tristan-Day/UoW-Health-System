@@ -116,7 +116,7 @@ const Premises = () => {
       })
   }
 
-  console.log(contents[selection])
+  (contents[selection])
 
   return (
     <Box>

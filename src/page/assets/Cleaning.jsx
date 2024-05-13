@@ -159,7 +159,8 @@ const Cleaning = () => {
       {showDeleteDialog && (
         <ConfirmationDialogue
           message={`Are you sure you want to cancel this order?`}
-          proceedResponse="Yes" denyResponse="No"
+          proceedResponse="Yes"
+          denyResponse="No"
           onClose={() => {
             setDeleteDialog(false)
           }}
