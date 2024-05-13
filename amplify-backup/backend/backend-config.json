@@ -1,0 +1,491 @@
+{
+  "api": {
+    "AppointmentsHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "AppointmentFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "BuildingHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "BuildingFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "CleaningOrderHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "CleaningOrderFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "PatientHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "PatientFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "PermissionHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "PermissionFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "RoomHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "RoomFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "ScheduleItemHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ScheduleItemFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "ShiftsHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "ShiftsFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "StaffHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "StaffFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "TreatmentCategoryHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "TreatmentCategoryFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "TreatmentHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "TreatmentFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "WardHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "WardFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
+    "WardOrderHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "WardOrderFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
+  "auth": {
+    "healthsystem334c9ea1": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyCharacters": [],
+          "passwordPolicyMinLength": 8
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito"
+    }
+  },
+  "function": {
+    "AppointmentFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "BuildingFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "CleaningOrderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "PatientFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "PermissionFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "RoomFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "ScheduleItemFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "ShiftsFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "StaffFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "TreatmentCategoryFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "TreatmentFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "WardFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "WardOrderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_AppointmentFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AppointmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_AppointmentFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "AppointmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_BuildingFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BuildingFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_BuildingFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "BuildingFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_CleaningOrderFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CleaningOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_CleaningOrderFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "CleaningOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PatientFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PatientFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PatientFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PatientFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PermissionFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PermissionFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PermissionFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PermissionFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_RoomFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "RoomFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_RoomFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "RoomFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ScheduleItemFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ScheduleItemFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ScheduleItemFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ScheduleItemFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ShiftsFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ShiftsFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_ShiftsFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "ShiftsFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_StaffFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "StaffFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_StaffFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "StaffFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentCategoryFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentCategoryFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentCategoryFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentCategoryFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_TreatmentFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "TreatmentFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardOrderFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_WardOrderFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "WardOrderFunction"
+        }
+      ]
+    }
+  }
+}

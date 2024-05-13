@@ -214,7 +214,7 @@ app.delete('/v1/resources/appointments/scheduleitem', (req, res) => {
         required: false              
   } */
 
-  return AppointmentAPI.delete(req, res, setup);
+  return ScheduleItemAPI.delete(req, res, setup);
 
 });
 

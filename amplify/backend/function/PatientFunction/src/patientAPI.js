@@ -10,6 +10,14 @@ class Validator {
         DESCRIBED_SYMPTOMS: String,
         EMAIL: String,
         NHS_NUMBER: String,
+        GENDER: String,
+        BIRTHDATE: String,
+        DECEASED: String,
+        CONTACT_RELATIONSHIP: String,
+        CONTACT_NAME: String,
+        CONTACT_TELEPHONE: String,
+        CONTACT_ADDRESS: String,
+        COMMUNICATION_LANGUAGE: String,
     };
 
     static searchIsValid = function (searchObj) {
@@ -156,6 +164,9 @@ class PatientAPI {
                 query = await client.query('SELECT * FROM "system".patients WHERE PATIENT_ID = ' + Number(req.query["PATIENT_ID"]) + ';');
 
                 result = { success: query };
+                console.log(result);
+                res.json(result);
+                return;
 
             }
 
@@ -164,7 +175,9 @@ class PatientAPI {
                 query = await client.query('SELECT * FROM "system".patients;');
 
                 result = { success: query };
-
+                console.log(result);
+                res.json(result);
+                return;
             }
 
             //compound query
@@ -197,6 +210,10 @@ class PatientAPI {
                 query = await client.query(queryString);
 
                 result = { success: query };
+                console.log(result);
+
+                res.json(result);
+                return;
 
             }
 
@@ -206,9 +223,13 @@ class PatientAPI {
 
             result = { failure: error };
 
+            console.log(result);
+
+            res.json(result);
+            return;
+
         }
 
-        res.json(result);
 
     }
 
@@ -233,16 +254,25 @@ class PatientAPI {
             if (req.body["ACTION_TYPE"] === "INSERT") {
 
                 const queryString = `
-                    INSERT INTO "system".patients (FIRST_NAME, LAST_NAME, PHONE_NUMBER, DESCRIBED_SYMPTOMS, EMAIL, NHS_NUMBER)
-                    VALUES ($1, $2, $3, $4, $5, $6)
+                    INSERT INTO "system".patients (FIRST_NAME, LAST_NAME, PHONE_NUMBER, DESCRIBED_SYMPTOMS, EMAIL, NHS_NUMBER, GENDER, BIRTHDATE, DECEASED, CONTACT_RELATIONSHIP, CONTACT_NAME, CONTACT_TELEPHONE, CONTACT_ADDRESS, COMMUNICATION_LANGUAGE)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
                     `;
                 const values = [
-                    req.body["FIRST_NAME"], 
-                    req.body["LAST_NAME"], 
-                    req.body["PHONE_NUMBER"], 
-                    req.body["DESCRIBED_SYMPTOMS"], 
+                    req.body["FIRST_NAME"],
+                    req.body["LAST_NAME"],
+                    req.body["PHONE_NUMBER"],
+                    req.body["DESCRIBED_SYMPTOMS"],
                     req.body["EMAIL"],
-                    req.body["NHS_NUMBER"]
+                    req.body["NHS_NUMBER"],
+                    req.body["GENDER"],
+                    req.body["BIRTHDATE"],
+                    req.body["DECEASED"],
+                    req.body["CONTACT_RELATIONSHIP"],
+                    req.body["CONTACT_NAME"],
+                    req.body["CONTACT_TELEPHONE"],
+                    req.body["CONTACT_ADDRESS"],
+                    req.body["COMMUNICATUON_LANGUAGE"]
+
                 ];
 
                 let query = await client.query(queryString, values);
@@ -253,7 +283,7 @@ class PatientAPI {
             if (req.body["ACTION_TYPE"] === "UPDATE") {
 
                 const queryString = `
-                UPDATE "system".patients SET FIRST_NAME = $1, LAST_NAME = $2, PHONE_NUMBER = $3, DESCRIBED_SYMPTOMS = $4, EMAIL = $5, NHS_NUMBER = $6 WHERE PATIENT_ID = $7;
+                UPDATE "system".patients SET FIRST_NAME = $1, LAST_NAME = $2, PHONE_NUMBER = $3, DESCRIBED_SYMPTOMS = $4, EMAIL = $5, NHS_NUMBER = $6, GENDER = $7, BIRTHDATE = $8, DECEASED = $9, CONTACT_RELATIONSHIP = $10, CONTACT_TELEPHONE = $11, CONTACT_ADDRESS = $12, COMMUNICATION_LANGUAGE = $13  WHERE PATIENT_ID = $14 ;
                 `;
                 const values = [
                     req.body["FIRST_NAME"],
@@ -261,6 +291,14 @@ class PatientAPI {
                     req.body["PHONE_NUMBER"],
                     req.body["DESCRIBED_SYMPTOMS"],
                     req.body["EMAIL"],
+                    req.body["GENDER"],
+                    req.body["BIRTHDATE"],
+                    req.body["DECEASED"],
+                    req.body["CONTACT_RELATIONSHIP"],
+                    req.body["CONTACT_NAME"],
+                    req.body["CONTACT_TELEPHONE"],
+                    req.body["CONTACT_ADDRESS"],
+                    req.body["COMMUNICATUON_LANGUAGE"],
                     //where
                     req.body["PATIENT_ID"]
                 ];

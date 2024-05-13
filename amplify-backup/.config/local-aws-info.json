@@ -1,0 +1,12 @@
+{
+  "dev": {
+    "configLevel": "project",
+    "useProfile": false,
+    "awsConfigFilePath": "D:\\Users\\Bryan\\.amplify\\awscloudformation\\T4S0z95Iz7"
+  },
+  "bryan": {
+    "configLevel": "project",
+    "useProfile": false,
+    "awsConfigFilePath": "D:\\Users\\Bryan\\.amplify\\awscloudformation\\MPKkCj4igA"
+  }
+}

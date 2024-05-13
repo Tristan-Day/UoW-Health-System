@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/bed": {
+      "name": "/v1/resources/bed",
+      "lambdaFunction": "bedfunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

@@ -1,5 +1,5 @@
 import { get, del, post, put } from 'aws-amplify/api'
- 
+
 class PatientAPI {
   static getPatient = async function () {
     try {
@@ -7,18 +7,19 @@ class PatientAPI {
         apiName: 'PatientHandler',
         path: `/v1/resources/treatments/patient`
       })
- 
+
       const response = await operation.response
       let body = await response.body.json()
- 
+
       console.log(body)
- 
+
       return body
     } catch (error) {
+      console.log(error);
       return error
     }
   }
- 
+
   static upsertPatient = async function (
     actionType,
     fName,
@@ -27,7 +28,15 @@ class PatientAPI {
     describedSymptoms,
     email,
     NHSNumber,
-    patientId
+    patientId,
+    gender,
+    birthdate,
+    deceased,
+    contact_relationship,
+    contact_name,
+    contact_telephone,
+    contact_address,
+    communication_language,
   ) {
     if (patientId != null && actionType == 'INSERT') {
       const operation = post({
@@ -40,19 +49,28 @@ class PatientAPI {
             PHONE_NUMBER: phoneNumber,
             DESCRIBED_SYMPTOMS: describedSymptoms,
             EMAIL: email,
-            NHS_NUMBER: NHSNumber
+            NHS_NUMBER: NHSNumber,
+            GENDER: gender,
+            BIRTHDATE: birthdate,
+            DECEASED: deceased,
+            CONTACT_RELATIONSHIP: contact_relationship,
+            CONTACT_NAME: contact_name,
+            CONTACT_TELEPHONE: contact_telephone,
+            CONTACT_ADDRESS: contact_address,
+            COMMUNICATION_LANGUAGE: communication_language,
+
           }
         }
       })
- 
+
       const response = await operation.response
       let body = await response.body.json()
- 
+
       console.log(body)
- 
+
       return body.success
     }
- 
+
     const operation = post({
       apiName: 'PatientHandler',
       path: `/v1/resources/treatments/patient`,
@@ -64,19 +82,31 @@ class PatientAPI {
           PHONE_NUMBER: phoneNumber,
           DESCRIBED_SYMPTOMS: describedSymptoms,
           EMAIL: email,
-          NHS_NUMBER: NHSNumber
+          NHS_NUMBER: NHSNumber,
+          GENDER: gender,
+          BIRTHDATE: birthdate,
+          DECEASED: deceased,
+          CONTACT_RELATIONSHIP: contact_relationship,
+          CONTACT_NAME: contact_name,
+          CONTACT_TELEPHONE: contact_telephone,
+          CONTACT_ADDRESS: contact_address,
+          COMMUNICATION_LANGUAGE: communication_language,
+
+
+
+
         }
       }
     })
- 
+
     const response = await operation.response
     let body = await response.body.json()
- 
+
     console.log(body)
- 
+
     return body.success
   }
- 
+
   static deletePatient = async function (patientId) {
     const operation = del({
       apiName: 'PatientHandler',
@@ -87,11 +117,10 @@ class PatientAPI {
         }
       }
     })
- 
+
     const response = await operation.response
     return await response.body.json()
   }
 }
- 
+
 export default PatientAPI
- 

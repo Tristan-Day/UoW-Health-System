@@ -42,6 +42,20 @@
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
     },
+    "PatientCareHandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "PatientCareFunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    },
     "PatientHandler": {
       "dependsOn": [
         {
@@ -181,6 +195,20 @@
       ],
       "providerPlugin": "awscloudformation",
       "service": "API Gateway"
+    },
+    "bedhandler": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "bedfunction"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
     }
   },
   "auth": {
@@ -223,6 +251,11 @@
       "service": "Lambda"
     },
     "CleaningOrderFunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "PatientCareFunction": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
@@ -276,6 +309,11 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    },
+    "bedfunction": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "parameters": {
@@ -324,6 +362,22 @@
         {
           "category": "function",
           "resourceName": "CleaningOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PatientCareFunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PatientCareFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_PatientCareFunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "PatientCareFunction"
         }
       ]
     },
@@ -484,6 +538,22 @@
         {
           "category": "function",
           "resourceName": "WardOrderFunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_bedfunction_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bedfunction"
+        }
+      ]
+    },
+    "AMPLIFY_function_bedfunction_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "bedfunction"
         }
       ]
     }

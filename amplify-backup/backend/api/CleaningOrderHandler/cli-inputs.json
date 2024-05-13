@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/orders/cleaning": {
+      "name": "/v1/orders/cleaning",
+      "lambdaFunction": "CleaningOrderFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}
