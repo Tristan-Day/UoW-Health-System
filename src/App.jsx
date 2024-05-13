@@ -61,8 +61,7 @@ function App() {
         <BrowserRouter>
           <ThemeProvider theme={createTheme({ palette: { mode: theme } })}>
             <CssBaseline />
-            {authorisation.authorised ? (
-              <Routes>
+            <Routes>
                 <Route path="*" element={<Navigation />}>
                   <Route index path="*" element={<Landing />} />
                   {ScheduleRoutes(authorisation.permissions)}
@@ -71,9 +70,11 @@ function App() {
                   {StaffRoutes(authorisation.permissions)}
                 </Route>
               </Routes>
+            {/* {authorisation.authorised ? (
+              
             ) : (
               <Authentication />
-            )}
+            )} */}
           </ThemeProvider>
         </BrowserRouter>
       </Authenticator>

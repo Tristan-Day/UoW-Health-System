@@ -24,6 +24,14 @@ const Pages = {
   'Care Orders': {
     description: 'Create, amend and delete patient care orders.',
     site: 'care-orders'
+  },
+  'Bed': {
+    description: 'Manage beds.',
+    site: 'bed'
+  },
+  'Patient care': {
+    description: 'Manage patient care.',
+    site: 'patient-care'
   }
 }
 
@@ -68,11 +76,23 @@ const PatientRoutes = permissions => {
         </Route>
       ) : null}
 
-      {permissions.includes('patient.view') ? (
+      {/* {permissions.includes('patient.view') ? (
         <Route path="patient">
           <Route index element={<PatientsPage />} />
         </Route>
-      ) : null}
+      ) : null} */}
+
+      <Route path="bed">
+        <Route index element={<h1>Bed</h1>} />
+      </Route>
+
+      <Route path="patient">
+        <Route index element={<h1>Patient</h1>} />
+      </Route>
+
+      <Route path="patient-care">
+        <Route index element={<h1>Patient</h1>} />
+      </Route>
 
     </Route>
   )

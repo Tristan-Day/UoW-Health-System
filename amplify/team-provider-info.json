@@ -1,4 +1,101 @@
 {
+  "bryantwo": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-healthsystem-bryantwo-164110-authRole",
+      "UnauthRoleArn": "arn:aws:iam::558099092121:role/amplify-healthsystem-bryantwo-164110-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::558099092121:role/amplify-healthsystem-bryantwo-164110-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+      "UnauthRoleName": "amplify-healthsystem-bryantwo-164110-unauthRole",
+      "StackName": "amplify-healthsystem-bryantwo-164110",
+      "StackId": "arn:aws:cloudformation:eu-west-1:558099092121:stack/amplify-healthsystem-bryantwo-164110/6bf8f720-fa75-11ee-8065-0ad411b56be7",
+      "AmplifyAppId": "d3mszj6ixlalqt"
+    },
+    "categories": {
+      "auth": {
+        "healthsystem334c9ea1": {}
+      },
+      "function": {
+        "AppointmentFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/AppointmentFunction-796b5547654535594445-build.zip"
+        },
+        "BuildingFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/BuildingFunction-51726b454b44517a3959-build.zip"
+        },
+        "CleaningOrderFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/CleaningOrderFunction-54746d6663392f4f7364-build.zip"
+        },
+        "PatientFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/PatientFunction-56777447707237396873-build.zip"
+        },
+        "PermissionFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/PermissionFunction-6c6b6f472f562b716d78-build.zip"
+        },
+        "RoomFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/RoomFunction-34526c5846334c4c3266-build.zip"
+        },
+        "ScheduleItemFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/ScheduleItemFunction-36584e3159314a485156-build.zip"
+        },
+        "ShiftsFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/ShiftsFunction-6c685a676e344a61314c-build.zip"
+        },
+        "StaffFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/StaffFunction-5648356333577a346c7a-build.zip"
+        },
+        "TreatmentCategoryFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/TreatmentCategoryFunction-4b417a3449744f376f62-build.zip"
+        },
+        "TreatmentFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/TreatmentFunction-6855334c386662503332-build.zip"
+        },
+        "WardFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/WardFunction-5935377a6b587266634d-build.zip"
+        },
+        "WardOrderFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/WardOrderFunction-437632733134704c6c47-build.zip"
+        },
+        "bedfunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/bedfunction-31422f52384f436c492b-build.zip"
+        },
+        "PatientCareFunction": {
+          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
+          "s3Key": "amplify-builds/PatientCareFunction-7a373378313752313565-build.zip"
+        }
+      },
+      "api": {
+        "AppointmentsHandler": {},
+        "BuildingHandler": {},
+        "CleaningOrderHandler": {},
+        "PatientHandler": {},
+        "PermissionHandler": {},
+        "RoomHandler": {},
+        "ScheduleItemHandler": {},
+        "ShiftsHandler": {},
+        "StaffHandler": {},
+        "TreatmentCategoryHandler": {},
+        "TreatmentHandler": {},
+        "WardHandler": {},
+        "WardOrderHandler": {},
+        "bedhandler": {},
+        "PatientCareHandler": {}
+      }
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-healthsystem-dev-212451-authRole",
@@ -104,103 +201,6 @@
         "TreatmentFunction": {},
         "WardFunction": {},
         "WardOrderFunction": {}
-      }
-    }
-  },
-  "bryantwo": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-healthsystem-bryantwo-164110-authRole",
-      "UnauthRoleArn": "arn:aws:iam::558099092121:role/amplify-healthsystem-bryantwo-164110-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::558099092121:role/amplify-healthsystem-bryantwo-164110-authRole",
-      "Region": "eu-west-1",
-      "DeploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-      "UnauthRoleName": "amplify-healthsystem-bryantwo-164110-unauthRole",
-      "StackName": "amplify-healthsystem-bryantwo-164110",
-      "StackId": "arn:aws:cloudformation:eu-west-1:558099092121:stack/amplify-healthsystem-bryantwo-164110/6bf8f720-fa75-11ee-8065-0ad411b56be7",
-      "AmplifyAppId": "d3mszj6ixlalqt"
-    },
-    "categories": {
-      "auth": {
-        "healthsystem334c9ea1": {}
-      },
-      "function": {
-        "AppointmentFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/AppointmentFunction-796b5547654535594445-build.zip"
-        },
-        "BuildingFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/BuildingFunction-51726b454b44517a3959-build.zip"
-        },
-        "CleaningOrderFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/CleaningOrderFunction-54746d6663392f4f7364-build.zip"
-        },
-        "PatientFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/PatientFunction-56777447707237396873-build.zip"
-        },
-        "PermissionFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/PermissionFunction-6c6b6f472f562b716d78-build.zip"
-        },
-        "RoomFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/RoomFunction-34526c5846334c4c3266-build.zip"
-        },
-        "ScheduleItemFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/ScheduleItemFunction-36584e3159314a485156-build.zip"
-        },
-        "ShiftsFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/ShiftsFunction-6c685a676e344a61314c-build.zip"
-        },
-        "StaffFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/StaffFunction-5648356333577a346c7a-build.zip"
-        },
-        "TreatmentCategoryFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/TreatmentCategoryFunction-4b417a3449744f376f62-build.zip"
-        },
-        "TreatmentFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/TreatmentFunction-6855334c386662503332-build.zip"
-        },
-        "WardFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/WardFunction-5935377a6b587266634d-build.zip"
-        },
-        "WardOrderFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/WardOrderFunction-437632733134704c6c47-build.zip"
-        },
-        "bedfunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/bedfunction-31422f52384f436c492b-build.zip"
-        },
-        "PatientCareFunction": {
-          "deploymentBucketName": "amplify-healthsystem-bryantwo-164110-deployment",
-          "s3Key": "amplify-builds/PatientCareFunction-7a373378313752313565-build.zip"
-        }
-      },
-      "api": {
-        "AppointmentsHandler": {},
-        "BuildingHandler": {},
-        "CleaningOrderHandler": {},
-        "PatientHandler": {},
-        "PermissionHandler": {},
-        "RoomHandler": {},
-        "ScheduleItemHandler": {},
-        "ShiftsHandler": {},
-        "StaffHandler": {},
-        "TreatmentCategoryHandler": {},
-        "TreatmentHandler": {},
-        "WardHandler": {},
-        "WardOrderHandler": {},
-        "bedhandler": {},
-        "PatientCareHandler": {}
       }
     }
   }
