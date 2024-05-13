@@ -81,18 +81,12 @@ function Landing() {
 
   return (
     <Box>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        padding="1rem"
-      >
+      <Box display="flex" flexDirection="column" alignItems="center" padding="1rem">
         <Typography variant={isMobileView ? 'h2' : 'h1'}>Welcome</Typography>
         <Typography variant="overline">
           Winchester Health Systems - A Usable HMS
         </Typography>
       </Box>
-      <br/>
       <Box
         sx={{
           display: 'flex',
