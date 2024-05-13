@@ -116,8 +116,6 @@ const Premises = () => {
       })
   }
 
-  (contents[selection])
-
   return (
     <Box>
       {showDeleteDialog && (
