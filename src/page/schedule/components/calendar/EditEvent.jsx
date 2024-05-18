@@ -124,6 +124,15 @@ function EditEvent(props) {
     startTimeStamp.setHours(Math.floor(startTime / 4))
     startTimeStamp.setMinutes((startTime % 4) * 15)
 
+    if(name.length === 0 || startDate.length === 0 || startTime.length === 0 ) {
+      setMessage(
+        'This action could not be performed - please ensure the name, start date and time are filled out'
+      )
+      setMessageIcon('CROSS')
+      setSeverity('error')
+      return;
+    }
+
     if (
       !(await ScheduleValidator.scheduleIsClear(
         startTimeStamp,
@@ -154,7 +163,7 @@ function EditEvent(props) {
           console.log(res)
           setMessage(
             'Event successfully ' +
-              (props.cardSelected === 0 ? 'created' : 'updated')
+              (props.cardSelected === 0 || !props.cardSelected  ? 'created' : 'updated')
           )
           setMessageIcon('CHECK')
           setSeverity('success')
@@ -164,7 +173,7 @@ function EditEvent(props) {
           console.log(error)
           setMessage(
             'There was an error and the event was not successfully ' +
-              (props.cardSelected === 0 ? 'created' : 'updated') +
+              (props.cardSelected === 0 || !props.cardSelected  ? 'created' : 'updated') +
               ' - please try again later'
           )
           setMessageIcon('CROSS')
