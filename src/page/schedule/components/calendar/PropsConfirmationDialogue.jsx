@@ -9,7 +9,7 @@ import {
   DialogTitle
 } from '@mui/material'
 
-const CalendarConfirmationDialogue = props => {
+const PropsConfirmationDialogue = props => {
   const handleCloseSuccess = () => {
     props.onProceed()
   }
@@ -47,4 +47,4 @@ const CalendarConfirmationDialogue = props => {
   )
 }
 
-export default CalendarConfirmationDialogue
+export default PropsConfirmationDialogue

@@ -24,7 +24,7 @@ import { Check, ClearAll, Delete, QuestionAnswer, QuestionMark } from '@mui/icon
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
-import CalendarConfirmationDialogue from './CalendarConfirmationDialogue'
+import PropsConfirmationDialogue from './PropsConfirmationDialogue'
 
 function EditEvent(props) {
   const [name, setName] = useState('')
@@ -250,7 +250,7 @@ function EditEvent(props) {
   return (
     <Box sx={{ padding: 1 }}>
       {showDeleteDialog && (
-        <CalendarConfirmationDialogue
+        <PropsConfirmationDialogue
           message="Are you sure you want to proceed?"
           proceedResponse="Delete"
           denyResponse="Don't delete"

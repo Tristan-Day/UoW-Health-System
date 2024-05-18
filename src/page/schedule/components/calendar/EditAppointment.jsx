@@ -23,7 +23,7 @@ import {
   import Alert from '@mui/material/Alert'
   import { getCurrentUser } from 'aws-amplify/auth'
   import ScheduleValidator from './ScheduleValidator'
-  import CalendarConfirmationDialogue from './CalendarConfirmationDialogue'
+  import PropsConfirmationDialogue from './PropsConfirmationDialogue'
 import TreatmentSearch from './TreatmentSearch'
   
   function EditAppointment(props) {
@@ -254,7 +254,7 @@ import TreatmentSearch from './TreatmentSearch'
     return (
       <Box sx={{ padding: 1 }}>
         {showDeleteDialog && (
-          <CalendarConfirmationDialogue
+          <PropsConfirmationDialogue
             message="Are you sure you want to proceed?"
             proceedResponse="Delete"
             denyResponse="Don't delete"

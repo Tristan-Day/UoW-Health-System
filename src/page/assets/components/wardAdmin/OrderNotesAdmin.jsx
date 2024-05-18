@@ -19,7 +19,7 @@ import { Add, Delete, Edit, Person, Save } from '@mui/icons-material'
 import { getCurrentUser } from '@aws-amplify/auth'
 import { getStaff, getUser } from '../../../staff/logic/Personel'
 import OrderNotesAPI from '../../logic/OrderNotes'
-import CalendarConfirmationDialogue from '../../../schedule/components/calendar/CalendarConfirmationDialogue'
+import PropsConfirmationDialogue from '../../../schedule/components/calendar/PropsConfirmationDialogue'
 
 function OrderNoteCard(props) {
   const [editMode, setEditMode] = useState(false)
@@ -261,7 +261,7 @@ function OrderNotesAdmin(props) {
   return (
     <Box>
       {showDeleteDialog && (
-        <CalendarConfirmationDialogue
+        <PropsConfirmationDialogue
           message="Are you sure you want to proceed?"
           proceedResponse="Delete"
           denyResponse="Don't delete"

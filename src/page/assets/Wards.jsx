@@ -26,7 +26,7 @@ import { deletePremises, getPremises } from './logic/Premises'
 import WardsAPI from './logic/Wards'
 import { Edit } from '@mui/icons-material'
 import ConfirmationDialogue from '../../components/ConfirmationDialogue'
-import CalendarConfirmationDialogue from '../schedule/components/calendar/CalendarConfirmationDialogue'
+import PropsConfirmationDialogue from '../schedule/components/calendar/PropsConfirmationDialogue'
 
 const Wards = () => {
   const [query, setQuery] = useState('')
@@ -177,7 +177,7 @@ const Wards = () => {
     <div>
       {showDeleteDialog && (
         
-          <CalendarConfirmationDialogue
+          <PropsConfirmationDialogue
             message="Are you sure you want to proceed?"
             proceedResponse="Delete"
             denyResponse="Don't delete"
