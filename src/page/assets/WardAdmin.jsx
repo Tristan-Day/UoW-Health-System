@@ -52,7 +52,7 @@ function WardAdmin() {
 
       {/* Page navigation bar */}
       <Box sx={{ display: 'flex', marginTop: 1 }}>
-        <Box sx={{ marginRight: 2 }}>
+        {/* <Box sx={{ marginRight: 2 }}>
           <InputLabel id="button-label">Page</InputLabel>
           <ButtonGroup labelId="button-label" sx={{ marginTop: 0.25 }}>
             <Button
@@ -68,7 +68,7 @@ function WardAdmin() {
               Orders / Notes
             </Button>
           </ButtonGroup>
-        </Box>
+        </Box> */}
 
         <Box>
           <InputLabel id="select-label">Ward</InputLabel>
@@ -96,7 +96,7 @@ function WardAdmin() {
       {/* Body */}
 
       {/* Staff assignment page */}
-      <Box
+      {/* <Box
         sx={
           page === STAFF_ASSIGNMENT
             ? {}
@@ -104,7 +104,7 @@ function WardAdmin() {
         }
       >
         <StaffAssignment ward={selectedWard} />
-      </Box>
+      </Box> */}
 
       {/* Order and Notes page */}
       <Box
