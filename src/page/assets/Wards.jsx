@@ -27,6 +27,7 @@ import WardsAPI from './logic/Wards'
 import { Edit } from '@mui/icons-material'
 import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import PropsConfirmationDialogue from '../schedule/components/calendar/PropsConfirmationDialogue'
+import { MaterialIconPicker } from 'react-material-icon-picker'
 
 const Wards = () => {
   const [query, setQuery] = useState('')
@@ -258,6 +259,11 @@ const Wards = () => {
           </Fab>
         </Box>
       </Box>
+
+      {/* Must be added for icons in the table to be rendered, */}
+      <div style={{visibility: 'hidden', height: 0, width: 0}}>
+        <MaterialIconPicker />
+      </div>
     </div>
   )
 }
