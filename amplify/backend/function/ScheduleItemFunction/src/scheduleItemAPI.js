@@ -7,7 +7,8 @@ class Validator {
     PATIENT_ID: Number,
     TASK: String,
     DESCRIPTION: String,
-    ITEM_TYPE: String
+    ITEM_TYPE: String,
+    TREATMENT_ID: Number
   }
 
   static searchIsValid = function (searchObj) {
@@ -214,15 +215,16 @@ class ScheduleItemAPI {
     try {
       if (req.body['ACTION_TYPE'] === 'INSERT') {
         const queryString = `
-                    INSERT INTO "system".schedule_items (START_TIMESTAMP, ESTIMATED_DURATION_MINUTES, TASK, DESCRIPTION, ITEM_TYPE)
-                    VALUES ($1, $2, $3, $4, $5)
+                    INSERT INTO "system".schedule_items (START_TIMESTAMP, ESTIMATED_DURATION_MINUTES, TASK, DESCRIPTION, ITEM_TYPE, TREATMENT_ID)
+                    VALUES ($1, $2, $3, $4, $5, $6)
                     `
         const values = [
           req.body['START_TIMESTAMP'],
           req.body['ESTIMATED_DURATION_MINUTES'],
           req.body['TASK'],
           req.body['DESCRIPTION'],
-          req.body['ITEM_TYPE']
+          req.body['ITEM_TYPE'],
+          req.body['TREATMENT_ID'],
         ]
 
         let query = await client.query(queryString, values)
@@ -235,7 +237,7 @@ class ScheduleItemAPI {
 
       if (req.body['ACTION_TYPE'] === 'UPDATE') {
         const queryString = `
-                UPDATE "system".schedule_items SET START_TIMESTAMP = $1, ESTIMATED_DURATION_MINUTES = $2, TASK = $3, DESCRIPTION = $4, ITEM_TYPE = $5 WHERE SCHEDULE_ITEM_ID = $6;
+                UPDATE "system".schedule_items SET START_TIMESTAMP = $1, ESTIMATED_DURATION_MINUTES = $2, TASK = $3, DESCRIPTION = $4, ITEM_TYPE = $5, TREATMENT_ID = $6 WHERE SCHEDULE_ITEM_ID = $7;
                 `
         const values = [
           req.body['START_TIMESTAMP'],
@@ -243,6 +245,7 @@ class ScheduleItemAPI {
           req.body['TASK'],
           req.body['DESCRIPTION'],
           req.body['ITEM_TYPE'],
+          req.body['TREATMENT_ID'],
           //where
           req.body['SCHEDULE_ITEM_ID']
         ]
