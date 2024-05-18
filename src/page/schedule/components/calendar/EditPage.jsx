@@ -9,7 +9,7 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import EditTask from './EditTask'
-import { getWindowWidth } from '../Util'
+import { getWindowHeight, getWindowWidth } from '../Util'
 import { Close, Task } from '@mui/icons-material'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
 import EditEvent from './EditEvent'
@@ -48,7 +48,7 @@ function EditPage(props) {
   return (
     <Card>
       <CardContent>
-        <Box sx={{ height: window.innerHeight / 1.5 }}>
+        <Box sx={{ height: (getWindowHeight() > 600 ? getWindowHeight() - 300 : getWindowHeight() / 2) }}>
           <Grid container sx={{ marginTop: 1 }}>
             <Grid item>
               <Button

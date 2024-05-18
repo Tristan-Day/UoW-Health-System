@@ -6,7 +6,7 @@ import {
   Grid,
   Typography
 } from '@mui/material'
-import { toTwoDigits } from '../Util'
+import { getWindowHeight, toTwoDigits } from '../Util'
 import { useEffect, useState } from 'react'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
 
@@ -125,7 +125,7 @@ function DayDisplay(props) {
       <Box
         width={'100%'}
         sx={{
-          height: window.innerHeight / 1.5,
+          height: (getWindowHeight() > 600 ? getWindowHeight() - 300 : getWindowHeight() / 2) ,
           overflow: 'scroll',
           overflowX: 'hidden',
           position: 'relative'
