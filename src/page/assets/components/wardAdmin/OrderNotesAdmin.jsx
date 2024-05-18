@@ -7,6 +7,7 @@ import {
   Grid,
   IconButton,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -55,43 +56,51 @@ function OrderNoteCard(props) {
     <Card sx={{ marginTop: 2 }}>
       <CardContent>
         <Box sx={{ display: 'flex' }}>
-          <Person sx={{ height: 1, alignSelf: 'center', paddingBottom: 1 }} />
+          <Tooltip title="Post author">
+            <Person sx={{ height: 1, alignSelf: 'center', paddingBottom: 1 }} />
+          </Tooltip>
           <Typography
             variant="p"
             sx={{ alignSelf: 'center', marginLeft: 1, paddingBottom: 1 }}
           >
-            {props.author}
+            <Tooltip title="Post author">{props.author}</Tooltip>
           </Typography>
           {props.admin === true ? (
             !editMode ? (
-              <IconButton
-                onClick={toggleEditMode}
-                children={<Edit />}
-                sx={{
-                  marginLeft: 'auto',
-                  height: 1,
-                  alignSelf: 'center'
-                }}
-              ></IconButton>
+              <Tooltip title="Edit">
+                <IconButton
+                  onClick={toggleEditMode}
+                  children={<Edit />}
+                  sx={{
+                    marginLeft: 'auto',
+                    height: 1,
+                    alignSelf: 'center'
+                  }}
+                ></IconButton>
+              </Tooltip>
             ) : (
-              <IconButton
-                onClick={saveChanges}
-                children={<Save />}
-                sx={{
-                  marginLeft: 'auto',
-                  height: 1,
-                  alignSelf: 'center'
-                }}
-              ></IconButton>
+              <Tooltip title="Save">
+                <IconButton
+                  onClick={saveChanges}
+                  children={<Save />}
+                  sx={{
+                    marginLeft: 'auto',
+                    height: 1,
+                    alignSelf: 'center'
+                  }}
+                ></IconButton>
+              </Tooltip>
             )
           ) : null}
 
           {props.admin === true ? (
-            <IconButton
-              onClick={() => props.onDelete(props.id)}
-              children={<Delete />}
-              sx={{ height: 1, alignSelf: 'center' }}
-            ></IconButton>
+            <Tooltip title="Delete">
+              <IconButton
+                onClick={() => props.onDelete(props.id)}
+                children={<Delete />}
+                sx={{ height: 1, alignSelf: 'center' }}
+              ></IconButton>
+            </Tooltip>
           ) : null}
         </Box>
         <Divider></Divider>
@@ -225,8 +234,8 @@ function OrderNotesAdmin(props) {
   }
 
   function showDeleteDialogForCard(id) {
-    setRemovalCandidate(id);
-    setShowDeleteDialog(true);
+    setRemovalCandidate(id)
+    setShowDeleteDialog(true)
   }
 
   async function removeCard() {
@@ -235,7 +244,7 @@ function OrderNotesAdmin(props) {
     if ('success' in res) {
       getItems()
     }
-    setShowDeleteDialog(false);
+    setShowDeleteDialog(false)
   }
 
   if (!props.ward) {
