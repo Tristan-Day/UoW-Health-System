@@ -271,19 +271,19 @@ class ScheduleItemAPI {
       return
     }
 
-    if (!Validator.deleteIsValid(req.body)) {
+    if (!Validator.deleteIsValid(req.query)) {
       res.status(400).json({ failure: 'INCORRECT_QUERY' })
       return
     }
 
-    console.log(req.body)
+    console.log(req.query)
 
     let result = {}
     try {
       const queryString = `
                     DELETE FROM "system".schedule_items WHERE SCHEDULE_ITEM_ID = $1;
                     `
-      const values = [req.body['SCHEDULE_ITEM_ID']]
+      const values = [req.query['SCHEDULE_ITEM_ID']]
 
       let query = await client.query(queryString, values)
       result = { success: query }
