@@ -38,7 +38,7 @@ class ScheduleItemAPI {
     description,
     itemType,
     scheduleItemId,
-    treatmentId,
+    treatmentId = null,
   ) {
 
     if (patientId != null && actionType == 'INSERT') {
