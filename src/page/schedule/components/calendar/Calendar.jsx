@@ -43,6 +43,7 @@ function Calendar(props) {
           <StaticDatePicker
             defaultValue={dayjs(dateStr)}
             onAccept={val => onNewDateAccepted(val)}
+            onClose={() => setPage(CALENDAR)}
           />
         </LocalizationProvider>
       ) : null}

@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Tooltip,
   Typography,
   duration
 } from '@mui/material'
@@ -19,7 +20,7 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
-import { Check, ClearAll, Delete } from '@mui/icons-material'
+import { Check, ClearAll, Delete, QuestionAnswer, QuestionMark } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
@@ -305,7 +306,12 @@ function EditEvent(props) {
           </Grid>
         </Grid>
 
-        <Typography sx={{ marginTop: 1 }}>Patient</Typography>
+        <Typography sx={{ marginTop: 1}}>
+          Patient
+          <Tooltip title="This is optional and associates a patient with the item.">
+            <QuestionMark style={{width: 14}} />
+          </Tooltip>
+        </Typography>
         <PatientSearch setPatient={setPatientId} overWriteValue={patientId} />
         {/* time textfield that only goes up in increments of 15 */}
 

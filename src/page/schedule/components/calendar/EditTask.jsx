@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material'
 import {
@@ -18,11 +19,10 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
-import { Check, Clear, ClearAll, Close, Delete } from '@mui/icons-material'
+import { Check, Clear, ClearAll, Close, Delete, QuestionMark } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
-import { ConfirmationDialouge } from '../../../../components'
 import CalendarConfirmationDialogue from './CalendarConfirmationDialogue'
 
 function EditTask(props) {
@@ -37,7 +37,7 @@ function EditTask(props) {
   const [message, setMessage] = useState('')
   const [messageIcon, setMessageIcon] = useState('CHECK')
   const [severity, setSeverity] = useState('success')
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const [lastIdSelected, setLastIdSelected] = useState(0)
 
@@ -55,7 +55,7 @@ function EditTask(props) {
       setDurationQuarterHour(1)
     }
 
-    if (props.cardSelected != lastIdSelected) {
+    if (props.cardSelected != lastIdSelected && props.cardSelected > 0) {
       console.log('loading card on editPage')
       setLastIdSelected(props.cardSelected)
 
@@ -307,7 +307,12 @@ function EditTask(props) {
           </Grid>
         </Grid>
 
-        <Typography sx={{ marginTop: 1 }}>Patient</Typography>
+        <Typography sx={{ marginTop: 1 }}>
+          Patient
+          <Tooltip title="This is optional and associates a patient with the item.">
+            <QuestionMark style={{ width: 14 }} />
+          </Tooltip>
+        </Typography>
         <PatientSearch setPatient={setPatientId} overWriteValue={patientId} />
         {/* time textfield that only goes up in increments of 15 */}
 
@@ -338,7 +343,9 @@ function EditTask(props) {
         <Grid container sx={{ marginTop: 2 }}>
           <Grid item xs>
             <Button variant="contained" onClick={createTask}>
-              {lastIdSelected === 0 ? 'Create' : 'Update'}
+              {props.cardSelected === 0 || !props.cardSelected
+                ? 'Create'
+                : 'Update'}
             </Button>
           </Grid>
           {props.cardSelected ? (
