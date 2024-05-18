@@ -22,6 +22,8 @@ import { Check, Clear, ClearAll, Close, Delete } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
+import { ConfirmationDialouge } from '../../../../components'
+import CalendarConfirmationDialogue from './CalendarConfirmationDialogue'
 
 function EditTask(props) {
   const [edit, setEdit] = useState(props.isEdit && false)
@@ -35,6 +37,7 @@ function EditTask(props) {
   const [message, setMessage] = useState('')
   const [messageIcon, setMessageIcon] = useState('CHECK')
   const [severity, setSeverity] = useState('success')
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const [lastIdSelected, setLastIdSelected] = useState(0)
 
@@ -116,13 +119,19 @@ function EditTask(props) {
     startTimeStamp.setHours(Math.floor(startTime / 4))
     startTimeStamp.setMinutes((startTime % 4) * 15)
 
-    if (!(await ScheduleValidator.scheduleIsClear(startTimeStamp, durationQuarterHour, lastIdSelected))) {
+    if (
+      !(await ScheduleValidator.scheduleIsClear(
+        startTimeStamp,
+        durationQuarterHour,
+        lastIdSelected
+      ))
+    ) {
       setMessage(
         'This overlaps with another item in your schedule. Please alter the date of this item or another.'
       )
       setMessageIcon('CROSS')
       setSeverity('error')
-      return;
+      return
     }
 
     if (props.cardSelected != 0) {
@@ -138,15 +147,20 @@ function EditTask(props) {
       )
         .then(res => {
           console.log(res)
-          setMessage('Task successfully ' +  (props.cardSelected === 0 ? "created" : "updated") )
+          setMessage(
+            'Task successfully ' +
+              (props.cardSelected === 0 ? 'created' : 'updated')
+          )
           setMessageIcon('CHECK')
           setSeverity('success')
-          props.refresh();
+          props.refresh()
         })
         .catch(error => {
           console.log(error)
           setMessage(
-            'There was an error and the task was not successfully ' +  (props.cardSelected === 0 ? "created" : "updated")  + ' - please try again later'
+            'There was an error and the task was not successfully ' +
+              (props.cardSelected === 0 ? 'created' : 'updated') +
+              ' - please try again later'
           )
           setMessageIcon('CROSS')
           setSeverity('error')
@@ -166,15 +180,20 @@ function EditTask(props) {
     )
       .then(res => {
         console.log(res)
-        setMessage('Task successfully ' +  (props.cardSelected === 0 ? "created" : "updated") )
+        setMessage(
+          'Task successfully ' +
+            (props.cardSelected === 0 ? 'created' : 'updated')
+        )
         setMessageIcon('CHECK')
         setSeverity('success')
-        props.refresh();
+        props.refresh()
       })
       .catch(error => {
         console.log(error)
         setMessage(
-          'There was an error and the task was not successfully ' +  (props.cardSelected === 0 ? "created" : "updated")  + ' - please try again later'
+          'There was an error and the task was not successfully ' +
+            (props.cardSelected === 0 ? 'created' : 'updated') +
+            ' - please try again later'
         )
         setMessageIcon('CROSS')
         setSeverity('error')
@@ -192,7 +211,8 @@ function EditTask(props) {
         setMessage('Task successfully deleted')
         setMessageIcon('CHECK')
         setSeverity('success')
-        props.refresh();
+        setShowDeleteDialog(false)
+        props.refresh()
       })
       .catch(error => {
         console.log(error)
@@ -201,19 +221,31 @@ function EditTask(props) {
         )
         setMessageIcon('CROSS')
         setSeverity('error')
+        setShowDeleteDialog(false)
       })
   }
 
   function clearTask() {
     //clear the task number
     props.clearSelectedCard()
-    
+
     //remove any banners
-    setMessage('');
+    setMessage('')
   }
 
   return (
     <Box sx={{ padding: 1 }}>
+      {showDeleteDialog && (
+        <CalendarConfirmationDialogue
+          message="Are you sure you want to proceed?"
+          proceedResponse="Delete"
+          denyResponse="Don't delete"
+          onProceed={deleteTask}
+          onClose={() => setShowDeleteDialog(false)}
+          open={showDeleteDialog}
+          value={showDeleteDialog}
+        />
+      )}
       {message.length == 0 ? null : (
         <Alert
           icon={
@@ -306,7 +338,7 @@ function EditTask(props) {
         <Grid container sx={{ marginTop: 2 }}>
           <Grid item xs>
             <Button variant="contained" onClick={createTask}>
-              { lastIdSelected === 0 ? "Create" : "Update" }
+              {lastIdSelected === 0 ? 'Create' : 'Update'}
             </Button>
           </Grid>
           {props.cardSelected ? (
@@ -322,7 +354,7 @@ function EditTask(props) {
               <Button
                 variant="outlined"
                 // sx={{ display: 'block', marginTop: 2 }}
-                onClick={deleteTask}
+                onClick={() => setShowDeleteDialog(true)}
                 startIcon={<Delete />}
               >
                 Delete
