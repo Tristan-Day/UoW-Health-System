@@ -8,7 +8,8 @@ import {
   Fab,
   InputAdornment,
   IconButton,
-  Icon
+  Icon,
+  Tooltip
 } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
@@ -27,6 +28,7 @@ import { Edit } from '@mui/icons-material'
 import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import TreatmentsAPI from './logic/Treatments'
 import TreatmentCategoriesAPI from './logic/TreatmentCategory'
+import PropsConfirmationDialogue from '../schedule/components/calendar/PropsConfirmationDialogue'
 
 const Treatments = () => {
   const [query, setQuery] = useState('')
@@ -45,7 +47,9 @@ const Treatments = () => {
   }, [])
 
   useEffect(() => {
-    TreatmentCategoriesAPI.getTreatment({}).then(res => setTreatmentCategories(res.rows))
+    TreatmentCategoriesAPI.getTreatment({}).then(res =>
+      setTreatmentCategories(res.rows)
+    )
     if (message && !message.loading) {
       setTimeout(() => {
         setMessage(undefined)
@@ -59,7 +63,7 @@ const Treatments = () => {
       headerName: 'ID',
       width: 200,
       disableColumnMenu: true,
-      sortable: false,
+      sortable: false
     },
     {
       field: 'name',
@@ -80,16 +84,14 @@ const Treatments = () => {
       disableColumnMenu: true,
       sortable: false,
       renderCell: params => {
-        let treatmentCategoryName = "";
-        treatmentCategories.forEach((category) => {
-            if(category.treatment_id == params.row.category_id) {
-                treatmentCategoryName = category.category_name;
-            }
-        });
+        let treatmentCategoryName = ''
+        treatmentCategories.forEach(category => {
+          if (category.treatment_id == params.row.category_id) {
+            treatmentCategoryName = category.category_name
+          }
+        })
 
-        return (
-          <Typography>{treatmentCategoryName}</Typography>
-        );
+        return <Typography>{treatmentCategoryName}</Typography>
       }
     },
     {
@@ -121,16 +123,16 @@ const Treatments = () => {
     TreatmentsAPI.getTreatment({})
       .then(result => {
         // Provide each record with an ID
-        let results = result.rows;
+        let results = result.rows
 
-        console.log(results);
+        console.log(results)
 
-        if(query && query.trim() && query.length > 1) {
-          results = results.filter((treatment) => {
+        if (query && query.trim() && query.length > 1) {
+          results = results.filter(treatment => {
             console.log(treatment.name)
-            return treatment.name.indexOf(query) > -1
-          });
-        } 
+            return treatment.name.toLowerCase().indexOf(query.toLowerCase()) > -1
+          })
+        }
 
         setContents(
           results.map(room => ({
@@ -188,11 +190,12 @@ const Treatments = () => {
   return (
     <div>
       {showDeleteDialog && (
-        <ConfirmationDialogue
+        <PropsConfirmationDialogue
           message="Are you sure you want to proceed?"
           proceedResponse="Delete"
           denyResponse="Don't delete"
           onProceed={handleDelete}
+          onClose={() => setShowDeleteDialog(false)}
           open={showDeleteDialog}
         />
       )}
@@ -257,14 +260,16 @@ const Treatments = () => {
         />
 
         <Box sx={{ position: 'fixed', bottom: '4.5rem', right: '4.5rem' }}>
-          <Fab
-            color="primary"
-            aria-label="add"
-            sx={{ position: 'absolute' }}
-            onClick={() => navigate('create')}
-          >
-            <AddIcon />
-          </Fab>
+          <Tooltip title='Add Treatment'>
+            <Fab
+              color="primary"
+              aria-label="add"
+              sx={{ position: 'absolute' }}
+              onClick={() => navigate('create')}
+            >
+              <AddIcon />
+            </Fab>
+          </Tooltip>
         </Box>
       </Box>
     </div>
