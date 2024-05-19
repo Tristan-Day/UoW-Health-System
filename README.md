@@ -17,7 +17,7 @@ This project was completed thanks to the hard work of the following individuals.
 
 * Tristan Day
 * Ben Wright
-* Brian Anthony
+* Bryan Anthony
 * Ibtisam Kahim
 
 ## Documentation
