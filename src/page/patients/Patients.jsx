@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import { Outlet, Route } from 'react-router-dom'
 
 import IndexGenerator from '../../components/generator/IndexGenerator'
+import SurgeryBooking from './SurgeryBooking'
 
 const Pages = {
   'Treatment Appointments': {
@@ -19,6 +20,10 @@ const Pages = {
   'Care Orders': {
     description: 'Create, amend and delete patient care orders.',
     site: 'care-orders'
+  },
+  'Surgery Bookings': {
+    description: 'Create, amend and delete bookings for surgery.',
+    site: 'surgery-booking'
   }
 }
 
@@ -63,6 +68,10 @@ const PatientRoutes = permissions => (
         <Route index element={<h1>Care Orders</h1>} />
       </Route>
     ) : null}
+
+    <Route path="surgery-booking">
+      <Route index element={<SurgeryBooking />} />
+    </Route>
   </Route>
 )
 
