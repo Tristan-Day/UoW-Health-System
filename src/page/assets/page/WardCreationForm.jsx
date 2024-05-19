@@ -50,8 +50,20 @@ const WardCreationForm = props => {
     action = 'UPDATE'
   }
 
+  function isUpdate() {
+    try {
+      return (
+        location.state &&
+        location.state.action &&
+        location.state.action === 'UPDATE'
+      )
+    } catch (error) {
+      return false;
+    }
+  }
+
   useEffect(() => {
-    let props = location.state;
+    let props = location.state
     if (props && props.action && props.action === 'UPDATE') {
       //update here
       setForm({
@@ -101,8 +113,7 @@ const WardCreationForm = props => {
       return
     }
 
-    if(action === 'UPDATE') {
-
+    if (isUpdate()) {
       setMessage({ text: 'Updating ward...', severity: 'info' })
 
       //ensure correct API is used
@@ -114,24 +125,24 @@ const WardCreationForm = props => {
         form.icon,
         form.id
       )
-        .then((res) => {
-          setMessage({ text: 'ward sucessfully created', severity: 'success' })
+        .then(res => {
+          setMessage({ text: 'ward sucessfully updated', severity: 'success' })
 
-          console.log(res);
+          console.log(res)
 
           setTimeout(() => setMessage(undefined), 7000)
         })
-        .catch((res) => {
+        .catch(res => {
           setMessage({
             text: 'Failed to create ward - Please try again later',
             severity: 'error'
           })
 
-          console.log(res);
+          console.log(res)
 
           setTimeout(() => setMessage(undefined), 7000)
         })
-
+        return;
     }
 
     setMessage({ text: 'Creating ward...', severity: 'info' })
@@ -143,8 +154,7 @@ const WardCreationForm = props => {
       form.description,
       form.icon,
       form.id
-    )
-      .then(() => {
+    ).then((res) => {
         setMessage({ text: 'ward sucessfully created', severity: 'success' })
 
         setTimeout(() => setMessage(undefined), 7000)

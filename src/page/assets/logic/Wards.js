@@ -15,7 +15,7 @@ class WardsAPI {
     }
 
     static upsertWard = async function(actionType, wardName, specialisation, description, iconData, wardId) {
-      if(wardId != null && actionType == "INSERT") {
+      if(wardId != null && actionType === "UPDATE") {
         const operation = post({
           apiName: 'WardHandler',
           path: `/v1/resources/ward`,
@@ -45,12 +45,14 @@ class WardsAPI {
             DESCRIPTION: description,
             SPECIALISATION: specialisation,
             ICON_DATA: iconData,
+            WARD_ID: wardId
           }
         }
       });
   
       const response = ((await operation.response));
-      return (await response.body.json()).success;
+      let responseBody = (await response.body.json());
+      return responseBody.success;
     }
 
     static deleteWard = async function(wardId) {
