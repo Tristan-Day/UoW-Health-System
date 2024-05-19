@@ -61,13 +61,13 @@ class SurgeryBookingAPI {
       return (await response.body.json()).success;
     }
 
-    static deleteSurgeryBooking = async function(wardId) {
+    static deleteSurgeryBooking = async function(id) {
       const operation = del({
         apiName: 'BookingSurgeryHandler',
         path: `/v1/resources/surgery`,
         options: {
           queryParams: {
-            WARD_ID: wardId
+            ID: id
           },
         }
       });

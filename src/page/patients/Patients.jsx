@@ -71,6 +71,7 @@ const PatientRoutes = permissions => (
 
     <Route path="surgery-booking">
       <Route index element={<SurgeryBooking />} />
+      <Route path="create" element={<SurgeryBooking />} />
     </Route>
   </Route>
 )
