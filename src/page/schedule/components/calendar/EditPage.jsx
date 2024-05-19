@@ -50,7 +50,7 @@ function EditPage(props) {
   return (
     <Card>
       <CardContent>
-        <Box sx={{ height: (getWindowHeight() > 600 ? getWindowHeight() - 300 : getWindowHeight() / 2) }}>
+        <Box sx={{ height: (getWindowHeight() > 600 ? getWindowHeight() - 300 : getWindowHeight() / 2), overflowY: 'auto' }}>
           <Grid container sx={{ marginTop: 1 }}>
             <Grid item>
               <Button
