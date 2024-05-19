@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material'
 import {
@@ -18,10 +19,11 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
-import { Check, Clear, ClearAll, Close, Delete } from '@mui/icons-material'
+import { Check, Clear, ClearAll, Close, Delete, QuestionMark } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
+import PropsConfirmationDialogue from './PropsConfirmationDialogue'
 
 function EditTask(props) {
   const [edit, setEdit] = useState(props.isEdit && false)
@@ -35,6 +37,7 @@ function EditTask(props) {
   const [message, setMessage] = useState('')
   const [messageIcon, setMessageIcon] = useState('CHECK')
   const [severity, setSeverity] = useState('success')
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const [lastIdSelected, setLastIdSelected] = useState(0)
 
@@ -52,7 +55,7 @@ function EditTask(props) {
       setDurationQuarterHour(1)
     }
 
-    if (props.cardSelected != lastIdSelected) {
+    if (props.cardSelected != lastIdSelected && props.cardSelected > 0) {
       console.log('loading card on editPage')
       setLastIdSelected(props.cardSelected)
 
@@ -116,13 +119,28 @@ function EditTask(props) {
     startTimeStamp.setHours(Math.floor(startTime / 4))
     startTimeStamp.setMinutes((startTime % 4) * 15)
 
-    if (!(await ScheduleValidator.scheduleIsClear(startTimeStamp, durationQuarterHour, lastIdSelected))) {
+    if(name.length === 0 || startDate.length === 0 || startTime.length === 0 ) {
+      setMessage(
+        'This action could not be performed - please ensure the name, start date and time are filled out'
+      )
+      setMessageIcon('CROSS')
+      setSeverity('error')
+      return;
+    }
+
+    if (
+      !(await ScheduleValidator.scheduleIsClear(
+        startTimeStamp,
+        durationQuarterHour,
+        lastIdSelected
+      ))
+    ) {
       setMessage(
         'This overlaps with another item in your schedule. Please alter the date of this item or another.'
       )
       setMessageIcon('CROSS')
       setSeverity('error')
-      return;
+      return
     }
 
     if (props.cardSelected != 0) {
@@ -138,15 +156,20 @@ function EditTask(props) {
       )
         .then(res => {
           console.log(res)
-          setMessage('Task successfully ' +  (props.cardSelected === 0 ? "created" : "updated") )
+          setMessage(
+            'Task successfully ' +
+              (props.cardSelected === 0 || !props.cardSelected ? 'created' : 'updated')
+          )
           setMessageIcon('CHECK')
           setSeverity('success')
-          props.refresh();
+          props.refresh()
         })
         .catch(error => {
           console.log(error)
           setMessage(
-            'There was an error and the task was not successfully ' +  (props.cardSelected === 0 ? "created" : "updated")  + ' - please try again later'
+            'There was an error and the task was not successfully ' +
+              (props.cardSelected === 0 || !props.cardSelected  ? 'created' : 'updated') +
+              ' - please try again later'
           )
           setMessageIcon('CROSS')
           setSeverity('error')
@@ -166,15 +189,20 @@ function EditTask(props) {
     )
       .then(res => {
         console.log(res)
-        setMessage('Task successfully ' +  (props.cardSelected === 0 ? "created" : "updated") )
+        setMessage(
+          'Task successfully ' +
+            (props.cardSelected === 0 ? 'created' : 'updated')
+        )
         setMessageIcon('CHECK')
         setSeverity('success')
-        props.refresh();
+        props.refresh()
       })
       .catch(error => {
         console.log(error)
         setMessage(
-          'There was an error and the task was not successfully ' +  (props.cardSelected === 0 ? "created" : "updated")  + ' - please try again later'
+          'There was an error and the task was not successfully ' +
+            (props.cardSelected === 0 ? 'created' : 'updated') +
+            ' - please try again later'
         )
         setMessageIcon('CROSS')
         setSeverity('error')
@@ -192,7 +220,8 @@ function EditTask(props) {
         setMessage('Task successfully deleted')
         setMessageIcon('CHECK')
         setSeverity('success')
-        props.refresh();
+        setShowDeleteDialog(false)
+        props.refresh()
       })
       .catch(error => {
         console.log(error)
@@ -201,19 +230,31 @@ function EditTask(props) {
         )
         setMessageIcon('CROSS')
         setSeverity('error')
+        setShowDeleteDialog(false)
       })
   }
 
   function clearTask() {
     //clear the task number
     props.clearSelectedCard()
-    
+
     //remove any banners
-    setMessage('');
+    setMessage('')
   }
 
   return (
     <Box sx={{ padding: 1 }}>
+      {showDeleteDialog && (
+        <PropsConfirmationDialogue
+          message="Are you sure you want to proceed?"
+          proceedResponse="Delete"
+          denyResponse="Don't delete"
+          onProceed={deleteTask}
+          onClose={() => setShowDeleteDialog(false)}
+          open={showDeleteDialog}
+          value={showDeleteDialog}
+        />
+      )}
       {message.length == 0 ? null : (
         <Alert
           icon={
@@ -275,7 +316,12 @@ function EditTask(props) {
           </Grid>
         </Grid>
 
-        <Typography sx={{ marginTop: 1 }}>Patient</Typography>
+        <Typography sx={{ marginTop: 1 }}>
+          Patient
+          <Tooltip title="This is optional and associates a patient with the item.">
+            <QuestionMark style={{ width: 14 }} />
+          </Tooltip>
+        </Typography>
         <PatientSearch setPatient={setPatientId} overWriteValue={patientId} />
         {/* time textfield that only goes up in increments of 15 */}
 
@@ -306,7 +352,9 @@ function EditTask(props) {
         <Grid container sx={{ marginTop: 2 }}>
           <Grid item xs>
             <Button variant="contained" onClick={createTask}>
-              { lastIdSelected === 0 ? "Create" : "Update" }
+              {props.cardSelected === 0 || !props.cardSelected
+                ? 'Create'
+                : 'Update'}
             </Button>
           </Grid>
           {props.cardSelected ? (
@@ -322,7 +370,7 @@ function EditTask(props) {
               <Button
                 variant="outlined"
                 // sx={{ display: 'block', marginTop: 2 }}
-                onClick={deleteTask}
+                onClick={() => setShowDeleteDialog(true)}
                 startIcon={<Delete />}
               >
                 Delete

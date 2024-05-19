@@ -38,6 +38,7 @@ class ScheduleItemAPI {
     description,
     itemType,
     scheduleItemId,
+    treatmentId = null,
   ) {
 
     if (patientId != null && actionType == 'INSERT') {
@@ -52,7 +53,8 @@ class ScheduleItemAPI {
             PATIENT_ID: patientId,
             TASK: task,
             DESCRIPTION: description,
-            ITEM_TYPE: itemType
+            ITEM_TYPE: itemType,
+            TREATMENT_ID: treatmentId
           },
           // headers: {Authorization: `Bearer ${token}`}
         }
@@ -81,7 +83,8 @@ class ScheduleItemAPI {
           PATIENT_ID: patientId,
           TASK: task,
           DESCRIPTION: description,
-          ITEM_TYPE: itemType
+          ITEM_TYPE: itemType,
+          TREATMENT_ID: treatmentId
         },
         // headers: {Authorization: `Bearer ${token}`}
       }

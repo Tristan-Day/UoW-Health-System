@@ -271,13 +271,12 @@ class TreatmentCategoryAPI {
             return;
         }
 
-        if (!Validator.deleteIsValid(req.body)) {
+        if (!Validator.deleteIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
 
-        console.log(req.body);
-
+        console.log(req.query);
 
         let result = {};
         try {
@@ -285,7 +284,7 @@ class TreatmentCategoryAPI {
             const queryString = `
                     DELETE FROM "system".treatment_categories WHERE TREATMENT_CATEGORY_ID = $1;
                     `;
-            const values = [req.body["TREATMENT_CATEGORY_ID"]];
+            const values = [req.query["TREATMENT_CATEGORY_ID"]];
 
             let query = await client.query(queryString, values);
             result = { success: query };

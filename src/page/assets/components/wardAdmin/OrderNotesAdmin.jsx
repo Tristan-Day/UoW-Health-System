@@ -7,6 +7,7 @@ import {
   Grid,
   IconButton,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -18,6 +19,7 @@ import { Add, Delete, Edit, Person, Save } from '@mui/icons-material'
 import { getCurrentUser } from '@aws-amplify/auth'
 import { getStaff, getUser } from '../../../staff/logic/Personel'
 import OrderNotesAPI from '../../logic/OrderNotes'
+import PropsConfirmationDialogue from '../../../schedule/components/calendar/PropsConfirmationDialogue'
 
 function OrderNoteCard(props) {
   const [editMode, setEditMode] = useState(false)
@@ -54,40 +56,51 @@ function OrderNoteCard(props) {
     <Card sx={{ marginTop: 2 }}>
       <CardContent>
         <Box sx={{ display: 'flex' }}>
-          <Person sx={{ height: 1, alignSelf: 'center', paddingBottom: 1 }} />
-          <Typography variant="p" sx={{ alignSelf: 'center', marginLeft: 1, paddingBottom: 1 }}>
-            {props.author}
+          <Tooltip title="Post author">
+            <Person sx={{ height: 1, alignSelf: 'center', paddingBottom: 1 }} />
+          </Tooltip>
+          <Typography
+            variant="p"
+            sx={{ alignSelf: 'center', marginLeft: 1, paddingBottom: 1 }}
+          >
+            <Tooltip title="Post author">{props.author}</Tooltip>
           </Typography>
           {props.admin === true ? (
             !editMode ? (
-              <IconButton
-                onClick={toggleEditMode}
-                children={<Edit />}
-                sx={{
-                  marginLeft: 'auto',
-                  height: 1,
-                  alignSelf: 'center'
-                }}
-              ></IconButton>
+              <Tooltip title="Edit">
+                <IconButton
+                  onClick={toggleEditMode}
+                  children={<Edit />}
+                  sx={{
+                    marginLeft: 'auto',
+                    height: 1,
+                    alignSelf: 'center'
+                  }}
+                ></IconButton>
+              </Tooltip>
             ) : (
-              <IconButton
-                onClick={saveChanges}
-                children={<Save />}
-                sx={{
-                  marginLeft: 'auto',
-                  height: 1,
-                  alignSelf: 'center'
-                }}
-              ></IconButton>
+              <Tooltip title="Save">
+                <IconButton
+                  onClick={saveChanges}
+                  children={<Save />}
+                  sx={{
+                    marginLeft: 'auto',
+                    height: 1,
+                    alignSelf: 'center'
+                  }}
+                ></IconButton>
+              </Tooltip>
             )
           ) : null}
 
           {props.admin === true ? (
-            <IconButton
-              onClick={() => props.onDelete(props.id)}
-              children={<Delete />}
-              sx={{ height: 1, alignSelf: 'center' }}
-            ></IconButton>
+            <Tooltip title="Delete">
+              <IconButton
+                onClick={() => props.onDelete(props.id)}
+                children={<Delete />}
+                sx={{ height: 1, alignSelf: 'center' }}
+              ></IconButton>
+            </Tooltip>
           ) : null}
         </Box>
         <Divider></Divider>
@@ -133,6 +146,8 @@ function OrderNoteCard(props) {
 function OrderNotesAdmin(props) {
   const [windowWidth, setWindowWidth] = useState(getWindowWidth())
   const [windowHeight, setWindowHeight] = useState(getWindowHeight())
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [removalCandidate, setRemovalCandidate] = useState(0)
 
   const [notes, setNotes] = useState([])
   const [orders, setOrders] = useState([])
@@ -218,12 +233,18 @@ function OrderNotesAdmin(props) {
     getItems()
   }
 
-  async function removeCard(id) {
-    let res = await OrderNotesAPI.deleteOrderNotes(parseInt(id))
+  function showDeleteDialogForCard(id) {
+    setRemovalCandidate(id)
+    setShowDeleteDialog(true)
+  }
+
+  async function removeCard() {
+    let res = await OrderNotesAPI.deleteOrderNotes(parseInt(removalCandidate))
 
     if ('success' in res) {
       getItems()
     }
+    setShowDeleteDialog(false)
   }
 
   if (!props.ward) {
@@ -239,6 +260,16 @@ function OrderNotesAdmin(props) {
 
   return (
     <Box>
+      {showDeleteDialog && (
+        <PropsConfirmationDialogue
+          message="Are you sure you want to proceed?"
+          proceedResponse="Delete"
+          denyResponse="Don't delete"
+          onProceed={removeCard}
+          onClose={() => setShowDeleteDialog(false)}
+          open={showDeleteDialog}
+        />
+      )}
       {isLargeScreen(windowWidth) ? (
         <Grid container spacing={0}>
           {/* Order */}
@@ -264,7 +295,7 @@ function OrderNotesAdmin(props) {
                     title={note.title}
                     content={note.description}
                     author={note.author_name}
-                    onDelete={removeCard}
+                    onDelete={showDeleteDialogForCard}
                     ward={props.ward}
                     type={note.type}
                     admin={props.admin}
@@ -302,7 +333,7 @@ function OrderNotesAdmin(props) {
                     title={note.title}
                     content={note.description}
                     author={note.author_name}
-                    onDelete={removeCard}
+                    onDelete={showDeleteDialogForCard}
                     ward={props.ward}
                     type={note.type}
                     admin={props.admin}
@@ -336,7 +367,7 @@ function OrderNotesAdmin(props) {
                   title={note.title}
                   content={note.description}
                   author={note.author_name}
-                  onDelete={removeCard}
+                  onDelete={showDeleteDialogForCard}
                   ward={props.ward}
                   type={note.type}
                   admin={props.admin}
@@ -368,7 +399,7 @@ function OrderNotesAdmin(props) {
                     title={note.title}
                     content={note.description}
                     author={note.author_name}
-                    onDelete={removeCard}
+                    onDelete={showDeleteDialogForCard}
                     ward={props.ward}
                     type={note.type}
                     admin={props.admin}

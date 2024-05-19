@@ -1,4 +1,10 @@
-import { ArrowBack, ArrowForward, ChevronLeft, ChevronRight, Refresh } from '@mui/icons-material'
+import {
+  ArrowBack,
+  ArrowForward,
+  ChevronLeft,
+  ChevronRight,
+  Refresh
+} from '@mui/icons-material'
 import {
   Box,
   Button,
@@ -6,6 +12,7 @@ import {
   Grid,
   IconButton,
   TextField,
+  Tooltip,
   Typography
 } from '@mui/material'
 import { useState } from 'react'
@@ -51,19 +58,28 @@ function CalendarNavbar(props) {
     <Box>
       <Grid container>
         <Grid item>
-          <IconButton aria-label="toggle edit page open" onClick={openCreatePage} sx={{marginLeft: 1}}>
-          { props.editPageOpen ? <ArrowBack /> : <ArrowForward />}
+          <IconButton
+            aria-label="toggle edit page open"
+            onClick={openCreatePage}
+            sx={{ marginLeft: 1 }}
+          >
+            <Tooltip title="Toggle editing and creating page open and closed">
+              {props.editPageOpen ? <ArrowBack /> : <ArrowForward />}
+            </Tooltip>
           </IconButton>
         </Grid>
         <Grid item xs>
-          <Divider
-            orientation="vertical"
-            sx={{ paddingLeft: 1}}
-          />
+          <Divider orientation="vertical" sx={{ paddingLeft: 1 }} />
         </Grid>
         <Grid item>
-          <IconButton aria-label="refresh" onClick={props.refresh} sx={{marginLeft: 1}}>
-           <Refresh />
+          <IconButton
+            aria-label="refresh"
+            onClick={props.refresh}
+            sx={{ marginLeft: 1 }}
+          >
+            <Tooltip title="Refresh">
+              <Refresh />
+            </Tooltip>
           </IconButton>
         </Grid>
         <Grid item>
@@ -71,18 +87,24 @@ function CalendarNavbar(props) {
             aria-label="previous date"
             onClick={() => moveToPeripheralDate(DIRECTION.PREVIOUS)}
           >
-            <ChevronLeft />
+            <Tooltip title="Previous day">
+              <ChevronLeft />
+            </Tooltip>
           </IconButton>
         </Grid>
         <Grid item>
-          <Button onClick={toggleDatePicker}>{getDateString()}</Button>
+          <Tooltip title="Open date picker">
+            <Button onClick={toggleDatePicker}>{getDateString()}</Button>
+          </Tooltip>
         </Grid>
         <Grid item>
           <IconButton
             aria-label="next date"
             onClick={() => moveToPeripheralDate(DIRECTION.NEXT)}
           >
-            <ChevronRight />
+            <Tooltip title="Next day">
+              <ChevronRight />
+            </Tooltip>
           </IconButton>
         </Grid>
       </Grid>

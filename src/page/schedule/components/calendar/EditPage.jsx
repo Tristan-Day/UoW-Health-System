@@ -9,13 +9,15 @@ import {
 } from '@mui/material'
 import { useEffect, useState } from 'react'
 import EditTask from './EditTask'
-import { getWindowWidth } from '../Util'
+import { getWindowHeight, getWindowWidth } from '../Util'
 import { Close, Task } from '@mui/icons-material'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
 import EditEvent from './EditEvent'
+import EditAppointment from './EditAppointment'
 
 const TASK = 'TASK'
 const EVENT = 'EVENT'
+const APPOINTMENT = 'APPOINTMENT'
 
 function EditPage(props) {
   const [page, setPage] = useState(TASK)
@@ -48,7 +50,7 @@ function EditPage(props) {
   return (
     <Card>
       <CardContent>
-        <Box sx={{ height: window.innerHeight / 1.5 }}>
+        <Box sx={{ height: (getWindowHeight() > 600 ? getWindowHeight() - 300 : getWindowHeight() / 2), overflowY: 'auto' }}>
           <Grid container sx={{ marginTop: 1 }}>
             <Grid item>
               <Button
@@ -65,13 +67,28 @@ function EditPage(props) {
                 sx={{ marginLeft: 1, marginRight: 1 }}
               />
             </Grid>
-            <Grid item xs>
+            <Grid item>
               <Button
                 size='small'
                 variant={getButtonType(EVENT)}
                 onClick={() => setPage(EVENT)}
               >
                 Event
+              </Button>
+            </Grid>
+            <Grid item>
+              <Divider
+                orientation={'vertical'}
+                sx={{ marginLeft: 1, marginRight: 1 }}
+              />
+            </Grid>
+            <Grid item xs>
+              <Button
+                size='small'
+                variant={getButtonType(APPOINTMENT)}
+                onClick={() => setPage(APPOINTMENT)}
+              >
+                Appointment
               </Button>
             </Grid>
             {canDisplayClose() ? (
@@ -91,6 +108,9 @@ function EditPage(props) {
           ) : null}
           {page === EVENT ? (
             <EditEvent cardSelected={props.cardType === EVENT ? lastCardSelected : null} clearSelectedCard={props.clearSelectedCard} refresh={props.refresh} />
+          ) : null}
+          {page === APPOINTMENT ? (
+            <EditAppointment cardSelected={props.cardType === APPOINTMENT ? lastCardSelected : null} clearSelectedCard={props.clearSelectedCard} refresh={props.refresh} />
           ) : null}
         </Box>
       </CardContent>

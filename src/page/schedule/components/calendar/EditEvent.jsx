@@ -6,6 +6,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Tooltip,
   Typography,
   duration
 } from '@mui/material'
@@ -19,10 +20,11 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
-import { Check, ClearAll, Delete } from '@mui/icons-material'
+import { Check, ClearAll, Delete, QuestionAnswer, QuestionMark } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
 import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
+import PropsConfirmationDialogue from './PropsConfirmationDialogue'
 
 function EditEvent(props) {
   const [name, setName] = useState('')
@@ -35,6 +37,7 @@ function EditEvent(props) {
   const [message, setMessage] = useState('')
   const [messageIcon, setMessageIcon] = useState('CHECK')
   const [severity, setSeverity] = useState('success')
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const [lastIdSelected, setLastIdSelected] = useState(0)
 
@@ -53,7 +56,7 @@ function EditEvent(props) {
       setDurationQuarterHour(1)
     }
 
-    if (props.cardSelected != lastIdSelected) {
+    if (props.cardSelected != lastIdSelected && props.cardSelected > 0) {
       console.log('loading card on editPage')
       setLastIdSelected(props.cardSelected)
 
@@ -61,44 +64,49 @@ function EditEvent(props) {
       console.log('getting items on editpage')
 
       console.log(props.scheduleItems)
-      if (
-        props.scheduleItems != null &&
-        props.scheduleItems.hasOwnProperty('success')
-      ) {
-        let filteredScheduleItems = props.scheduleItems.success.rows.filter(
-          item => {
-            console.log('check iteration')
-            console.log(item.schedule_item_id)
-            console.log(props.cardSelected)
+      ScheduleItemAPI.getPatient()
+        .then(scheduleItems => {
+          //TODO: switch this to an API call for the individual ID
+          console.log('getting items on editpage')
 
-            return parseInt(item.schedule_item_id) == props.cardSelected
-          }
-        )
+          console.log(scheduleItems)
+          let filteredScheduleItems = scheduleItems.success.rows.filter(
+            item => {
+              // console.log(item)
+              console.log('check iteration')
+              console.log(item.schedule_item_id)
+              console.log(props.cardSelected)
+              return parseInt(item.schedule_item_id) == props.cardSelected
+            }
+          )
 
-        const content = filteredScheduleItems[0]
+          const content = filteredScheduleItems[0]
 
-        console.log('matching cards')
-        console.log(content)
+          console.log('matching cards')
+          console.log(content)
 
-        setName(content.task)
-        setDescription(content.description)
+          setName(content.task)
+          setDescription(content.description)
 
-        let contentDate = new Date(content.start_timestamp)
-        setStartDate(contentDate)
+          let contentDate = new Date(content.start_timestamp)
+          setStartDate(contentDate)
 
-        let quarterHours =
-          Math.floor(contentDate.getHours() * 4) +
-          Math.floor(contentDate.getMinutes() / 15)
+          let quarterHours =
+            Math.floor(contentDate.getHours() * 4) +
+            Math.floor(contentDate.getMinutes() / 15)
 
-        setStartTime(quarterHours)
+          setStartTime(quarterHours)
 
-        console.log('patient id')
-        console.log(content.patient_id)
-        console.log(parseInt(content.patient_id))
+          console.log('patient id')
+          console.log(content.patient_id)
+          console.log(parseInt(content.patient_id))
 
-        setPatientId(parseInt(content.patient_id))
-        setDurationQuarterHour(content.estimated_duration_minutes)
-      }
+          setPatientId(parseInt(content.patient_id))
+          setDurationQuarterHour(content.estimated_duration_minutes)
+        })
+        .catch(e => {
+          console.log(e)
+        })
     }
   })
 
@@ -116,6 +124,15 @@ function EditEvent(props) {
     startTimeStamp.setHours(Math.floor(startTime / 4))
     startTimeStamp.setMinutes((startTime % 4) * 15)
 
+    if(name.length === 0 || startDate.length === 0 || startTime.length === 0 ) {
+      setMessage(
+        'This action could not be performed - please ensure the name, start date and time are filled out'
+      )
+      setMessageIcon('CROSS')
+      setSeverity('error')
+      return;
+    }
+
     if (
       !(await ScheduleValidator.scheduleIsClear(
         startTimeStamp,
@@ -131,7 +148,7 @@ function EditEvent(props) {
       return
     }
 
-    if (props.cardSelected != 0) {
+    if (props.cardSelected > 0) {
       ScheduleItemAPI.upsertPatient(
         'UPDATE',
         startTimeStamp.toISOString(),
@@ -146,7 +163,7 @@ function EditEvent(props) {
           console.log(res)
           setMessage(
             'Event successfully ' +
-              (props.cardSelected === 0 ? 'created' : 'updated')
+              (props.cardSelected === 0 || !props.cardSelected  ? 'created' : 'updated')
           )
           setMessageIcon('CHECK')
           setSeverity('success')
@@ -156,7 +173,7 @@ function EditEvent(props) {
           console.log(error)
           setMessage(
             'There was an error and the event was not successfully ' +
-              (props.cardSelected === 0 ? 'created' : 'updated') +
+              (props.cardSelected === 0 || !props.cardSelected  ? 'created' : 'updated') +
               ' - please try again later'
           )
           setMessageIcon('CROSS')
@@ -208,6 +225,7 @@ function EditEvent(props) {
         setMessage('Task successfully deleted')
         setMessageIcon('CHECK')
         setSeverity('success')
+        setShowDeleteDialog(false)
         props.refresh()
       })
       .catch(error => {
@@ -217,6 +235,7 @@ function EditEvent(props) {
         )
         setMessageIcon('CROSS')
         setSeverity('error')
+        setShowDeleteDialog(false)
       })
   }
 
@@ -230,6 +249,17 @@ function EditEvent(props) {
 
   return (
     <Box sx={{ padding: 1 }}>
+      {showDeleteDialog && (
+        <PropsConfirmationDialogue
+          message="Are you sure you want to proceed?"
+          proceedResponse="Delete"
+          denyResponse="Don't delete"
+          onProceed={deleteEvent}
+          onClose={() => setShowDeleteDialog(false)}
+          open={showDeleteDialog}
+          value={showDeleteDialog}
+        />
+      )}
       {message.length == 0 ? null : (
         <Alert
           icon={<Check fontSize="inherit" />}
@@ -285,7 +315,12 @@ function EditEvent(props) {
           </Grid>
         </Grid>
 
-        <Typography sx={{ marginTop: 1 }}>Patient</Typography>
+        <Typography sx={{ marginTop: 1}}>
+          Patient
+          <Tooltip title="This is optional and associates a patient with the item.">
+            <QuestionMark style={{width: 14}} />
+          </Tooltip>
+        </Typography>
         <PatientSearch setPatient={setPatientId} overWriteValue={patientId} />
         {/* time textfield that only goes up in increments of 15 */}
 
@@ -316,7 +351,9 @@ function EditEvent(props) {
         <Grid container sx={{ marginTop: 2 }}>
           <Grid item xs>
             <Button variant="contained" onClick={createEvent}>
-              {lastIdSelected === 0 ? 'Create' : 'Update'}
+              {props.cardSelected === 0 || !props.cardSelected
+                ? 'Create'
+                : 'Update'}
             </Button>
           </Grid>
           {props.cardSelected ? (
@@ -332,7 +369,7 @@ function EditEvent(props) {
               <Button
                 variant="outlined"
                 // sx={{ display: 'block', marginTop: 2 }}
-                onClick={deleteEvent}
+                onClick={() => setShowDeleteDialog(true)}
                 startIcon={<Delete />}
               >
                 Delete
