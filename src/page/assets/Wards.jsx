@@ -68,7 +68,7 @@ const Wards = () => {
       disableColumnMenu: true,
       sortable: false,
       renderCell: params => {
-        console.log(params.row.icon_data)
+        // console.log(params.row.icon_data)
         return <Icon>{params.row.icon_data}</Icon>
       }
     },
@@ -113,7 +113,7 @@ const Wards = () => {
     }
   ]
 
-  async function handleSearch(query) {
+  async function handleSearch() {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
     console.log(query)
@@ -121,12 +121,23 @@ const Wards = () => {
     WardsAPI.getWard(query)
       .then(result => {
         // Provide each record with an ID
-        setContents(
-          result.rows.map(room => ({
-            ...room,
-            id: room.ward_id
-          }))
-        )
+        let mappedResults = result.rows.map(room => ({
+          ...room,
+          id: room.ward_id
+        }))
+
+        let filteredResults = mappedResults.filter(a => {
+          return a.ward_name.toLowerCase().indexOf(query.toLowerCase()) != -1
+        })
+
+        if(query.length === 0) {
+          filteredResults = mappedResults;
+        }
+
+        console.log('filtered results:')
+        console.log(filteredResults)
+
+        setContents(filteredResults)
         setMessage(undefined)
       })
       .catch(() => {
@@ -140,16 +151,16 @@ const Wards = () => {
   }
 
   function openDeleteDialog() {
-    setShowDeleteDialog(true);
+    setShowDeleteDialog(true)
   }
 
   async function handleDelete() {
-    setShowDeleteDialog(false);
+    setShowDeleteDialog(false)
 
     setMessage({ text: 'Deleting room...', severity: 'info', loading: true })
 
-    console.log("selection");
-    console.log(selection);
+    console.log('selection')
+    console.log(selection)
 
     WardsAPI.deleteWard(selection)
       .then(res => {
@@ -163,8 +174,8 @@ const Wards = () => {
 
         setContents(contents.filter(room => room.id !== selection))
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(error => {
+        console.log(error)
 
         setMessage({
           text: 'Ward to delete room - Please try again later',
@@ -177,16 +188,14 @@ const Wards = () => {
   return (
     <div>
       {showDeleteDialog && (
-        
-          <PropsConfirmationDialogue
-            message="Are you sure you want to proceed?"
-            proceedResponse="Delete"
-            denyResponse="Don't delete"
-            onProceed={handleDelete}
-            onClose={() => setShowDeleteDialog(false)}
-            open={showDeleteDialog}
-          />
-        
+        <PropsConfirmationDialogue
+          message="Are you sure you want to proceed?"
+          proceedResponse="Delete"
+          denyResponse="Don't delete"
+          onProceed={handleDelete}
+          onClose={() => setShowDeleteDialog(false)}
+          open={showDeleteDialog}
+        />
       )}
       <Box>
         <BreadcrumbGenerator />
@@ -261,7 +270,7 @@ const Wards = () => {
       </Box>
 
       {/* Must be added for icons in the table to be rendered, */}
-      <div style={{visibility: 'hidden', height: 0, width: 0}}>
+      <div style={{ visibility: 'hidden', height: 0, width: 0 }}>
         <MaterialIconPicker />
       </div>
     </div>
