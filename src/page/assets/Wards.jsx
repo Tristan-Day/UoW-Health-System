@@ -12,7 +12,6 @@ import {
 } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
-import { palette } from '@mui/system'
 
 import SearchIcon from '@mui/icons-material/Search'
 import AddIcon from '@mui/icons-material/Add'
@@ -22,10 +21,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { BreadcrumbGenerator } from '../../components'
-import { deletePremises, getPremises } from './logic/Premises'
 import WardsAPI from './logic/Wards'
 import { Edit } from '@mui/icons-material'
-import ConfirmationDialogue from '../../components/ConfirmationDialogue'
 import PropsConfirmationDialogue from '../schedule/components/calendar/PropsConfirmationDialogue'
 import { MaterialIconPicker } from 'react-material-icon-picker'
 
@@ -68,7 +65,6 @@ const Wards = () => {
       disableColumnMenu: true,
       sortable: false,
       renderCell: params => {
-        // console.log(params.row.icon_data)
         return <Icon>{params.row.icon_data}</Icon>
       }
     },
@@ -116,11 +112,8 @@ const Wards = () => {
   async function handleSearch() {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    console.log(query)
-
     WardsAPI.getWard(query)
       .then(result => {
-        // Provide each record with an ID
         let mappedResults = result.rows.map(room => ({
           ...room,
           id: room.ward_id
