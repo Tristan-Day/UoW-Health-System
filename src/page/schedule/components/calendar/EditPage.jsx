@@ -21,8 +21,7 @@ const APPOINTMENT = 'APPOINTMENT'
 
 function EditPage(props) {
   const [page, setPage] = useState(TASK)
-  const [lastCardSelected, setLastCardSelected] = useState(0);
-  // const [selectedCardContent, setSelectedCardContent] = useState({})
+  const [lastCardSelected, setLastCardSelected] = useState(0)
 
   useEffect(() => {
     console.log("editPage")

@@ -19,14 +19,12 @@ import dayjs from 'dayjs'
 import { useEffect, useState } from 'react'
 import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
-import { Check, Clear, ClearAll, Close, Delete, QuestionMark } from '@mui/icons-material'
+import { Check, ClearAll, Close, Delete, QuestionMark } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
-import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
 import PropsConfirmationDialogue from './PropsConfirmationDialogue'
 
 function EditTask(props) {
-  const [edit, setEdit] = useState(props.isEdit && false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [startDate, setStartDate] = useState('')
@@ -77,24 +75,15 @@ function EditTask(props) {
 
           const content = filteredScheduleItems[0]
 
-          console.log('matching cards')
-          console.log(content)
-
           setName(content.task)
           setDescription(content.description)
-
           let contentDate = new Date(content.start_timestamp)
           setStartDate(contentDate)
 
           let quarterHours =
             Math.floor(contentDate.getHours() * 4) +
             Math.floor(contentDate.getMinutes() / 15)
-
           setStartTime(quarterHours)
-
-          console.log('patient id')
-          console.log(content.patient_id)
-          console.log(parseInt(content.patient_id))
 
           setPatientId(parseInt(content.patient_id))
           setDurationQuarterHour(content.estimated_duration_minutes)
@@ -244,6 +233,7 @@ function EditTask(props) {
 
   return (
     <Box sx={{ padding: 1 }}>
+
       {showDeleteDialog && (
         <PropsConfirmationDialogue
           message="Are you sure you want to proceed?"
@@ -255,6 +245,7 @@ function EditTask(props) {
           value={showDeleteDialog}
         />
       )}
+
       {message.length == 0 ? null : (
         <Alert
           icon={
@@ -270,8 +261,8 @@ function EditTask(props) {
           {message}
         </Alert>
       )}
+
       <Typography variant="h4">Task</Typography>
-      {/* Form */}
       <Typography sx={{ marginTop: 1 }}>Task name</Typography>
       <TextField
         size="small"
@@ -369,7 +360,6 @@ function EditTask(props) {
               </Button>
               <Button
                 variant="outlined"
-                // sx={{ display: 'block', marginTop: 2 }}
                 onClick={() => setShowDeleteDialog(true)}
                 startIcon={<Delete />}
               >

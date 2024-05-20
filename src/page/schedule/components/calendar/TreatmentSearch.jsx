@@ -44,29 +44,20 @@ function TreatmentSearch(props) {
   }
 
   const getTreatmentValue = () => {
-    // console.log(selectedPatient);
     if (props.overWriteValue == 0) {
-      // console.log('selected patient is default')
       return null
     }
 
     let filteredPatients = treatments.filter(
       patient => {
-        // console.log(props.overWriteValue);
-        // console.log(patient)
         return parseInt(patient.treatment_id) == props.overWriteValue
       }
     )
 
-    // console.log(filteredPatients);
-
     if (filteredPatients.length < 1) {
-      // console.log('filteredPatients is empty')
       return null
     }
-
-    // console.log('displaying patient in textfield')
-
+    
     return {
       label:
         filteredPatients[0].name

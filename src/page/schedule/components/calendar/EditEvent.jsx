@@ -22,7 +22,6 @@ import PatientSearch from './PatientSearch'
 import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
 import { Check, ClearAll, Delete, QuestionAnswer, QuestionMark } from '@mui/icons-material'
 import Alert from '@mui/material/Alert'
-import { getCurrentUser } from 'aws-amplify/auth'
 import ScheduleValidator from './ScheduleValidator'
 import PropsConfirmationDialogue from './PropsConfirmationDialogue'
 
@@ -60,19 +59,11 @@ function EditEvent(props) {
       console.log('loading card on editPage')
       setLastIdSelected(props.cardSelected)
 
-      //TODO: switch this to an API call for the individual ID
-      console.log('getting items on editpage')
-
-      console.log(props.scheduleItems)
       ScheduleItemAPI.getPatient()
         .then(scheduleItems => {
-          //TODO: switch this to an API call for the individual ID
-          console.log('getting items on editpage')
 
-          console.log(scheduleItems)
           let filteredScheduleItems = scheduleItems.success.rows.filter(
             item => {
-              // console.log(item)
               console.log('check iteration')
               console.log(item.schedule_item_id)
               console.log(props.cardSelected)
@@ -82,8 +73,6 @@ function EditEvent(props) {
 
           const content = filteredScheduleItems[0]
 
-          console.log('matching cards')
-          console.log(content)
 
           setName(content.task)
           setDescription(content.description)
@@ -96,10 +85,6 @@ function EditEvent(props) {
             Math.floor(contentDate.getMinutes() / 15)
 
           setStartTime(quarterHours)
-
-          console.log('patient id')
-          console.log(content.patient_id)
-          console.log(parseInt(content.patient_id))
 
           setPatientId(parseInt(content.patient_id))
           setDurationQuarterHour(content.estimated_duration_minutes)

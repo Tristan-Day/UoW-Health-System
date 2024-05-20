@@ -1,4 +1,4 @@
-import { Autocomplete, Box } from '@mui/material'
+import { Autocomplete } from '@mui/material'
 import { useEffect, useState } from 'react'
 import PatientAPI from '../../apis/PatientAPI'
 import { TextField } from '@mui/material'
@@ -30,41 +30,29 @@ function PatientSearch(props) {
         value={getWardValue()}
         placeholder="Enter a patient name"
         onChange={(event, newVal) => {
-          // console.log(event.target.value)
-          console.log(newVal.id)
           if (event.target.value) {
             setSelectedPatientInForm(parseInt(newVal.id))
           }
         }}
         InputProps={{ ...params.InputProps, type: 'search' }}
-        // error={errors.ward_id}
       />
     )
   }
 
   const getWardValue = () => {
-    // console.log(selectedPatient);
     if (props.overWriteValue == 0) {
-      // console.log('selected patient is default')
       return null
     }
 
     let filteredPatients = patients.filter(
       patient => {
-        // console.log(props.overWriteValue);
-        // console.log(patient)
         return parseInt(patient.patient_id) == props.overWriteValue
       }
     )
 
-    // console.log(filteredPatients);
-
     if (filteredPatients.length < 1) {
-      // console.log('filteredPatients is empty')
       return null
     }
-
-    // console.log('displaying patient in textfield')
 
     return {
       label:
