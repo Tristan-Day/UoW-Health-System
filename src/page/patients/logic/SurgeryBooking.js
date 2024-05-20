@@ -15,7 +15,10 @@ class SurgeryBookingAPI {
     }
 
     static upsertSurgeryBooking = async function(actionType, name, date, time, department, staffId, surgeryType, description, bookingType, id) {
-      if(id != null && actionType == "INSERT") {
+      if(id != null && actionType === "UPDATE") {
+
+        console.log("updating")
+
         const operation = post({
           apiName: 'BookingSurgeryHandler',
           path: `/v1/resources/surgery`,
@@ -29,14 +32,18 @@ class SurgeryBookingAPI {
               STAFF_ID: staffId,
               SURGERY_TYPE: surgeryType,
               DESCRIPTION: description,
-              BOOKING_TYPE: bookingType
+              BOOKING_TYPE: bookingType,
+              ID: id
             }
           }
         });
     
         const response = ((await operation.response));
-        return (await response.body.json()).success;
+        console.log(response);
+        return (await response.body.json());
       }
+
+      console.log("creating")
 
       const operation = post({
         apiName: 'BookingSurgeryHandler',
@@ -52,13 +59,13 @@ class SurgeryBookingAPI {
             SURGERY_TYPE: surgeryType,
             DESCRIPTION: description,
             BOOKING_TYPE: bookingType,
-            ID: id
           }
         }
       });
   
       const response = ((await operation.response));
-      return (await response.body.json()).success;
+      console.log(response);
+      return (await response.body.json());
     }
 
     static deleteSurgeryBooking = async function(id) {

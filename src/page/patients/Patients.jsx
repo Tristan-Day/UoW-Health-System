@@ -3,6 +3,7 @@ import { Outlet, Route } from 'react-router-dom'
 
 import IndexGenerator from '../../components/generator/IndexGenerator'
 import SurgeryBooking from './SurgeryBooking'
+import SurgeryBookingForm from './page/SurgeryBookingForm'
 
 const Pages = {
   'Treatment Appointments': {
@@ -71,7 +72,7 @@ const PatientRoutes = permissions => (
 
     <Route path="surgery-booking">
       <Route index element={<SurgeryBooking />} />
-      <Route path="create" element={<SurgeryBooking />} />
+      <Route path="create" element={<SurgeryBookingForm />} />
     </Route>
   </Route>
 )

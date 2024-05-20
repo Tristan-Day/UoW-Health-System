@@ -139,8 +139,6 @@ const SurgeryBooking = () => {
   async function handleSearch() {
     setMessage({ text: 'Loading Records...', severity: 'info', loading: true })
 
-    console.log(query)
-
     SurgeryBookingAPI.getSurgeryBooking()
       .then(result => {
         // Provide each record with an ID
@@ -168,7 +166,7 @@ const SurgeryBooking = () => {
   async function handleDelete() {
     setShowDeleteDialog(false)
 
-    setMessage({ text: 'Deleting room...', severity: 'info', loading: true })
+    setMessage({ text: 'Deleting booking...', severity: 'info', loading: true })
 
     console.log('selection')
     console.log(selection)
@@ -178,7 +176,7 @@ const SurgeryBooking = () => {
         console.log(res)
 
         setMessage({
-          text: 'Ward sucessfully deleted',
+          text: 'Surgery booking sucessfully deleted',
           severity: 'success',
           loading: false
         })
