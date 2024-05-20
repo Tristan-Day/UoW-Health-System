@@ -63,12 +63,17 @@ const SurgeryBookingForm = props => {
     if (props && props.action && props.action === 'UPDATE') {
       //update here
       setForm({
-        ward: location.state.ward_name,
-        specialisation: location.state.specialisation,
+        name: location.state.name,
+        department: location.state.department,
+        staff_id: location.state.staff_id,
+        surgery_type: location.state.surgery_type,
         description: location.state.description,
-        icon: location.state.icon_data,
-        id: location.state.ward_id
+        booking_type: location.state.booking_type,
+        id: location.state.id
       })
+      setStartDate(location.state.date)
+      setStartTime(location.state.time)
+      setSelectedStaff(location.state.staff_id)
     }
 
     getStaff(null)
