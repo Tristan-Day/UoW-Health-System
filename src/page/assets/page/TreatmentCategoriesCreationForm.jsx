@@ -18,24 +18,14 @@ import {
   import { useLocation, useNavigate } from 'react-router-dom'
   
   import { BreadcrumbGenerator, Spinbox } from '../../../components'
-  import { getBuildings, createPremises } from '../logic/Premises'
-  import { MaterialIconPicker } from 'react-material-icon-picker'
-  import Accordion from '@mui/material/Accordion'
-  import AccordionDetails from '@mui/material/AccordionDetails'
-  import AccordionSummary from '@mui/material/AccordionSummary'
-  import { ArrowDropDown } from '@mui/icons-material'
   import WardsAPI from '../logic/Wards'
   import TreatmentCategoriesAPI from '../logic/TreatmentCategory'
-  import TreatmentsAPI from '../logic/Treatments'
   
   const TreatmentCategoriesCreationForm = props => {
     const [message, setMessage] = useState({})
     const [errors, setErrors] = useState({})
     const [treatmentCategories, setTreatmentCategories] = useState([])
     const [wards, setWards] = useState([])
-    const [wardSelectionError, setWardSelectionError] = useState(true)
-    const [treatmentCategorySelectionError, setTreatmentCategorySelectionError] =
-      useState(true)
   
     const [form, setForm] = useState({})
   
@@ -64,6 +54,7 @@ import {
       }
       handleValidation()
     }, [])
+
   
     useEffect(() => {
       TreatmentCategoriesAPI.getTreatment({}).then(res =>
@@ -76,6 +67,7 @@ import {
   
       handleValidation()
     }, [form])
+
   
     async function handleValidation() {
       setMessage(undefined)
@@ -88,7 +80,6 @@ import {
         })
         errors.name = true
       }
-
   
       setErrors(errors)
   
@@ -97,9 +88,7 @@ import {
     }
   
     async function handleSubmit() {
-      console.log('form')
-      console.log(form)
-  
+
       if (!handleValidation) {
         return
       }
@@ -114,9 +103,6 @@ import {
         ).then(res => {
             setMessage({ text: 'Treatment category sucessfully created', severity: 'success' })
   
-            console.log("output")
-            console.log(res)
-  
             setTimeout(() => setMessage(undefined), 7000)
           })
           .catch(res => {
@@ -124,8 +110,6 @@ import {
               text: 'Failed to create treatment category - Please try again later',
               severity: 'error'
             })
-  
-            console.log(res)
   
             setTimeout(() => setMessage(undefined), 7000)
           })
@@ -143,8 +127,6 @@ import {
         null
       )
         .then(res => {
-          console.log(res)
-  
           setMessage({ text: 'Treatment category sucessfully created', severity: 'success' })
   
           setTimeout(() => setMessage(undefined), 7000)
@@ -154,7 +136,6 @@ import {
             text: 'Failed to create treatment category - Please try again later',
             severity: 'error'
           })
-          console.log(err)
   
           setTimeout(() => setMessage(undefined), 7000)
         })

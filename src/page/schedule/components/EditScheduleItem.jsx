@@ -63,28 +63,15 @@ function EditScheduleItem(props) {
 
       ScheduleItemAPI.getPatient()
         .then(scheduleItems => {
-          //TODO: switch this to an API call for the individual ID
-          console.log('getting items on editpage')
 
-          console.log(scheduleItems)
           let filteredScheduleItems = scheduleItems.rows.filter(item => {
-            // console.log(item)
-            console.log('check iteration')
-            console.log(typeof item.schedule_item_id)
-            console.log(typeof location.state.cardSelected)
-            console.log(item.schedule_item_id === location.state.cardSelected)
             return (
               parseInt(item.schedule_item_id) ===
               parseInt(location.state.cardSelected)
             )
           })
 
-          console.log(filteredScheduleItems)
-
           const content = filteredScheduleItems[0]
-
-          console.log('matching cards')
-          console.log(content)
 
           setName(content.task)
           setDescription(content.description)
@@ -97,10 +84,6 @@ function EditScheduleItem(props) {
             Math.floor(contentDate.getMinutes() / 15)
 
           setStartTime(quarterHours)
-
-          console.log('patient id')
-          console.log(content.patient_id)
-          console.log(parseInt(content.patient_id))
 
           setPatientId(parseInt(content.patient_id))
           setDurationQuarterHour(content.estimated_duration_minutes)
@@ -152,7 +135,6 @@ function EditScheduleItem(props) {
         location.state.cardSelected
       )
         .then(res => {
-          console.log(res)
           setMessage(
             'Task successfully ' +
               (location.state.cardSelected === 0 ? 'created' : 'updated')
@@ -161,7 +143,6 @@ function EditScheduleItem(props) {
           setSeverity('success')
         })
         .catch(error => {
-          console.log(error)
           setMessage(
             'There was an error and the task was not successfully ' +
               (location.state.cardSelected === 0 ? 'created' : 'updated') +
@@ -184,7 +165,6 @@ function EditScheduleItem(props) {
       null
     )
       .then(res => {
-        console.log(res)
         setMessage(
           'Task successfully ' +
             (location.state.cardSelected === 0 ? 'created' : 'updated')
@@ -193,7 +173,6 @@ function EditScheduleItem(props) {
         setSeverity('success')
       })
       .catch(error => {
-        console.log(error)
         setMessage(
           'There was an error and the task was not successfully ' +
             (location.state.cardSelected === 0 ? 'created' : 'updated') +
@@ -211,13 +190,11 @@ function EditScheduleItem(props) {
 
     ScheduleItemAPI.delete(lastIdSelected)
       .then(res => {
-        console.log(res)
         setMessage('Task successfully deleted')
         setMessageIcon('CHECK')
         setSeverity('success')
       })
       .catch(error => {
-        console.log(error)
         setMessage(
           'There was an error and the task was not successfully deleted - please try again later'
         )
@@ -350,7 +327,6 @@ function EditScheduleItem(props) {
               </Button>
               <Button
                 variant="outlined"
-                // sx={{ display: 'block', marginTop: 2 }}
                 onClick={deleteTask}
                 startIcon={<Delete />}
               >

@@ -18,12 +18,6 @@ import { useState, useEffect, cloneElement } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 import { BreadcrumbGenerator, Spinbox } from '../../../components'
-import { getBuildings, createPremises } from '../logic/Premises'
-import { MaterialIconPicker } from 'react-material-icon-picker'
-import Accordion from '@mui/material/Accordion'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import { ArrowDropDown } from '@mui/icons-material'
 import WardsAPI from '../logic/Wards'
 import TreatmentCategoriesAPI from '../logic/TreatmentCategory'
 import TreatmentsAPI from '../logic/Treatments'
@@ -33,9 +27,6 @@ const TreatmentCreationForm = props => {
   const [errors, setErrors] = useState({})
   const [treatmentCategories, setTreatmentCategories] = useState([])
   const [wards, setWards] = useState([])
-  const [wardSelectionError, setWardSelectionError] = useState(true)
-  const [treatmentCategorySelectionError, setTreatmentCategorySelectionError] =
-    useState(true)
 
   const [form, setForm] = useState({})
 
@@ -80,14 +71,6 @@ const TreatmentCreationForm = props => {
   async function handleValidation() {
     setMessage(undefined)
     const errors = {}
-
-    // if (!(form.id && form.id.trim())) {
-    //   setMessage({
-    //     severity: 'error',
-    //     text: 'A ward ID is required, please enter a ward ID'
-    //   })
-    //   errors.building = true
-    // }
 
     if (!(form.treatment_name && form.treatment_name.trim())) {
       setMessage({
@@ -193,8 +176,6 @@ const TreatmentCreationForm = props => {
         {...params}
         label="Enter a ward name"
         onChange={(event, newVal) => {
-          // console.log(event.target.value)
-          // console.log(newVal)
           if (event.target.value) {
             setForm({ ...form, ward_id: parseInt(newVal.id) })
           }
@@ -211,7 +192,6 @@ const TreatmentCreationForm = props => {
         {...params}
         label="Enter a treatment category name"
         onChange={(event, newVal) => {
-          // console.log(event.target)
           if (event.target.value) {
             setForm({ ...form, treatment_category_id: parseInt(newVal.id) })
           }
@@ -294,13 +274,11 @@ const TreatmentCreationForm = props => {
           renderInput={renderWardName}
           getOptionLabel={option => option.label}
           onChange={(e, newVal) => {
-            // console.log(newVal)
             setForm({ ...form, ward_id: newVal.id })
           }}
           options={
             wards
               ? wards.map(ward => {
-                  // console.log(ward)
                   return { label: ward.ward_name, id: ward.ward_id }
                 })
               : []

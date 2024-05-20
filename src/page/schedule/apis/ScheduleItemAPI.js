@@ -1,9 +1,6 @@
 import { get, del, post, put } from 'aws-amplify/api'
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { getCurrentUser, currentSession } from 'aws-amplify/auth';
-// import {Signer} from 'aws-amplify';
-
-
 
 class ScheduleItemAPI {
   static getPatient = async function () {

@@ -17,8 +17,7 @@ import SaveIcon from '@mui/icons-material/Save'
 import { useState, useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
-import { BreadcrumbGenerator, Spinbox } from '../../../components'
-import { getBuildings, createPremises } from '../logic/Premises'
+import { BreadcrumbGenerator } from '../../../components'
 import { MaterialIconPicker } from 'react-material-icon-picker'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
@@ -26,7 +25,6 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import { ArrowDropDown } from '@mui/icons-material'
 import WardsAPI from '../logic/Wards'
 
-//TODO1: switch all references to old model to your current model
 const WardCreationForm = props => {
   const [message, setMessage] = useState({})
   const [errors, setErrors] = useState({})
@@ -37,9 +35,6 @@ const WardCreationForm = props => {
 
   const navigate = useNavigate()
   const location = useLocation()
-
-  console.log('props')
-  console.log(location.state)
 
   let action = 'CREATE'
   if (
@@ -65,7 +60,6 @@ const WardCreationForm = props => {
   useEffect(() => {
     let props = location.state
     if (props && props.action && props.action === 'UPDATE') {
-      //update here
       setForm({
         ward: location.state.ward_name,
         specialisation: location.state.specialisation,
@@ -85,7 +79,6 @@ const WardCreationForm = props => {
     setMessage(undefined)
     const errors = {}
 
-    //ensure validation matches model
     if (!(form.id && form.id.trim())) {
       setMessage({
         severity: 'error',
@@ -116,7 +109,6 @@ const WardCreationForm = props => {
     if (isUpdate()) {
       setMessage({ text: 'Updating ward...', severity: 'info' })
 
-      //ensure correct API is used
       WardsAPI.upsertWard(
         'UPDATE',
         form.ward,
@@ -128,8 +120,6 @@ const WardCreationForm = props => {
         .then(res => {
           setMessage({ text: 'ward sucessfully updated', severity: 'success' })
 
-          console.log(res)
-
           setTimeout(() => setMessage(undefined), 7000)
         })
         .catch(res => {
@@ -137,8 +127,6 @@ const WardCreationForm = props => {
             text: 'Failed to create ward - Please try again later',
             severity: 'error'
           })
-
-          console.log(res)
 
           setTimeout(() => setMessage(undefined), 7000)
         })

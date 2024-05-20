@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 import { getWindowHeight, toTwoDigits } from '../Util'
 import { useEffect, useState } from 'react'
-import ScheduleItemAPI from '../../apis/ScheduleItemAPI'
 
 function getHour(quarterHours) {
   let hours = Math.floor(quarterHours / 4)
@@ -52,18 +51,6 @@ function DayDisplay(props) {
 
   useEffect(() => {
     let equal = true
-    // props.scheduleItems.forEach((item, index) => {
-    //   console.log(JSON.stringify(item) + ' : ' + JSON.stringify(items))
-
-    //   if (
-    //     !(
-    //       index < items.length &&
-    //       JSON.stringify(item) === JSON.stringify(items[index])
-    //     )
-    //   ) {
-    //     equal = false
-    //   }
-    // })
 
     if (props.scheduleItems.length != items.length) {
       equal = false
@@ -83,7 +70,6 @@ function DayDisplay(props) {
   })
 
   function refresh() {
-    // if (lastDate != props.date) {
     setLastDate(props.date)
 
     console.log(props.scheduleItems)
@@ -100,7 +86,6 @@ function DayDisplay(props) {
 
     console.log(filteredScheduleItems)
     setItems(filteredScheduleItems)
-    // }
   }
 
   function renderBackground(date) {

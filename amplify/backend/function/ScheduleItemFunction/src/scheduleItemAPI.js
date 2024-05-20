@@ -121,6 +121,15 @@ class ScheduleItemAPI {
 
     let result = {}
 
+    // //Test
+    // const IDP_REGEX = /.*\/.*,(.*)\/(.*):CognitoSignIn:(.*)/
+    // const authProvider =
+    //   req.apiGateway.event.requestContext.identity.cognitoAuthenticationProvider
+    // const [, , , userId] = authProvider.match(IDP_REGEX)
+
+    // console.log('user Id:')
+    // console.log(userId)
+
     try {
       console.log('starting query')
 
@@ -148,7 +157,7 @@ class ScheduleItemAPI {
 
       if (paramLength == 0) {
         console.log('selecting all')
-        query = await client.query('SELECT * FROM "system".schedule_items;')
+        query = await client.query('SELECT * FROM "system".schedule_items WHERE ACCOUNT_ID = \'' + req.apiGateway.event.requestContext.identity.cognitoIdentityId  + '\';')
 
         result = { success: query }
       }
@@ -215,8 +224,8 @@ class ScheduleItemAPI {
     try {
       if (req.body['ACTION_TYPE'] === 'INSERT') {
         const queryString = `
-                    INSERT INTO "system".schedule_items (START_TIMESTAMP, ESTIMATED_DURATION_MINUTES, TASK, DESCRIPTION, ITEM_TYPE, TREATMENT_ID)
-                    VALUES ($1, $2, $3, $4, $5, $6)
+                    INSERT INTO "system".schedule_items (START_TIMESTAMP, ESTIMATED_DURATION_MINUTES, TASK, DESCRIPTION, ITEM_TYPE, TREATMENT_ID, ACCOUNT_ID)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)
                     `
         const values = [
           req.body['START_TIMESTAMP'],
@@ -225,6 +234,7 @@ class ScheduleItemAPI {
           req.body['DESCRIPTION'],
           req.body['ITEM_TYPE'],
           req.body['TREATMENT_ID'],
+          req.apiGateway.event.requestContext.identity.cognitoIdentityId
         ]
 
         let query = await client.query(queryString, values)
@@ -237,7 +247,7 @@ class ScheduleItemAPI {
 
       if (req.body['ACTION_TYPE'] === 'UPDATE') {
         const queryString = `
-                UPDATE "system".schedule_items SET START_TIMESTAMP = $1, ESTIMATED_DURATION_MINUTES = $2, TASK = $3, DESCRIPTION = $4, ITEM_TYPE = $5, TREATMENT_ID = $6 WHERE SCHEDULE_ITEM_ID = $7;
+                UPDATE "system".schedule_items SET START_TIMESTAMP = $1, ESTIMATED_DURATION_MINUTES = $2, TASK = $3, DESCRIPTION = $4, ITEM_TYPE = $5, TREATMENT_ID = $6, ACCOUNT_ID = $7 WHERE SCHEDULE_ITEM_ID = $8;
                 `
         const values = [
           req.body['START_TIMESTAMP'],
@@ -246,6 +256,7 @@ class ScheduleItemAPI {
           req.body['DESCRIPTION'],
           req.body['ITEM_TYPE'],
           req.body['TREATMENT_ID'],
+          req.apiGateway.event.requestContext.identity.cognitoIdentityId,
           //where
           req.body['SCHEDULE_ITEM_ID']
         ]

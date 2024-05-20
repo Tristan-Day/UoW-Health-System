@@ -13,7 +13,6 @@ import {
 } from '@mui/material'
 
 import { DataGrid } from '@mui/x-data-grid'
-import { palette } from '@mui/system'
 
 import SearchIcon from '@mui/icons-material/Search'
 import AddIcon from '@mui/icons-material/Add'
@@ -23,10 +22,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { BreadcrumbGenerator } from '../../components'
-import { deletePremises, getPremises } from './logic/Premises'
 import { Edit } from '@mui/icons-material'
-import ConfirmationDialogue from '../../components/ConfirmationDialogue'
-import TreatmentsAPI from './logic/Treatments'
 import TreatmentCategoriesAPI from './logic/TreatmentCategory'
 import PropsConfirmationDialogue from '../schedule/components/calendar/PropsConfirmationDialogue'
 
@@ -141,9 +137,6 @@ const TreatmentCategories = () => {
       severity: 'info',
       loading: true
     })
-
-    console.log('selection')
-    console.log(selection)
 
     TreatmentCategoriesAPI.deleteTreatment(selection)
       .then(res => {
