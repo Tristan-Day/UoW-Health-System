@@ -370,8 +370,9 @@ const SurgeryBookingForm = props => {
           renderInput={renderStaffDisplayName}
           getOptionLabel={option => option.label}
           onChange={(e, newVal) => {
-            // console.log(newVal)
-            setSelectedStaff(newVal.id)
+            if(newVal) {
+                setSelectedStaff(newVal.id)
+            }
           }}
           options={
             staff
