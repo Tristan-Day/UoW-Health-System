@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/drugs/category": {
+      "name": "/v1/resources/drugs/category",
+      "lambdaFunction": "DrugsCategoriesFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

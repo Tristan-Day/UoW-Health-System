@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/Permissions/assign/staff": {
+      "name": "/v1/Permissions/assign/staff",
+      "lambdaFunction": "AssignmentPermissionFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

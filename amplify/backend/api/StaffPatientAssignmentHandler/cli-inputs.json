@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/patient/staff-assignment": {
+      "name": "/v1/resources/patient/staff-assignment",
+      "lambdaFunction": "AssignStaffFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

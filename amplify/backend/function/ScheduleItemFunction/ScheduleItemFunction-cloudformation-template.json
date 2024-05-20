@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.8.2\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
+  "Description": "{\"createdOn\":\"Windows\",\"createdBy\":\"Amplify\",\"createdWith\":\"12.10.1\",\"stackType\":\"function-Lambda\",\"metadata\":{}}",
   "Parameters": {
     "CloudWatchRule": {
       "Type": "String",
@@ -15,18 +15,6 @@
     },
     "s3Key": {
       "Type": "String"
-    },
-    "apiScheduleItemHandlerApiName": {
-      "Type": "String",
-      "Default": "apiScheduleItemHandlerApiName"
-    },
-    "apiScheduleItemHandlerApiId": {
-      "Type": "String",
-      "Default": "apiScheduleItemHandlerApiId"
-    },
-    "authhealthsystem334c9ea1UserPoolId": {
-      "Type": "String",
-      "Default": "authhealthsystem334c9ea1UserPoolId"
     }
   },
   "Conditions": {
@@ -81,15 +69,6 @@
             },
             "REGION": {
               "Ref": "AWS::Region"
-            },
-            "API_SCHEDULEITEMHANDLER_APINAME": {
-              "Ref": "apiScheduleItemHandlerApiName"
-            },
-            "API_SCHEDULEITEMHANDLER_APIID": {
-              "Ref": "apiScheduleItemHandlerApiId"
-            },
-            "AUTH_HEALTHSYSTEM334C9EA1_USERPOOLID": {
-              "Ref": "authhealthsystem334c9ea1UserPoolId"
             }
           }
         },

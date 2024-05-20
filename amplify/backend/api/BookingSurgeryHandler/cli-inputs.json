@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/surgery": {
+      "name": "/v1/resources/surgery",
+      "lambdaFunction": "BookingSurgeryFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

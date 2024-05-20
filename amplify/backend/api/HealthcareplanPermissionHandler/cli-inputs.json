@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/permissions/healthcareplan": {
+      "name": "/v1/permissions/healthcareplan",
+      "lambdaFunction": "HealthcareplanPermissionFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

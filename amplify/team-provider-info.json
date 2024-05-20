@@ -1,4 +1,136 @@
 {
+  "ibtisam": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-healthsystem-ibtisam-124842-authRole",
+      "UnauthRoleArn": "arn:aws:iam::558099092121:role/amplify-healthsystem-ibtisam-124842-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::558099092121:role/amplify-healthsystem-ibtisam-124842-authRole",
+      "Region": "eu-west-1",
+      "DeploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+      "UnauthRoleName": "amplify-healthsystem-ibtisam-124842-unauthRole",
+      "StackName": "amplify-healthsystem-ibtisam-124842",
+      "StackId": "arn:aws:cloudformation:eu-west-1:558099092121:stack/amplify-healthsystem-ibtisam-124842/1dbaa660-f667-11ee-b3ba-024e11d4cc9b",
+      "AmplifyAppId": "d3mszj6ixlalqt"
+    },
+    "categories": {
+      "auth": {
+        "healthsystem334c9ea1": {}
+      },
+      "function": {
+        "AppointmentFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/AppointmentFunction-796b5547654535594445-build.zip"
+        },
+        "AssignStaffFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/AssignStaffFunction-394f6d637858616b4758-build.zip"
+        },
+        "AssignmentPermissionFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/AssignmentPermissionFunction-2f4734684657654b4d59-build.zip"
+        },
+        "BookingPermissionsFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/BookingPermissionsFunction-34696e52547630505553-build.zip"
+        },
+        "BookingSurgeryFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/BookingSurgeryFunction-62793374384b36634156-build.zip"
+        },
+        "BuildingFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/BuildingFunction-51726b454b44517a3959-build.zip"
+        },
+        "CleaningOrderFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/CleaningOrderFunction-54746d6663392f4f7364-build.zip"
+        },
+        "DrugFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/DrugFunction-4e4f4c48536a65494b4c-build.zip"
+        },
+        "DrugPermissionFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/DrugPermissionFunction-3641305664665941652b-build.zip"
+        },
+        "DrugsCategoriesFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/DrugsCategoriesFunction-65505151556b55667a6a-build.zip"
+        },
+        "HealthcarePlanFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/HealthcarePlanFunction-6c394c732b7256586d4e-build.zip"
+        },
+        "HealthcareplanPermissionFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/HealthcareplanPermissionFunction-634e78472f744a6b6c70-build.zip"
+        },
+        "PatientFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/PatientFunction-78585038747152552b6c-build.zip"
+        },
+        "PermissionFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/PermissionFunction-6c6b6f472f562b716d78-build.zip"
+        },
+        "RoomFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/RoomFunction-34526c5846334c4c3266-build.zip"
+        },
+        "ScheduleItemFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/ScheduleItemFunction-4f704c57476a5a497053-build.zip"
+        },
+        "StaffFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/StaffFunction-5648356333577a346c7a-build.zip"
+        },
+        "TreatmentCategoryFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/TreatmentCategoryFunction-5935546f4f684d653576-build.zip"
+        },
+        "TreatmentFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/TreatmentFunction-4f4f33544842344f4749-build.zip"
+        },
+        "WardFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/WardFunction-6245777061324462796d-build.zip"
+        },
+        "WardOrderFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/WardOrderFunction-4e343248367632344249-build.zip"
+        },
+        "ShiftsFunction": {
+          "deploymentBucketName": "amplify-healthsystem-ibtisam-124842-deployment",
+          "s3Key": "amplify-builds/ShiftsFunction-77775344374546712b73-build.zip"
+        }
+      },
+      "api": {
+        "AppointmentsHandler": {},
+        "AssignmentPermissionHandler": {},
+        "BookingPermissionsHandler": {},
+        "BookingSurgeryHandler": {},
+        "BuildingHandler": {},
+        "CleaningOrderHandler": {},
+        "DrugHandler": {},
+        "DrugPermissionHandler": {},
+        "DrugsCategoryHandler": {},
+        "HealthcarePlanHandler": {},
+        "HealthcareplanPermissionHandler": {},
+        "PatientHandler": {},
+        "PermissionHandler": {},
+        "RoomHandler": {},
+        "ScheduleItemHandler": {},
+        "ShiftsHandler": {},
+        "StaffHandler": {},
+        "StaffPatientAssignmentHandler": {},
+        "TreatmentCategoryHandler": {},
+        "TreatmentHandler": {},
+        "WardHandler": {},
+        "WardOrderHandler": {}
+      }
+    }
+  },
   "dev": {
     "awscloudformation": {
       "AuthRoleName": "amplify-healthsystem-dev-212451-authRole",

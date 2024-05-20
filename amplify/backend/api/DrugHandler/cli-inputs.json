@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "paths": {
+    "/v1/resources/drugs": {
+      "name": "/v1/resources/drugs",
+      "lambdaFunction": "DrugFunction",
+      "permissions": {
+        "setting": "open"
+      }
+    }
+  }
+}

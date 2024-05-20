@@ -241,7 +241,7 @@ class TreatmentCategoryAPI {
             if (req.body["ACTION_TYPE"] === "UPDATE") {
 
                 const queryString = `
-                UPDATE "system".treatment_categories SET CATEGORY_NAME = $1 WHERE TREATMENT_ID = $2;
+                UPDATE "system".treatment_categories SET NAME = $1 WHERE TREATMENT_CATEGORY_ID = $4;
                 `;
                 const values = [
                     req.body["CATEGORY_NAME"],

@@ -291,12 +291,12 @@ class WardOrderAPI {
             return;
         }
 
-        if (!Validator.deleteIsValid(req.query)) {
+        if (!Validator.deleteIsValid(req.body)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
 
-        console.log(req.query);
+        console.log(req.body);
 
 
         let result = {};
@@ -305,7 +305,7 @@ class WardOrderAPI {
             const queryString = `
                     DELETE FROM "system".ward_orders WHERE WARD_ORDER_ID = $1;
                     `;
-            const values = [req.query["WARD_ORDER_ID"]];
+            const values = [req.body["WARD_ORDER_ID"]];
 
             let query = await client.query(queryString, values);
             result = { success: query };

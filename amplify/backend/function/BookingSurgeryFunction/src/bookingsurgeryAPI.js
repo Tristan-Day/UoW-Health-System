@@ -5,7 +5,7 @@ class Validator {
         ACTION_TYPE: String,
         ID: Number,
         NAME: String,
-        Date: Date,
+        DATE: Date,
         TIME: String, //evaluated from time
         DEPARTMENT: String,
         STAFF_ID: Number, //Staff ID
@@ -125,8 +125,6 @@ class BookingSurgeryAPI {
     static query = async function (req, res, setup) {
         let client = await setup();
 
-
-
         if (!Validator.searchIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
@@ -211,8 +209,12 @@ class BookingSurgeryAPI {
     static upsert = async function (req, res, setup) {
         let client = await setup();
 
+        console.log("Message recieved:");
+        console.log(req.body);
+
 
         if (!Validator.upsertIsValid(req.body)) {
+            console.log("incorrect query")
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
@@ -226,7 +228,7 @@ class BookingSurgeryAPI {
 
                 const queryString = `
                     INSERT INTO "system".booking_surgery (NAME, DATE, TIME, DEPARTMENT, STAFF_ID, SURGERY_TYPE, DESCRIPTION, BOOKING_TYPE)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                     `;
                 const values = [
                     req.body["NAME"],
@@ -280,12 +282,12 @@ class BookingSurgeryAPI {
         let client = await setup();
 
 
-        if (!Validator.deleteIsValid(req.body)) {
+        if (!Validator.deleteIsValid(req.query)) {
             res.status(400).json({ failure: "INCORRECT_QUERY" });
             return;
         }
 
-        console.log(req.body);
+        console.log(req.query);
 
 
         let result = {};
@@ -294,7 +296,7 @@ class BookingSurgeryAPI {
             const queryString = `
                     DELETE FROM "system".booking_surgery WHERE ID = $1;
                     `;
-            const values = [req.body[this.ID_COLUMN_NAME]];
+            const values = [req.query[this.ID_COLUMN_NAME]];
 
             let query = await client.query(queryString, values);
             result = { success: query };
